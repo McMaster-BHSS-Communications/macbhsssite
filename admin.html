@@ -282,6 +282,48 @@
       .composer-grid { grid-template-columns: 1fr; }
       .form-group.full { grid-column: 1; }
     }
+
+    /* ── PRODUCT MANAGEMENT ── */
+    .product-mgmt-grid { display: grid; grid-template-columns: 1fr 320px; gap: 28px; align-items: flex-start; }
+    .product-img-upload-area { border: 2px dashed var(--border); border-radius: 10px; padding: 20px; text-align: center; cursor: pointer; transition: border-color 0.15s; }
+    .product-img-upload-area:hover { border-color: var(--blue); }
+    .product-img-preview-list { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
+    .product-img-preview-item { position: relative; width: 70px; height: 70px; border-radius: 8px; overflow: hidden; border: 1px solid var(--border); }
+    .product-img-preview-item img { width: 100%; height: 100%; object-fit: cover; }
+    .product-img-remove-btn { position: absolute; top: 2px; right: 2px; background: rgba(0,0,0,0.65); border: none; color: #fff; border-radius: 50%; width: 18px; height: 18px; cursor: pointer; font-size: 9px; display: flex; align-items: center; justify-content: center; line-height: 1; }
+    .size-chip-row { display: flex; flex-wrap: wrap; gap: 6px; }
+    .size-chip { padding: 5px 12px; border: 1.5px solid var(--border); border-radius: 6px; font-size: 0.75rem; font-weight: 600; color: var(--mid); cursor: pointer; transition: all 0.15s; user-select: none; }
+    .size-chip.sel { border-color: var(--blue); background: var(--blue); color: #fff; }
+    .coll-chips-wrap { display: flex; flex-wrap: wrap; gap: 6px; }
+    .coll-chip { padding: 4px 12px; border: 1.5px solid var(--border); border-radius: 100px; font-size: 0.73rem; font-weight: 600; color: var(--mid); cursor: pointer; transition: all 0.15s; }
+    .coll-chip.sel { border-color: var(--maroon); background: var(--maroon); color: #fff; }
+    .toggle-wrap { display: flex; align-items: center; gap: 8px; cursor: pointer; }
+    .toggle-switch { position: relative; width: 38px; height: 22px; flex-shrink: 0; }
+    .toggle-switch input { opacity: 0; width: 0; height: 0; position: absolute; }
+    .toggle-slider { position: absolute; inset: 0; background: var(--border); border-radius: 22px; cursor: pointer; transition: 0.2s; }
+    .toggle-slider::before { content: ''; position: absolute; width: 16px; height: 16px; left: 3px; top: 3px; background: #fff; border-radius: 50%; transition: 0.2s; }
+    .toggle-switch input:checked + .toggle-slider { background: var(--blue); }
+    .toggle-switch input:checked + .toggle-slider::before { transform: translateX(16px); }
+    .inv-wrap { display: flex; align-items: center; border: 1px solid var(--border); border-radius: 7px; overflow: hidden; width: 110px; }
+    .inv-wrap button { background: var(--off); border: none; cursor: pointer; width: 28px; height: 28px; font-size: 1.1rem; color: var(--mid); display: flex; align-items: center; justify-content: center; transition: background 0.12s; }
+    .inv-wrap button:hover { background: var(--border); }
+    .inv-wrap input { width: 54px; border: none; border-left: 1px solid var(--border); border-right: 1px solid var(--border); text-align: center; font-size: 0.85rem; font-weight: 600; outline: none; padding: 4px 0; font-family: 'Inter', sans-serif; }
+    .coll-manage-list { display: flex; flex-direction: column; gap: 6px; }
+    .coll-manage-row { background: var(--off); border: 1px solid var(--border); border-radius: 8px; padding: 8px 12px; display: flex; align-items: center; gap: 8px; font-size: 0.84rem; font-weight: 500; }
+    .coll-manage-row span { flex: 1; }
+    .product-admin-list { display: flex; flex-direction: column; gap: 8px; }
+    .product-admin-row { background: var(--white); border: 1px solid var(--border); border-radius: 12px; padding: 12px 14px; display: flex; align-items: center; gap: 12px; }
+    .product-admin-thumb { width: 52px; height: 52px; border-radius: 8px; overflow: hidden; background: var(--blue-pale); flex-shrink: 0; }
+    .product-admin-thumb img { width: 100%; height: 100%; object-fit: cover; }
+    .stock-pill { padding: 2px 8px; border-radius: 100px; font-size: 0.63rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; display: inline-block; }
+    .stock-pill.in  { background: rgba(21,128,61,0.1); color: #15803d; }
+    .stock-pill.low { background: rgba(202,138,4,0.1);  color: #b45309; }
+    .stock-pill.out { background: rgba(90,90,90,0.1);   color: #555; }
+    .promo-admin-row { border: 1px solid var(--border); border-radius: 12px; overflow: hidden; margin-bottom: 10px; }
+    .promo-admin-bar { height: 6px; }
+    .promo-admin-info { padding: 10px 14px; display: flex; align-items: center; gap: 10px; }
+    .promo-preview-box { border-radius: 10px; padding: 18px 22px; margin-bottom: 16px; }
+    .upload-progress { font-size: 0.78rem; color: var(--muted); margin-top: 6px; text-align: center; }
   </style>
 </head>
 <body>
@@ -358,6 +400,14 @@
       </button>
 
       <div class="sidebar-label" style="margin-top:24px">Store</div>
+      <button class="sidebar-link" onclick="showPanel('products')" id="link-products">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg>
+        Manage Products
+      </button>
+      <button class="sidebar-link" onclick="showPanel('promos')" id="link-promos">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+        Promo Banners
+      </button>
       <a class="sidebar-link" href="admin-orders.html">
         <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
         Store Orders
@@ -655,6 +705,202 @@
       </div>
     </div>
 
+    <!-- PRODUCTS PANEL -->
+    <div class="panel" id="panel-products">
+      <div class="topbar">
+        <div>
+          <h1 id="products-panel-title">Manage Products</h1>
+          <p>Add, edit, and track inventory for all store items.</p>
+        </div>
+        <button class="btn-secondary" onclick="clearProductForm()">+ New Product</button>
+      </div>
+      <div class="product-mgmt-grid">
+        <!-- Form -->
+        <div class="composer-card">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;padding-bottom:16px;border-bottom:1px solid var(--border)">
+            <h3 style="font-family:'Familjen Grotesk',serif;font-size:1.1rem;font-weight:600" id="product-form-heading">Add New Product</h3>
+            <button class="btn-secondary" onclick="clearProductForm()" id="product-cancel-edit" style="display:none;font-size:0.78rem;padding:6px 14px">Cancel Edit</button>
+          </div>
+          <input type="hidden" id="p-editing-id" value="" />
+
+          <!-- Images -->
+          <div class="form-group">
+            <label>Product Images <span style="color:var(--muted);font-weight:400">— first image is the thumbnail (square crop)</span></label>
+            <div class="product-img-upload-area" onclick="document.getElementById('p-img-input').click()">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+              <p style="font-size:0.82rem;color:var(--muted);margin-top:8px;font-weight:500">Click to upload images</p>
+              <p style="font-size:0.7rem;color:var(--muted);margin-top:2px">PNG, JPG, WEBP — recommended 800×800px or larger</p>
+              <input type="file" id="p-img-input" accept="image/*" multiple onchange="handleProductImages(this)" style="display:none" />
+            </div>
+            <div class="product-img-preview-list" id="p-img-preview-list"></div>
+            <div class="upload-progress" id="p-upload-progress"></div>
+          </div>
+
+          <!-- Basic info -->
+          <div class="composer-grid">
+            <div class="form-group full">
+              <label>Product Name *</label>
+              <input type="text" id="p-name" placeholder="e.g. BHSS Crewneck — Maroon" />
+            </div>
+            <div class="form-group full">
+              <label>Description</label>
+              <textarea id="p-desc" rows="2" placeholder="Short description shown on the product card…"></textarea>
+            </div>
+            <div class="form-group">
+              <label>Price (CAD) *</label>
+              <input type="number" id="p-price" min="0" step="0.01" placeholder="0.00" />
+            </div>
+            <div class="form-group">
+              <label>Stock Status</label>
+              <select id="p-stock">
+                <option value="in">In Stock</option>
+                <option value="low">Low Stock</option>
+                <option value="out">Sold Out</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Inventory Count</label>
+              <div class="inv-wrap">
+                <button type="button" onclick="adjustInv(-1)">−</button>
+                <input type="number" id="p-inventory" value="0" min="0" />
+                <button type="button" onclick="adjustInv(1)">+</button>
+              </div>
+            </div>
+            <div class="form-group" style="display:flex;flex-direction:column;justify-content:flex-end;gap:10px">
+              <label>Options</label>
+              <label class="toggle-wrap">
+                <label class="toggle-switch"><input type="checkbox" id="p-featured" /><span class="toggle-slider"></span></label>
+                <span style="font-size:0.83rem;color:var(--mid)">Featured</span>
+              </label>
+              <label class="toggle-wrap">
+                <label class="toggle-switch"><input type="checkbox" id="p-active" checked /><span class="toggle-slider"></span></label>
+                <span style="font-size:0.83rem;color:var(--mid)">Active (visible on site)</span>
+              </label>
+            </div>
+          </div>
+
+          <!-- Sizes -->
+          <div class="form-group">
+            <label>Sizes <span style="color:var(--muted);font-weight:400">— leave blank for one-size or no-size items</span></label>
+            <div class="size-chip-row" id="p-size-chips">
+              <span class="size-chip" data-size="XS">XS</span>
+              <span class="size-chip" data-size="S">S</span>
+              <span class="size-chip" data-size="M">M</span>
+              <span class="size-chip" data-size="L">L</span>
+              <span class="size-chip" data-size="XL">XL</span>
+              <span class="size-chip" data-size="XXL">XXL</span>
+              <span class="size-chip" data-size="One Size">One Size</span>
+            </div>
+            <div style="display:flex;gap:8px;margin-top:8px">
+              <input type="text" id="p-custom-size" placeholder="Custom size…" style="padding:7px 10px;border:1px solid var(--border);border-radius:6px;font-size:0.82rem;width:140px;outline:none;font-family:'Inter',sans-serif" />
+              <button class="btn-secondary" style="padding:6px 14px;font-size:0.78rem" onclick="addCustomSizeChip()">Add</button>
+            </div>
+          </div>
+
+          <!-- Collections -->
+          <div class="form-group">
+            <label>Collections / Tags</label>
+            <div class="coll-chips-wrap" id="p-coll-chips">
+              <span style="font-size:0.78rem;color:var(--muted)">No collections yet — create one below.</span>
+            </div>
+          </div>
+
+          <div class="composer-actions">
+            <button class="btn-primary" style="width:auto;padding:10px 28px" onclick="saveProduct()"><span id="p-save-label">Add Product</span></button>
+            <button class="btn-secondary" onclick="clearProductForm()">Clear</button>
+          </div>
+
+          <!-- Collections manager -->
+          <div style="margin-top:32px;padding-top:24px;border-top:1px solid var(--border)">
+            <h3 style="font-family:'Familjen Grotesk',serif;font-size:1rem;font-weight:600;margin-bottom:14px">Manage Collections</h3>
+            <p style="font-size:0.78rem;color:var(--muted);margin-bottom:12px">Collections act as tags that group products. They appear as filter buttons on the store page.</p>
+            <div style="display:flex;gap:8px;margin-bottom:14px">
+              <input type="text" id="new-coll-name" placeholder="Collection name… (e.g. Fall Drop)" style="flex:1;padding:9px 12px;border:1px solid var(--border);border-radius:8px;font-size:0.85rem;outline:none;font-family:'Inter',sans-serif" />
+              <button class="btn-primary" style="width:auto;padding:9px 18px;font-size:0.83rem" onclick="addCollection()">Add</button>
+            </div>
+            <div class="coll-manage-list" id="coll-manage-list"></div>
+          </div>
+        </div>
+
+        <!-- Product list -->
+        <div>
+          <div style="font-size:0.68rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted);margin-bottom:10px">Store Products</div>
+          <div class="product-admin-list" id="product-admin-list">
+            <p style="font-size:0.82rem;color:var(--muted);padding:16px 0">Loading…</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PROMOS PANEL -->
+    <div class="panel" id="panel-promos">
+      <div class="topbar">
+        <div>
+          <h1>Promo Banners</h1>
+          <p>Create sale or drop announcements shown at the top of the store page.</p>
+        </div>
+        <button class="btn-secondary" onclick="renderPromoList()">↻ Refresh</button>
+      </div>
+      <div class="composer-outer">
+        <!-- Form -->
+        <div class="composer-card" style="flex:1">
+          <h3 style="font-family:'Familjen Grotesk',serif;font-size:1.1rem;font-weight:600;margin-bottom:20px;padding-bottom:14px;border-bottom:1px solid var(--border)">Add Banner</h3>
+          <div class="composer-grid">
+            <div class="form-group full">
+              <label>Title *</label>
+              <input type="text" id="bn-title" placeholder="e.g. End-of-Year Sale — 15% Off All Tops" oninput="updateBannerPreview()" />
+            </div>
+            <div class="form-group full">
+              <label>Subtitle</label>
+              <input type="text" id="bn-sub" placeholder="e.g. Limited time — order before March 31" oninput="updateBannerPreview()" />
+            </div>
+            <div class="form-group">
+              <label>CTA Button Text</label>
+              <input type="text" id="bn-cta-text" placeholder="Shop Now" oninput="updateBannerPreview()" />
+            </div>
+            <div class="form-group">
+              <label>CTA Link</label>
+              <input type="text" id="bn-cta-url" placeholder="https://…" />
+            </div>
+            <div class="form-group">
+              <label>Background Color</label>
+              <div style="display:flex;align-items:center;gap:8px">
+                <input type="color" id="bn-bg" value="#7a003c" style="width:40px;height:36px;border:1px solid var(--border);border-radius:6px;cursor:pointer;padding:2px" onchange="syncBannerColorFromPicker('bg');updateBannerPreview()" />
+                <input type="text" id="bn-bg-text" value="#7a003c" placeholder="#7a003c" style="flex:1;padding:9px 12px;border:1px solid var(--border);border-radius:8px;font-size:0.85rem;outline:none;font-family:'Inter',sans-serif" oninput="syncBannerColor('bg')" />
+              </div>
+            </div>
+            <div class="form-group">
+              <label>Text Color</label>
+              <div style="display:flex;align-items:center;gap:8px">
+                <input type="color" id="bn-tc" value="#ffffff" style="width:40px;height:36px;border:1px solid var(--border);border-radius:6px;cursor:pointer;padding:2px" onchange="syncBannerColorFromPicker('tc');updateBannerPreview()" />
+                <input type="text" id="bn-tc-text" value="#ffffff" placeholder="#ffffff" style="flex:1;padding:9px 12px;border:1px solid var(--border);border-radius:8px;font-size:0.85rem;outline:none;font-family:'Inter',sans-serif" oninput="syncBannerColor('tc')" />
+              </div>
+            </div>
+          </div>
+          <!-- Preview -->
+          <div style="margin-bottom:6px;font-size:0.68rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted)">Preview</div>
+          <div class="promo-preview-box" id="bn-preview" style="background:#7a003c">
+            <div style="font-weight:700;font-size:1.1rem;font-family:'Familjen Grotesk',serif;color:#fff;margin-bottom:4px" id="bn-preview-title">Banner Title</div>
+            <div style="font-size:0.82rem;color:rgba(255,255,255,0.8)" id="bn-preview-sub"></div>
+            <div id="bn-preview-cta-wrap" style="margin-top:12px;display:none">
+              <span style="background:rgba(255,255,255,0.2);color:#fff;padding:6px 14px;border-radius:6px;font-size:0.8rem;font-weight:600" id="bn-preview-cta">Shop Now</span>
+            </div>
+          </div>
+          <div class="composer-actions">
+            <button class="btn-primary" style="width:auto;padding:10px 24px" onclick="savePromoBanner()">Add Banner</button>
+            <button class="btn-secondary" onclick="clearBannerForm()">Clear</button>
+          </div>
+        </div>
+        <!-- Banner list -->
+        <div style="width:320px;flex-shrink:0">
+          <div style="font-size:0.68rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted);margin-bottom:10px">All Banners</div>
+          <div id="promo-admin-list">
+            <p style="font-size:0.82rem;color:var(--muted)">Loading…</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
   </div>
 </div>
 
@@ -766,7 +1012,9 @@ function showPanel(name) {
   document.getElementById('panel-' + name).classList.add('active');
   const linkEl = document.getElementById('link-' + name);
   if (linkEl) linkEl.classList.add('active');
-  if (name === 'manage') renderManage();
+  if (name === 'manage')   renderManage();
+  if (name === 'products') loadProductPanel();
+  if (name === 'promos')   renderPromoList();
 }
 
 // ── TOAST ──
@@ -1083,6 +1331,411 @@ async function renderResourceList() {
       </div>
       <button class="btn-danger" onclick="deleteResource('${r.id}')">Delete</button>
     </div>`).join('');
+}
+
+// ─────────────────────────────────────
+// PRODUCT MANAGEMENT
+// ─────────────────────────────────────
+
+let _editingProductId = null;
+let _productImages    = [];
+let _selectedSizes    = [];
+let _selectedColls    = [];
+let _allCollections   = [];
+
+async function loadProductPanel() {
+  await _loadCollections();
+  _renderCollChipsUI();
+  _renderCollManageList();
+  renderProductList();
+}
+
+// ── Collections ──
+async function _loadCollections() {
+  const { data } = await window.db.from('collections').select('*').order('name');
+  _allCollections = data || [];
+}
+
+async function addCollection() {
+  const name = document.getElementById('new-coll-name').value.trim();
+  if (!name) return;
+  const id = name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '') + '-' + Date.now().toString(36);
+  const { error } = await window.db.from('collections').insert({ id, name });
+  if (error) { toast(error.message, 'error'); return; }
+  document.getElementById('new-coll-name').value = '';
+  await _loadCollections();
+  _renderCollChipsUI();
+  _renderCollManageList();
+  toast('Collection added!');
+}
+
+async function deleteCollection(id) {
+  if (!confirm('Delete this collection? Products using it will lose the tag.')) return;
+  const { error } = await window.db.from('collections').delete().eq('id', id);
+  if (error) { toast(error.message, 'error'); return; }
+  _selectedColls = _selectedColls.filter(c => c !== id);
+  await _loadCollections();
+  _renderCollChipsUI();
+  _renderCollManageList();
+  toast('Collection deleted.');
+}
+
+function _renderCollChipsUI() {
+  const wrap = document.getElementById('p-coll-chips');
+  if (!wrap) return;
+  if (!_allCollections.length) {
+    wrap.innerHTML = '<span style="font-size:0.78rem;color:var(--muted)">No collections yet.</span>';
+    return;
+  }
+  wrap.innerHTML = _allCollections.map(c =>
+    `<span class="coll-chip${_selectedColls.includes(c.id) ? ' sel' : ''}" data-coll="${c.id}" onclick="toggleCollChip(this)">${c.name}</span>`
+  ).join('');
+}
+
+function _renderCollManageList() {
+  const el = document.getElementById('coll-manage-list');
+  if (!el) return;
+  if (!_allCollections.length) {
+    el.innerHTML = '<p style="font-size:0.78rem;color:var(--muted)">No collections yet.</p>';
+    return;
+  }
+  el.innerHTML = _allCollections.map(c =>
+    `<div class="coll-manage-row"><span>${c.name}</span><button class="btn-danger" onclick="deleteCollection('${c.id}')">Delete</button></div>`
+  ).join('');
+}
+
+function toggleCollChip(el) {
+  const cid = el.dataset.coll;
+  if (_selectedColls.includes(cid)) {
+    _selectedColls = _selectedColls.filter(x => x !== cid);
+    el.classList.remove('sel');
+  } else {
+    _selectedColls.push(cid);
+    el.classList.add('sel');
+  }
+}
+
+// ── Size chips ──
+document.addEventListener('click', e => {
+  if (e.target.classList.contains('size-chip') && e.target.closest('#p-size-chips')) {
+    toggleSizeChip(e.target);
+  }
+});
+
+function toggleSizeChip(el) {
+  const s = el.dataset.size;
+  if (_selectedSizes.includes(s)) {
+    _selectedSizes = _selectedSizes.filter(x => x !== s);
+    el.classList.remove('sel');
+  } else {
+    _selectedSizes.push(s);
+    el.classList.add('sel');
+  }
+}
+
+function addCustomSizeChip() {
+  const inp = document.getElementById('p-custom-size');
+  const s = inp.value.trim();
+  if (!s) return;
+  inp.value = '';
+  if (_selectedSizes.includes(s)) return;
+  _selectedSizes.push(s);
+  const wrap = document.getElementById('p-size-chips');
+  const chip = document.createElement('span');
+  chip.className = 'size-chip sel';
+  chip.dataset.size = s;
+  chip.textContent = s;
+  wrap.appendChild(chip);
+}
+
+function adjustInv(delta) {
+  const inp = document.getElementById('p-inventory');
+  inp.value = Math.max(0, (parseInt(inp.value) || 0) + delta);
+}
+
+// ── Image upload ──
+async function handleProductImages(input) {
+  const files = Array.from(input.files);
+  if (!files.length) return;
+  const prog = document.getElementById('p-upload-progress');
+  prog.textContent = `Uploading ${files.length} image(s)…`;
+  for (const file of files) {
+    try {
+      const url = await _uploadImage(file);
+      _productImages.push(url);
+    } catch (e) {
+      toast('Upload failed: ' + (e.message || e), 'error');
+    }
+  }
+  input.value = '';
+  prog.textContent = '';
+  _renderImagePreviews();
+  toast('Images uploaded!');
+}
+
+async function _uploadImage(file) {
+  const ext = (file.name.split('.').pop() || 'jpg').toLowerCase();
+  const filename = Date.now() + '-' + Math.random().toString(36).slice(2) + '.' + ext;
+  const { error } = await window.db.storage.from('product-images').upload(filename, file, { cacheControl: '3600', upsert: false });
+  if (error) throw new Error(error.message);
+  const { data: { publicUrl } } = window.db.storage.from('product-images').getPublicUrl(filename);
+  return publicUrl;
+}
+
+function _renderImagePreviews() {
+  const list = document.getElementById('p-img-preview-list');
+  if (!list) return;
+  list.innerHTML = _productImages.map((url, i) => `
+    <div class="product-img-preview-item">
+      <img src="${url}" alt="" />
+      <button class="product-img-remove-btn" onclick="removeProductImage(${i})" title="Remove">✕</button>
+    </div>`).join('');
+}
+
+function removeProductImage(i) {
+  _productImages.splice(i, 1);
+  _renderImagePreviews();
+}
+
+// ── Save / Delete / Edit ──
+async function saveProduct() {
+  const name  = document.getElementById('p-name').value.trim();
+  const desc  = document.getElementById('p-desc').value.trim();
+  const price = parseFloat(document.getElementById('p-price').value);
+  const stock = document.getElementById('p-stock').value;
+  const inv   = parseInt(document.getElementById('p-inventory').value) || 0;
+  const feat  = document.getElementById('p-featured').checked;
+  const actv  = document.getElementById('p-active').checked;
+  const eid   = document.getElementById('p-editing-id').value;
+
+  if (!name)                      { toast('Product name is required.', 'error'); return; }
+  if (isNaN(price) || price < 0)  { toast('Enter a valid price.', 'error');      return; }
+
+  const payload = { name, description: desc, price, images: _productImages, sizes: _selectedSizes, stock, inventory: inv, collections: _selectedColls, featured: feat, active: actv };
+
+  let error;
+  if (eid) {
+    ({ error } = await window.db.from('products').update(payload).eq('id', eid));
+  } else {
+    payload.id = Date.now().toString(36) + Math.random().toString(36).slice(2);
+    ({ error } = await window.db.from('products').insert(payload));
+  }
+
+  if (error) { toast('Error: ' + error.message, 'error'); return; }
+  toast(eid ? 'Product updated!' : 'Product added!');
+  clearProductForm();
+  renderProductList();
+}
+
+async function deleteProduct(id) {
+  if (!confirm('Delete this product? This cannot be undone.')) return;
+  const { error } = await window.db.from('products').delete().eq('id', id);
+  if (error) { toast(error.message, 'error'); return; }
+  toast('Product deleted.');
+  renderProductList();
+}
+
+async function editProduct(id) {
+  const { data, error } = await window.db.from('products').select('*').eq('id', id).single();
+  if (error || !data) { toast('Could not load product.', 'error'); return; }
+
+  clearProductForm();
+  _editingProductId = id;
+  document.getElementById('p-editing-id').value = id;
+  document.getElementById('p-name').value    = data.name || '';
+  document.getElementById('p-desc').value    = data.description || '';
+  document.getElementById('p-price').value   = data.price || '';
+  document.getElementById('p-stock').value   = data.stock || 'in';
+  document.getElementById('p-inventory').value = data.inventory || 0;
+  document.getElementById('p-featured').checked = !!data.featured;
+  document.getElementById('p-active').checked   = data.active !== false;
+
+  _productImages  = data.images || [];
+  _renderImagePreviews();
+
+  _selectedSizes = data.sizes || [];
+  const sizeWrap = document.getElementById('p-size-chips');
+  sizeWrap.querySelectorAll('.size-chip').forEach(chip => {
+    chip.classList.toggle('sel', _selectedSizes.includes(chip.dataset.size));
+  });
+  // Add any custom sizes not in presets
+  const presetSizes = ['XS','S','M','L','XL','XXL','One Size'];
+  _selectedSizes.filter(s => !presetSizes.includes(s)).forEach(s => {
+    if (!sizeWrap.querySelector(`[data-size="${s}"]`)) {
+      const chip = document.createElement('span');
+      chip.className = 'size-chip sel';
+      chip.dataset.size = s;
+      chip.textContent = s;
+      sizeWrap.appendChild(chip);
+    }
+  });
+
+  _selectedColls = data.collections || [];
+  _renderCollChipsUI();
+
+  document.getElementById('products-panel-title').textContent = 'Edit Product';
+  document.getElementById('product-form-heading').textContent = 'Edit Product';
+  document.getElementById('p-save-label').textContent = 'Save Changes';
+  document.getElementById('product-cancel-edit').style.display = 'block';
+
+  document.getElementById('panel-products').scrollIntoView({ behavior: 'smooth' });
+}
+
+function clearProductForm() {
+  _editingProductId = null;
+  _productImages = [];
+  _selectedSizes = [];
+  _selectedColls = [];
+  document.getElementById('p-editing-id').value = '';
+  ['p-name','p-desc','p-price'].forEach(id => { const el = document.getElementById(id); if (el) el.value = ''; });
+  const stockEl = document.getElementById('p-stock'); if (stockEl) stockEl.value = 'in';
+  const invEl   = document.getElementById('p-inventory'); if (invEl) invEl.value = '0';
+  const featEl  = document.getElementById('p-featured'); if (featEl) featEl.checked = false;
+  const actvEl  = document.getElementById('p-active'); if (actvEl) actvEl.checked = true;
+  const prevList = document.getElementById('p-img-preview-list'); if (prevList) prevList.innerHTML = '';
+  document.getElementById('p-upload-progress').textContent = '';
+  document.getElementById('p-size-chips').querySelectorAll('.size-chip').forEach(c => {
+    if (!['XS','S','M','L','XL','XXL','One Size'].includes(c.dataset.size)) c.remove();
+    else c.classList.remove('sel');
+  });
+  _renderCollChipsUI();
+  document.getElementById('products-panel-title').textContent = 'Manage Products';
+  document.getElementById('product-form-heading').textContent = 'Add New Product';
+  document.getElementById('p-save-label').textContent = 'Add Product';
+  document.getElementById('product-cancel-edit').style.display = 'none';
+}
+
+async function renderProductList() {
+  const el = document.getElementById('product-admin-list');
+  if (!el) return;
+  el.innerHTML = '<p style="font-size:0.82rem;color:var(--muted);padding:16px 0">Loading…</p>';
+  const { data, error } = await window.db.from('products').select('*').order('created_at', { ascending: false });
+  if (error) { el.innerHTML = `<p style="font-size:0.82rem;color:var(--red)">${error.message}</p>`; return; }
+  if (!data || !data.length) { el.innerHTML = '<p style="font-size:0.82rem;color:var(--muted);padding:16px 0">No products yet.</p>'; return; }
+  el.innerHTML = data.map(p => {
+    const thumb = (p.images && p.images[0])
+      ? `<img src="${p.images[0]}" alt="" style="width:100%;height:100%;object-fit:cover">`
+      : `<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#9bb8d8" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg></div>`;
+    return `
+    <div class="product-admin-row">
+      <div class="product-admin-thumb">${thumb}</div>
+      <div style="flex:1;min-width:0">
+        <div style="font-size:0.87rem;font-weight:600;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${p.name}</div>
+        <div style="font-size:0.74rem;color:var(--muted);margin-top:2px">$${parseFloat(p.price).toFixed(2)} · Inv: ${p.inventory ?? '—'}</div>
+        <div style="margin-top:4px;display:flex;gap:4px;flex-wrap:wrap">
+          <span class="stock-pill ${p.stock}">${p.stock === 'in' ? 'In Stock' : p.stock === 'low' ? 'Low Stock' : 'Sold Out'}</span>
+          ${!p.active ? '<span class="stock-pill" style="background:rgba(90,90,90,0.1);color:#555">Hidden</span>' : ''}
+          ${p.featured ? '<span class="stock-pill" style="background:rgba(29,79,161,0.1);color:var(--blue)">Featured</span>' : ''}
+        </div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:5px;flex-shrink:0">
+        <button class="btn-secondary" style="padding:5px 10px;font-size:0.72rem" onclick="editProduct('${p.id}')">Edit</button>
+        <button class="btn-danger" onclick="deleteProduct('${p.id}')">Delete</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+// ─────────────────────────────────────
+// PROMO BANNERS
+// ─────────────────────────────────────
+
+function updateBannerPreview() {
+  const title = document.getElementById('bn-title').value || 'Banner Title';
+  const sub   = document.getElementById('bn-sub').value;
+  const cta   = document.getElementById('bn-cta-text').value;
+  const bg    = document.getElementById('bn-bg').value;
+  const tc    = document.getElementById('bn-tc').value;
+  document.getElementById('bn-preview').style.background = bg;
+  document.getElementById('bn-preview-title').style.color = tc;
+  document.getElementById('bn-preview-title').textContent = title;
+  document.getElementById('bn-preview-sub').textContent  = sub;
+  document.getElementById('bn-preview-sub').style.color  = tc + 'cc';
+  const wrap = document.getElementById('bn-preview-cta-wrap');
+  if (cta) { wrap.style.display = 'block'; document.getElementById('bn-preview-cta').textContent = cta; }
+  else      { wrap.style.display = 'none'; }
+}
+
+function syncBannerColorFromPicker(type) {
+  if (type === 'bg') document.getElementById('bn-bg-text').value = document.getElementById('bn-bg').value;
+  else               document.getElementById('bn-tc-text').value = document.getElementById('bn-tc').value;
+}
+
+function syncBannerColor(type) {
+  const textEl   = document.getElementById(type === 'bg' ? 'bn-bg-text' : 'bn-tc-text');
+  const pickerEl = document.getElementById(type === 'bg' ? 'bn-bg'      : 'bn-tc');
+  const val = textEl.value.trim();
+  if (/^#[0-9a-fA-F]{6}$/.test(val)) { pickerEl.value = val; updateBannerPreview(); }
+}
+
+async function savePromoBanner() {
+  const title = document.getElementById('bn-title').value.trim();
+  if (!title) { toast('Banner title is required.', 'error'); return; }
+  const payload = {
+    id:         Date.now().toString(36) + Math.random().toString(36).slice(2),
+    title,
+    subtitle:   document.getElementById('bn-sub').value.trim(),
+    cta_text:   document.getElementById('bn-cta-text').value.trim(),
+    cta_url:    document.getElementById('bn-cta-url').value.trim(),
+    bg_color:   document.getElementById('bn-bg').value,
+    text_color: document.getElementById('bn-tc').value,
+    active:     true
+  };
+  const { error } = await window.db.from('promo_banners').insert(payload);
+  if (error) { toast(error.message, 'error'); return; }
+  toast('Banner added!');
+  clearBannerForm();
+  renderPromoList();
+}
+
+async function deletePromoBanner(id) {
+  if (!confirm('Delete this banner?')) return;
+  const { error } = await window.db.from('promo_banners').delete().eq('id', id);
+  if (error) { toast(error.message, 'error'); return; }
+  toast('Banner deleted.');
+  renderPromoList();
+}
+
+async function toggleBannerActive(id, current) {
+  const { error } = await window.db.from('promo_banners').update({ active: !current }).eq('id', id);
+  if (error) { toast(error.message, 'error'); return; }
+  renderPromoList();
+}
+
+async function renderPromoList() {
+  const el = document.getElementById('promo-admin-list');
+  if (!el) return;
+  el.innerHTML = '<p style="font-size:0.82rem;color:var(--muted)">Loading…</p>';
+  const { data, error } = await window.db.from('promo_banners').select('*').order('created_at', { ascending: false });
+  if (error) { el.innerHTML = `<p style="font-size:0.82rem;color:var(--red)">${error.message}</p>`; return; }
+  if (!data || !data.length) { el.innerHTML = '<p style="font-size:0.82rem;color:var(--muted)">No banners yet.</p>'; return; }
+  el.innerHTML = data.map(b => `
+    <div class="promo-admin-row">
+      <div class="promo-admin-bar" style="background:${b.bg_color}"></div>
+      <div class="promo-admin-info">
+        <div style="flex:1;min-width:0">
+          <div style="font-size:0.88rem;font-weight:600;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${b.title}</div>
+          ${b.subtitle ? `<div style="font-size:0.74rem;color:var(--muted)">${b.subtitle}</div>` : ''}
+        </div>
+        <label class="toggle-wrap" style="cursor:pointer;gap:6px">
+          <label class="toggle-switch" style="width:32px;height:18px">
+            <input type="checkbox" ${b.active ? 'checked' : ''} onchange="toggleBannerActive('${b.id}', ${b.active})" />
+            <span class="toggle-slider"></span>
+          </label>
+          <span style="font-size:0.72rem;color:var(--muted);white-space:nowrap">${b.active ? 'Live' : 'Hidden'}</span>
+        </label>
+        <button class="btn-danger" onclick="deletePromoBanner('${b.id}')">Delete</button>
+      </div>
+    </div>`).join('');
+}
+
+function clearBannerForm() {
+  ['bn-title','bn-sub','bn-cta-text','bn-cta-url'].forEach(id => { const el = document.getElementById(id); if(el) el.value = ''; });
+  document.getElementById('bn-bg').value = '#7a003c';
+  document.getElementById('bn-bg-text').value = '#7a003c';
+  document.getElementById('bn-tc').value = '#ffffff';
+  document.getElementById('bn-tc-text').value = '#ffffff';
+  updateBannerPreview();
 }
 
 // ── URL PARAM AUTO-OPEN ──

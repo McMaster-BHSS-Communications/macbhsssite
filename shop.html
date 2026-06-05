@@ -15,6 +15,9 @@
   <link rel="stylesheet" href="mobile-nav.css" />
   <!-- EmailJS — loaded before the page script so emailjs.init() is available -->
   <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+  <!-- Supabase — for products, collections, promo banners -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="supabase-client.js"></script>
   <style>
     /* ─────────────────────────────────────────────────────────────────────── */
     /* BASE — identical to all other BHSS pages                               */
@@ -511,6 +514,147 @@
       .cart-trigger { bottom: 16px; right: 16px; }
       .toast { bottom: 84px; right: 16px; left: 16px; max-width: unset; }
     }
+
+    /* ─────────────────────────────────────────────────────────────────────── */
+    /* PROMO BANNERS                                                            */
+    /* ─────────────────────────────────────────────────────────────────────── */
+    .promo-banners-wrap { display: flex; flex-direction: column; gap: 0; }
+    .promo-site-banner {
+      padding: 14px 60px; display: flex; align-items: center; justify-content: space-between;
+      gap: 16px; font-family: 'Inter', sans-serif;
+    }
+    .promo-site-banner-inner { max-width: 1140px; margin: 0 auto; width: 100%; display: flex; align-items: center; gap: 20px; }
+    .promo-site-title { font-family: 'Familjen Grotesk', sans-serif; font-size: 0.98rem; font-weight: 700; }
+    .promo-site-sub   { font-size: 0.8rem; opacity: 0.85; }
+    .promo-site-cta   { flex-shrink: 0; padding: 6px 16px; border: 1.5px solid currentColor; border-radius: 6px; font-size: 0.78rem; font-weight: 600; text-decoration: none; color: inherit; transition: background 0.15s, color 0.15s; white-space: nowrap; }
+    .promo-site-cta:hover { background: rgba(255,255,255,0.18); }
+    @media (max-width: 768px) {
+      .promo-site-banner { padding: 12px 24px; }
+      .promo-site-banner-inner { flex-direction: column; align-items: flex-start; gap: 8px; }
+    }
+
+    /* ─────────────────────────────────────────────────────────────────────── */
+    /* IMAGE CAROUSEL (within product card)                                    */
+    /* ─────────────────────────────────────────────────────────────────────── */
+    .img-carousel { position: relative; overflow: hidden; width: 100%; height: 100%; }
+    .img-carousel-track { display: flex; width: 100%; height: 100%; transition: transform 0.35s cubic-bezier(0.4,0,0.2,1); }
+    .img-carousel-track img { width: 100%; height: 100%; object-fit: cover; flex-shrink: 0; cursor: zoom-in; display: block; }
+    .carousel-btn {
+      position: absolute; top: 50%; transform: translateY(-50%);
+      background: rgba(255,255,255,0.9); border: 1px solid rgba(0,0,0,0.08);
+      border-radius: 50%; width: 30px; height: 30px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.1rem; font-weight: 700; color: var(--text);
+      cursor: pointer; z-index: 5; opacity: 0;
+      transition: opacity 0.2s, background 0.15s; line-height: 1;
+    }
+    .product-card:hover .carousel-btn { opacity: 1; }
+    .carousel-btn:hover { background: #fff; }
+    .carousel-prev { left: 8px; }
+    .carousel-next { right: 8px; }
+    .carousel-dots {
+      position: absolute; bottom: 8px; left: 0; right: 0;
+      display: flex; align-items: center; justify-content: center; gap: 5px; z-index: 5;
+    }
+    .cdot {
+      width: 6px; height: 6px; border-radius: 50%;
+      background: rgba(255,255,255,0.55); transition: background 0.2s, transform 0.2s;
+    }
+    .cdot.active { background: #fff; transform: scale(1.3); }
+    .carousel-placeholder {
+      width: 100%; height: 100%; display: flex; align-items: center; justify-content: center;
+      background: linear-gradient(135deg, var(--blue-pale) 0%, #c8d8f0 100%);
+      cursor: zoom-in;
+    }
+
+    /* ─────────────────────────────────────────────────────────────────────── */
+    /* LIGHTBOX                                                                 */
+    /* ─────────────────────────────────────────────────────────────────────── */
+    .lightbox-overlay {
+      display: none; position: fixed; inset: 0; z-index: 1200;
+      background: rgba(10,18,32,0.95);
+      align-items: center; justify-content: center;
+    }
+    .lightbox-overlay.open { display: flex; }
+    .lightbox-inner { position: relative; max-width: 90vw; max-height: 90vh; }
+    .lightbox-img { max-width: 90vw; max-height: 85vh; object-fit: contain; border-radius: 4px; display: block; }
+    .lightbox-close {
+      position: fixed; top: 20px; right: 24px;
+      background: rgba(255,255,255,0.12); border: 1px solid rgba(255,255,255,0.2);
+      border-radius: 50%; width: 40px; height: 40px;
+      display: flex; align-items: center; justify-content: center;
+      color: #fff; font-size: 1.2rem; cursor: pointer; z-index: 10; transition: background 0.15s;
+    }
+    .lightbox-close:hover { background: rgba(255,255,255,0.22); }
+    .lightbox-nav {
+      position: fixed; top: 50%; transform: translateY(-50%);
+      background: rgba(255,255,255,0.12); border: 1px solid rgba(255,255,255,0.2);
+      border-radius: 50%; width: 44px; height: 44px;
+      display: flex; align-items: center; justify-content: center;
+      color: #fff; font-size: 1.4rem; cursor: pointer; z-index: 10;
+      transition: background 0.15s; font-weight: 700; line-height: 1;
+    }
+    .lightbox-nav:hover { background: rgba(255,255,255,0.22); }
+    .lightbox-prev { left: 20px; }
+    .lightbox-next { right: 20px; }
+    .lightbox-counter {
+      position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%);
+      color: rgba(255,255,255,0.6); font-size: 0.8rem;
+    }
+
+    /* ─────────────────────────────────────────────────────────────────────── */
+    /* PURCHASE SUCCESS OVERLAY                                                 */
+    /* ─────────────────────────────────────────────────────────────────────── */
+    .purchase-success-overlay {
+      display: none; position: fixed; inset: 0; z-index: 1100;
+      background: rgba(10,18,32,0.88); backdrop-filter: blur(8px);
+      align-items: center; justify-content: center; padding: 24px;
+      overflow-y: auto;
+    }
+    .purchase-success-overlay.open { display: flex; }
+    .purchase-success-modal {
+      background: var(--white); border-radius: 20px;
+      width: 100%; max-width: 520px; margin: auto;
+      box-shadow: 0 40px 100px rgba(0,0,0,0.35);
+      animation: modalIn 0.32s cubic-bezier(0.34,1.56,0.64,1);
+      overflow: hidden;
+    }
+    .psc-header {
+      background: linear-gradient(135deg, #15803d 0%, #22c55e 100%);
+      padding: 32px 32px 24px; text-align: center; color: #fff;
+    }
+    .psc-check {
+      width: 64px; height: 64px; background: rgba(255,255,255,0.2);
+      border: 3px solid rgba(255,255,255,0.6); border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      margin: 0 auto 16px; font-size: 1.8rem;
+      animation: checkPop 0.5s cubic-bezier(0.34,1.56,0.64,1) forwards;
+    }
+    .psc-header h2 { font-family: 'Familjen Grotesk', sans-serif; font-size: 1.8rem; font-weight: 600; margin-bottom: 6px; }
+    .psc-header p  { font-size: 0.88rem; opacity: 0.9; line-height: 1.5; }
+    .psc-body { padding: 24px 28px 28px; }
+    .psc-order-id {
+      background: var(--blue-pale); border: 1px solid rgba(29,79,161,0.2);
+      border-radius: 10px; padding: 12px 16px; margin-bottom: 16px; text-align: center;
+    }
+    .psc-order-id .label { font-size: 0.68rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); margin-bottom: 4px; }
+    .psc-order-id .val { font-family: 'Familjen Grotesk', sans-serif; font-size: 1.4rem; font-weight: 600; color: var(--blue); letter-spacing: 0.05em; }
+    .psc-screenshot-prompt {
+      background: #fffbeb; border: 1.5px solid #fcd34d; border-radius: 10px;
+      padding: 14px 16px; margin-bottom: 16px; text-align: center;
+    }
+    .psc-screenshot-prompt p { font-size: 0.85rem; font-weight: 600; color: #92400e; }
+    .psc-screenshot-prompt small { font-size: 0.76rem; color: #b45309; }
+    .psc-items { background: var(--off); border: 1px solid var(--border); border-radius: 10px; padding: 14px 16px; margin-bottom: 20px; }
+    .psc-item-row { display: flex; justify-content: space-between; font-size: 0.83rem; color: var(--mid); margin-bottom: 6px; }
+    .psc-item-row:last-child { margin-bottom: 0; }
+    .psc-total-row { display: flex; justify-content: space-between; font-size: 0.9rem; font-weight: 600; color: var(--text); padding-top: 10px; margin-top: 8px; border-top: 1px solid var(--border); }
+    .psc-done-btn {
+      width: 100%; padding: 13px; background: var(--blue); color: #fff; border: none;
+      border-radius: 10px; font-family: 'Inter', sans-serif; font-size: 0.92rem; font-weight: 600;
+      cursor: pointer; transition: background 0.15s;
+    }
+    .psc-done-btn:hover { background: var(--blue-mid); }
   </style>
 </head>
 <body>
@@ -589,12 +733,12 @@
   <p>Rep your Health Sci pride. All proceeds go directly back to supporting BHSS programming and events.</p>
 </div>
 
-<!-- Filter Bar -->
-<div class="shop-filter-bar">
+<!-- Promo Banners (populated by JS) -->
+<div class="promo-banners-wrap" id="promoBannersWrap"></div>
+
+<!-- Filter Bar (built dynamically from collections) -->
+<div class="shop-filter-bar" id="shopFilterBar">
   <button class="shop-filter-btn active" data-filter="All">All Items</button>
-  <button class="shop-filter-btn" data-filter="Tops">Tops</button>
-  <button class="shop-filter-btn" data-filter="Accessories">Accessories</button>
-  <button class="shop-filter-btn" data-filter="New">Featured</button>
 </div>
 
 <!-- Product Grid -->
@@ -668,9 +812,9 @@
           <p class="field-hint">Use your @mcmaster.ca address. Order confirmation will be sent here.</p>
         </div>
         <div class="form-group">
-          <label for="buyerMacId">Mac ID — Last 4 Digits</label>
-          <input type="text" id="buyerMacId" placeholder="e.g. 7842" maxlength="4" inputmode="numeric" pattern="[0-9]{4}" />
-          <p class="field-hint">Used for order lookup only. We only need the last 4 digits of your student number.</p>
+          <label for="buyerMacId">Mac ID (Student Number)</label>
+          <input type="text" id="buyerMacId" placeholder="e.g. 400123456" maxlength="9" inputmode="numeric" pattern="[0-9]{7,9}" />
+          <p class="field-hint">Your full McMaster student ID number. Acts as a receipt identifier — BHSS will use this to verify your order.</p>
         </div>
         <div class="form-group">
           <label for="buyerNotes">Notes (optional)</label>
@@ -718,6 +862,40 @@
 <!-- Toast -->
 <div class="toast" id="toast" role="alert" aria-live="polite"></div>
 
+<!-- Lightbox -->
+<div class="lightbox-overlay" id="lightboxOverlay" onclick="closeLightboxOnOverlay(event)">
+  <button class="lightbox-close" id="lightboxClose" aria-label="Close">✕</button>
+  <button class="lightbox-nav lightbox-prev" id="lightboxPrev" aria-label="Previous">&#8249;</button>
+  <div class="lightbox-inner">
+    <img class="lightbox-img" id="lightboxImg" src="" alt="" />
+  </div>
+  <button class="lightbox-nav lightbox-next" id="lightboxNext" aria-label="Next">&#8250;</button>
+  <div class="lightbox-counter" id="lightboxCounter"></div>
+</div>
+
+<!-- Purchase Success Overlay -->
+<div class="purchase-success-overlay" id="purchaseSuccessOverlay">
+  <div class="purchase-success-modal">
+    <div class="psc-header">
+      <div class="psc-check">✓</div>
+      <h2>Order Submitted!</h2>
+      <p>Your order has been received. BHSS will reach out to <strong id="pscEmail"></strong> to confirm and arrange payment.</p>
+    </div>
+    <div class="psc-body">
+      <div class="psc-order-id">
+        <div class="label">Order Reference</div>
+        <div class="val" id="pscOrderId"></div>
+      </div>
+      <div class="psc-screenshot-prompt">
+        <p>📸 Please screenshot this page for your records</p>
+        <small>Save your order reference number — you'll need it to confirm payment with BHSS.</small>
+      </div>
+      <div class="psc-items" id="pscItems"></div>
+      <button class="psc-done-btn" onclick="closePurchaseSuccess()">Done — Continue Shopping</button>
+    </div>
+  </div>
+</div>
+
 <!-- Footer -->
 <footer>
   <div class="footer-top">
@@ -752,21 +930,242 @@
 <script>
 /* =============================================================================
    BHSS SHOP — JavaScript
-   All shop logic is here, before mobile-nav.js.
    ============================================================================= */
 
-// ── EMAILJS CONFIGURATION ────────────────────────────────────────────────────
-// After setting up EmailJS (emailjs.com), replace these placeholders:
-const EMAILJS_PUBLIC_KEY      = 'YOUR_PUBLIC_KEY';       // Account → API Keys
-const EMAILJS_SERVICE_ID      = 'YOUR_SERVICE_ID';       // Email Services
-const EMAILJS_TEMPLATE_BUYER  = 'YOUR_BUYER_TEMPLATE_ID'; // buyer confirmation
-const EMAILJS_TEMPLATE_ADMIN  = 'YOUR_ADMIN_TEMPLATE_ID'; // admin notification
+// ── EMAILJS CONFIGURATION ──────────────────────────────────────────────────
+const EMAILJS_PUBLIC_KEY      = 'YOUR_PUBLIC_KEY';
+const EMAILJS_SERVICE_ID      = 'YOUR_SERVICE_ID';
+const EMAILJS_TEMPLATE_BUYER  = 'YOUR_BUYER_TEMPLATE_ID';
+const EMAILJS_TEMPLATE_ADMIN  = 'YOUR_ADMIN_TEMPLATE_ID';
 const ADMIN_EMAIL             = 'bhsscom@mcmaster.ca';
-// ─────────────────────────────────────────────────────────────────────────────
+
+// ── GLOBAL STATE ──────────────────────────────────────────────────────────────
+let _activeFilter  = 'All';
+let _allProducts   = [];   // populated from Supabase (or fallback)
+let _lbImages      = [];   // current lightbox image list
+let _lbCurrent     = 0;    // current lightbox index
+
+// ── SUPABASE DATA FETCHING ────────────────────────────────────────────────────
+async function _fetchProducts() {
+  try {
+    const { data } = await window.db.from('products').select('*')
+      .eq('active', true)
+      .order('created_at', { ascending: false });
+    return data || [];
+  } catch { return []; }
+}
+
+async function _fetchCollections() {
+  try {
+    const { data } = await window.db.from('collections').select('*').order('name');
+    return data || [];
+  } catch { return []; }
+}
+
+async function _fetchBanners() {
+  try {
+    const { data } = await window.db.from('promo_banners').select('*')
+      .eq('active', true)
+      .order('created_at', { ascending: false });
+    return data || [];
+  } catch { return []; }
+}
+
+// ── PROMO BANNERS ─────────────────────────────────────────────────────────────
+function _renderBanners(banners) {
+  const wrap = document.getElementById('promoBannersWrap');
+  if (!banners.length) { wrap.innerHTML = ''; return; }
+  wrap.innerHTML = banners.map(b => `
+    <div class="promo-site-banner" style="background:${b.bg_color};color:${b.text_color}">
+      <div class="promo-site-banner-inner">
+        <div style="flex:1;min-width:0">
+          <span class="promo-site-title">${b.title}</span>
+          ${b.subtitle ? `<span class="promo-site-sub" style="margin-left:12px">${b.subtitle}</span>` : ''}
+        </div>
+        ${b.cta_text && b.cta_url ? `<a href="${b.cta_url}" class="promo-site-cta" style="color:${b.text_color};border-color:${b.text_color}">${b.cta_text}</a>` : ''}
+      </div>
+    </div>`).join('');
+}
+
+// ── FILTER BAR ────────────────────────────────────────────────────────────────
+function _buildFilterBar(collections) {
+  const bar = document.getElementById('shopFilterBar');
+  const filters = [
+    { label: 'All Items', value: 'All' },
+    ...collections.map(c => ({ label: c.name, value: 'coll:' + c.id })),
+    { label: 'Featured', value: 'Featured' }
+  ];
+  bar.innerHTML = filters.map((f, i) =>
+    `<button class="shop-filter-btn${i === 0 ? ' active' : ''}" data-filter="${f.value}">${f.label}</button>`
+  ).join('');
+  bar.querySelectorAll('.shop-filter-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      bar.querySelectorAll('.shop-filter-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      renderProducts(btn.dataset.filter);
+    });
+  });
+}
+
+// ── PRODUCT RENDERING ─────────────────────────────────────────────────────────
+function renderProducts(filter) {
+  _activeFilter = filter;
+  const grid = document.getElementById('productGrid');
+  const list = _allProducts.filter(p =>
+    filter === 'All'       ? true :
+    filter === 'Featured'  ? p.featured :
+    filter.startsWith('coll:') ? (p.collections || []).includes(filter.slice(5)) :
+    p.category === filter
+  );
+
+  if (!list.length) {
+    grid.innerHTML = `<div class="product-empty">
+      <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1">
+        <circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/>
+        <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/>
+      </svg>
+      <p>No items in this category yet — check back soon!</p>
+    </div>`;
+    return;
+  }
+
+  grid.innerHTML = list.map(_buildCard).join('');
+
+  grid.querySelectorAll('.add-to-cart[data-product-id]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const pid     = btn.dataset.productId;
+      const product = _allProducts.find(p => p.id === pid);
+      if (!product || product.stock === 'out') return;
+
+      const card     = btn.closest('.product-card');
+      const hasSizes = product.sizes && product.sizes.length > 0;
+      const chosen   = hasSizes ? card.querySelector('input[name="size-' + pid + '"]:checked') : null;
+
+      if (hasSizes && !chosen) {
+        const sel = card.querySelector('.size-selector');
+        sel.style.animation = 'none';
+        void sel.offsetHeight;
+        sel.style.animation = 'shakePulse 0.4s ease';
+        showToast('Please select a size', 'error');
+        return;
+      }
+
+      const thumb = (product.images && product.images[0]) || product.image || null;
+      cart.add(product, chosen ? chosen.value : null, thumb);
+      openCart();
+      showToast(product.name + ' added to cart ✓', 'success');
+    });
+  });
+}
+
+function _buildCard(p) {
+  const stockClass = p.stock === 'in' ? 'in' : p.stock === 'low' ? 'low' : 'out';
+  const stockLabel = p.stock === 'in' ? 'In Stock' : p.stock === 'low' ? 'Low Stock' : 'Sold Out';
+  const isOut      = p.stock === 'out';
+  const hasSizes   = p.sizes && p.sizes.length > 0;
+
+  // Normalise images: support both images[] (Supabase) and image (legacy)
+  const images = (p.images && p.images.length) ? p.images : (p.image ? [p.image] : []);
+
+  // Image carousel (or placeholder)
+  let imgHtml;
+  if (images.length) {
+    const tracksHtml = images.map((url, idx) =>
+      `<img src="${url}" alt="${p.name}" loading="lazy" onclick="openLightbox('${p.id}',${idx})" style="cursor:zoom-in">`
+    ).join('');
+    const navHtml = images.length > 1
+      ? `<button class="carousel-btn carousel-prev" onclick="carouselNav(event,'${p.id}',-1)" aria-label="Previous">&#8249;</button>
+         <button class="carousel-btn carousel-next" onclick="carouselNav(event,'${p.id}',1)"  aria-label="Next">&#8250;</button>
+         <div class="carousel-dots">${images.map((_,i) => `<span class="cdot${i===0?' active':''}"></span>`).join('')}</div>`
+      : '';
+    imgHtml = `<div class="img-carousel" id="car-${p.id}" data-current="0">
+      <div class="img-carousel-track">${tracksHtml}</div>
+      ${navHtml}
+    </div>`;
+  } else {
+    imgHtml = `<div class="carousel-placeholder" onclick="return false">
+      <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#8899bb" stroke-width="1">
+        <rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/>
+      </svg>
+    </div>`;
+  }
+
+  const sizesHtml = hasSizes
+    ? `<div class="size-selector">${p.sizes.map(s =>
+        `<input type="radio" name="size-${p.id}" id="sz-${p.id}-${s}" value="${s}"${isOut ? ' disabled' : ''}>
+         <label for="sz-${p.id}-${s}">${s}</label>`
+      ).join('')}</div>`
+    : '';
+
+  return `<div class="product-card">
+  <div class="product-img-wrap">
+    ${imgHtml}
+    <span class="stock-badge ${stockClass}">${stockLabel}</span>
+    ${p.featured ? '<span class="product-featured-pill">Featured</span>' : ''}
+  </div>
+  <div class="product-info">
+    <h3 class="product-name">${p.name}</h3>
+    <p class="product-desc">${p.description || ''}</p>
+    <div class="product-price"><sup>$</sup>${parseFloat(p.price).toFixed(2)}</div>
+    ${sizesHtml}
+  </div>
+  <button class="add-to-cart" data-product-id="${p.id}"${isOut ? ' disabled' : ''}>
+    ${isOut
+      ? 'Sold Out'
+      : `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg> Add to Cart`}
+  </button>
+</div>`;
+}
+
+// ── IMAGE CAROUSEL ────────────────────────────────────────────────────────────
+function carouselNav(e, productId, dir) {
+  e.stopPropagation();
+  const wrap  = document.getElementById('car-' + productId);
+  if (!wrap) return;
+  const track = wrap.querySelector('.img-carousel-track');
+  const imgs  = track.querySelectorAll('img');
+  let cur = parseInt(wrap.dataset.current) || 0;
+  cur = (cur + dir + imgs.length) % imgs.length;
+  wrap.dataset.current = cur;
+  track.style.transform = `translateX(-${cur * 100}%)`;
+  wrap.querySelectorAll('.cdot').forEach((d, i) => d.classList.toggle('active', i === cur));
+}
+
+// ── LIGHTBOX ──────────────────────────────────────────────────────────────────
+function openLightbox(productId, startIdx) {
+  const p = _allProducts.find(x => x.id === productId);
+  if (!p) return;
+  _lbImages  = (p.images && p.images.length) ? p.images : (p.image ? [p.image] : []);
+  if (!_lbImages.length) return;
+  _lbCurrent = startIdx || 0;
+  _refreshLightbox();
+  document.getElementById('lightboxOverlay').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function _refreshLightbox() {
+  document.getElementById('lightboxImg').src        = _lbImages[_lbCurrent];
+  document.getElementById('lightboxCounter').textContent = _lbImages.length > 1 ? (_lbCurrent + 1) + ' / ' + _lbImages.length : '';
+  document.getElementById('lightboxPrev').style.display = _lbImages.length > 1 ? '' : 'none';
+  document.getElementById('lightboxNext').style.display = _lbImages.length > 1 ? '' : 'none';
+}
+
+function lightboxNav(dir) {
+  _lbCurrent = (_lbCurrent + dir + _lbImages.length) % _lbImages.length;
+  _refreshLightbox();
+}
+
+function closeLightbox() {
+  document.getElementById('lightboxOverlay').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+function closeLightboxOnOverlay(e) {
+  if (e.target === e.currentTarget) closeLightbox();
+}
 
 
 // ── CART STATE ────────────────────────────────────────────────────────────────
-// cart.items = [{ key, productId, name, price, size, qty, image }]
 const cart = {
   items: [],
 
@@ -781,23 +1180,16 @@ const cart = {
     try { sessionStorage.setItem('bhss_cart', JSON.stringify(this.items)); } catch (e) {}
   },
 
-  add(product, size, qty = 1) {
-    const key = product.id + '__' + (size || 'nosize');
-    const existing = this.items.find(i => i.key === key);
-    if (existing) {
-      existing.qty += qty;
-    } else {
-      this.items.push({ key, productId: product.id, name: product.name, price: product.price, size: size || null, qty, image: product.image || null });
-    }
-    this._save();
-    _renderCart();
-    _updateTrigger();
-  },
-
-  remove(key) {
-    this.items = this.items.filter(i => i.key !== key);
+  add(product, size, thumbOverride) {
+    const key   = product.id + '__' + (size || 'nosize');
+    const exist = this.items.find(i => i.key === key);
+    const img   = thumbOverride || (product.images && product.images[0]) || product.image || null;
+    if (exist) { exist.qty++; }
+    else        { this.items.push({ key, productId: product.id, name: product.name, price: product.price, size: size || null, qty: 1, image: img }); }
     this._save(); _renderCart(); _updateTrigger();
   },
+
+  remove(key) { this.items = this.items.filter(i => i.key !== key); this._save(); _renderCart(); _updateTrigger(); },
 
   setQty(key, qty) {
     if (qty <= 0) { this.remove(key); return; }
@@ -826,98 +1218,6 @@ function _saveOrder(order) {
   try { orders = JSON.parse(localStorage.getItem('bhss_orders') || '[]'); } catch (e) {}
   orders.unshift(order);
   try { localStorage.setItem('bhss_orders', JSON.stringify(orders)); } catch (e) {}
-}
-
-
-// ── PRODUCT RENDERING ─────────────────────────────────────────────────────────
-let _activeFilter = 'All';
-
-function renderProducts(filter) {
-  _activeFilter = filter;
-  const grid = document.getElementById('productGrid');
-  const all  = window.BHSS_PRODUCTS || [];
-  const list = all.filter(p =>
-    filter === 'All'  ? true :
-    filter === 'New'  ? p.featured :
-    p.category === filter
-  );
-
-  if (!list.length) {
-    grid.innerHTML = `<div class="product-empty">
-      <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1">
-        <circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/>
-        <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/>
-      </svg>
-      <p>No items in this category yet — check back soon!</p>
-    </div>`;
-    return;
-  }
-
-  grid.innerHTML = list.map(_buildCard).join('');
-
-  // Wire Add to Cart buttons
-  grid.querySelectorAll('.add-to-cart[data-product-id]').forEach(btn => {
-    btn.addEventListener('click', () => {
-      const pid     = btn.dataset.productId;
-      const product = (window.BHSS_PRODUCTS || []).find(p => p.id === pid);
-      if (!product || product.stock === 'out') return;
-
-      const card     = btn.closest('.product-card');
-      const hasSizes = product.sizes && product.sizes.length > 0;
-      const chosen   = hasSizes ? card.querySelector('input[name="size-' + pid + '"]:checked') : null;
-
-      if (hasSizes && !chosen) {
-        const sel = card.querySelector('.size-selector');
-        sel.style.animation = 'none';
-        void sel.offsetHeight; // force reflow
-        sel.style.animation = 'shakePulse 0.4s ease';
-        showToast('Please select a size', 'error');
-        return;
-      }
-
-      cart.add(product, chosen ? chosen.value : null);
-      openCart();
-      showToast(product.name + ' added to cart ✓', 'success');
-    });
-  });
-}
-
-function _buildCard(p) {
-  const stockClass = p.stock === 'in' ? 'in' : p.stock === 'low' ? 'low' : 'out';
-  const stockLabel = p.stock === 'in' ? 'In Stock' : p.stock === 'low' ? 'Low Stock' : 'Sold Out';
-  const isOut      = p.stock === 'out';
-  const hasSizes   = p.sizes && p.sizes.length > 0;
-
-  const imgInner = p.image
-    ? `<img src="${p.image}" alt="${p.name}" loading="lazy"
-         onerror="this.replaceWith(Object.assign(document.createElement('div'),{className:'product-img-placeholder',innerHTML:'<svg width=40 height=40 viewBox=\\'0 0 24 24\\' fill=none stroke=\\'#8899bb\\' stroke-width=1><rect x=3 y=3 width=18 height=18 rx=2/><circle cx=8.5 cy=8.5 r=1.5/><polyline points=\\'21 15 16 10 5 21\\'/></svg>'}))">`
-    : `<div class="product-img-placeholder"><svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#8899bb" stroke-width="1"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg></div>`;
-
-  const sizesHtml = hasSizes
-    ? `<div class="size-selector">${p.sizes.map(s =>
-        `<input type="radio" name="size-${p.id}" id="sz-${p.id}-${s}" value="${s}"${isOut ? ' disabled' : ''}>
-         <label for="sz-${p.id}-${s}">${s}</label>`
-      ).join('')}</div>`
-    : '';
-
-  return `<div class="product-card">
-  <div class="product-img-wrap">
-    ${imgInner}
-    <span class="stock-badge ${stockClass}">${stockLabel}</span>
-    ${p.featured ? '<span class="product-featured-pill">Featured</span>' : ''}
-  </div>
-  <div class="product-info">
-    <h3 class="product-name">${p.name}</h3>
-    <p class="product-desc">${p.description}</p>
-    <div class="product-price"><sup>$</sup>${p.price.toFixed(2)}</div>
-    ${sizesHtml}
-  </div>
-  <button class="add-to-cart" data-product-id="${p.id}"${isOut ? ' disabled' : ''}>
-    ${isOut
-      ? 'Sold Out'
-      : `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg> Add to Cart`}
-  </button>
-</div>`;
 }
 
 
@@ -995,8 +1295,6 @@ function closeCart() {
 // ── CHECKOUT MODAL ────────────────────────────────────────────────────────────
 function openCheckout() {
   closeCart();
-
-  // Populate summary
   const summary = document.getElementById('checkoutSummary');
   summary.innerHTML = `<h3>Order Summary</h3>
     ${cart.items.map(i => `
@@ -1007,18 +1305,35 @@ function openCheckout() {
     <hr class="checkout-summary-divider">
     <div class="checkout-summary-total"><span>Total</span><span>$${cart.total.toFixed(2)}</span></div>`;
 
-  // Reset to form view
   document.getElementById('checkoutFormView').style.display = 'block';
   document.getElementById('confirmationScreen').classList.remove('visible');
   document.getElementById('checkoutModalTitle').textContent = 'Complete Your Order';
   ['buyerName','buyerEmail','buyerMacId','buyerNotes'].forEach(id => { document.getElementById(id).value = ''; });
-
   document.getElementById('checkoutBackdrop').classList.add('open');
   document.body.style.overflow = 'hidden';
 }
+
 function closeCheckout() {
   document.getElementById('checkoutBackdrop').classList.remove('open');
   document.body.style.overflow = '';
+}
+
+
+// ── PURCHASE SUCCESS ──────────────────────────────────────────────────────────
+function openPurchaseSuccess(orderId, email, items, total) {
+  document.getElementById('pscOrderId').textContent = orderId;
+  document.getElementById('pscEmail').textContent   = email;
+  document.getElementById('pscItems').innerHTML =
+    items.map(i => `<div class="psc-item-row"><span>${i.name}${i.size ? ' (' + i.size + ')' : ''} × ${i.qty}</span><span>$${(i.price * i.qty).toFixed(2)}</span></div>`).join('') +
+    `<div class="psc-total-row"><span>Total</span><span>$${total}</span></div>`;
+  document.getElementById('purchaseSuccessOverlay').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function closePurchaseSuccess() {
+  document.getElementById('purchaseSuccessOverlay').classList.remove('open');
+  document.body.style.overflow = '';
+  renderProducts(_activeFilter);
 }
 
 
@@ -1040,86 +1355,48 @@ document.getElementById('checkoutSubmitBtn').addEventListener('click', async () 
   const macId = document.getElementById('buyerMacId').value.trim();
   const notes = document.getElementById('buyerNotes').value.trim();
 
-  if (!name)                         { showToast('Please enter your name', 'error');         document.getElementById('buyerName').focus();   return; }
-  if (!email || !email.includes('@')){ showToast('Please enter a valid email', 'error');     document.getElementById('buyerEmail').focus();  return; }
-  if (!/^\d{4}$/.test(macId))        { showToast('Enter the last 4 digits of your Mac ID', 'error'); document.getElementById('buyerMacId').focus();  return; }
+  if (!name)                          { showToast('Please enter your name', 'error');          document.getElementById('buyerName').focus();  return; }
+  if (!email || !email.includes('@')) { showToast('Please enter a valid email', 'error');      document.getElementById('buyerEmail').focus(); return; }
+  if (!/^\d{7,9}$/.test(macId))       { showToast('Enter your full Mac ID (7–9 digits)', 'error'); document.getElementById('buyerMacId').focus(); return; }
 
   const orderId   = _generateOrderId();
-  const itemsText = cart.items.map(i => `${i.name}${i.size ? ' (' + i.size + ')' : ''} ×${i.qty} — $${(i.price * i.qty).toFixed(2)}`).join('\n');
+  const itemsSnap = [...cart.items];
   const total     = cart.total.toFixed(2);
+  const itemsText = itemsSnap.map(i => `${i.name}${i.size ? ' (' + i.size + ')' : ''} ×${i.qty} — $${(i.price * i.qty).toFixed(2)}`).join('\n');
 
   const btn = document.getElementById('checkoutSubmitBtn');
-  btn.disabled  = true;
+  btn.disabled = true;
   btn.classList.add('loading');
 
-  // ── EmailJS send ──────────────────────────────────────────────────────────
-  // Remove the guard below and fill in EMAILJS_* constants above to enable.
+  // EmailJS
   const emailJsConfigured = EMAILJS_PUBLIC_KEY !== 'YOUR_PUBLIC_KEY';
-
   if (emailJsConfigured) {
     try {
       emailjs.init(EMAILJS_PUBLIC_KEY);
-      const params = {
-        to_name:      name,
-        to_email:     email,
-        order_id:     orderId,
-        items_list:   itemsText,
-        order_total:  '$' + total,
-        mac_id_last4: macId,
-        buyer_notes:  notes || 'None',
-        admin_email:  ADMIN_EMAIL
-      };
+      const params = { to_name: name, to_email: email, order_id: orderId, items_list: itemsText, order_total: '$' + total, mac_id: macId, buyer_notes: notes || 'None', admin_email: ADMIN_EMAIL };
       await emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_BUYER, { ...params, to_email: email });
       await emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ADMIN, { ...params, to_email: ADMIN_EMAIL });
-    } catch (err) {
-      console.warn('EmailJS failed — order still recorded locally.', err);
-    }
+    } catch (err) { console.warn('EmailJS failed — order still recorded.', err); }
   }
-  // ─────────────────────────────────────────────────────────────────────────
 
-  // Save order to localStorage
-  _saveOrder({ orderId, name, email, macId, notes, items: [...cart.items], total: cart.total, submittedAt: new Date().toISOString(), status: 'pending' });
-
-  // Show confirmation screen
-  document.getElementById('checkoutFormView').style.display = 'none';
-  document.getElementById('confirmationScreen').classList.add('visible');
-  document.getElementById('checkoutModalTitle').textContent = 'Order Confirmed';
-  document.getElementById('confirmOrderId').textContent = orderId;
-  document.getElementById('confirmEmailDisplay').textContent = email;
-
-  document.getElementById('confirmItemsSummary').innerHTML =
-    cart.items.map(i => `<div class="confirm-item-row"><span>${i.name}${i.size ? ' (' + i.size + ')' : ''} × ${i.qty}</span><span>$${(i.price * i.qty).toFixed(2)}</span></div>`).join('') +
-    `<div class="confirm-total-row"><span>Total</span><span>$${total}</span></div>`;
-
-  cart.clear();
+  _saveOrder({ orderId, name, email, macId, notes, items: itemsSnap, total: cart.total, submittedAt: new Date().toISOString(), status: 'pending' });
 
   btn.disabled = false;
   btn.classList.remove('loading');
 
-  // NOTE — Phase 2 Stripe upgrade:
-  // Replace the EmailJS block and _saveOrder call above with:
-  //
-  //   const res = await fetch('/.netlify/functions/create-checkout', {
-  //     method: 'POST',
-  //     headers: { 'Content-Type': 'application/json' },
-  //     body: JSON.stringify({ items: cart.items, buyerEmail: email, buyerName: name, macId, notes })
-  //   });
-  //   const { url } = await res.json();
-  //   window.location.href = url;  // Stripe Checkout handles everything from here
+  // Close checkout modal, clear cart, show purchase success overlay
+  closeCheckout();
+  cart.clear();
+  openPurchaseSuccess(orderId, email, itemsSnap, total);
 });
 
 
-// ── FILTER BAR ────────────────────────────────────────────────────────────────
-document.querySelectorAll('.shop-filter-btn').forEach(btn => {
-  btn.addEventListener('click', () => {
-    document.querySelectorAll('.shop-filter-btn').forEach(b => b.classList.remove('active'));
-    btn.classList.add('active');
-    renderProducts(btn.dataset.filter);
-  });
-});
+// ── LIGHTBOX EVENT WIRING ─────────────────────────────────────────────────────
+document.getElementById('lightboxClose').addEventListener('click', closeLightbox);
+document.getElementById('lightboxPrev').addEventListener('click', () => lightboxNav(-1));
+document.getElementById('lightboxNext').addEventListener('click', () => lightboxNav(1));
 
-
-// ── EVENT WIRING ──────────────────────────────────────────────────────────────
+// ── MAIN EVENT WIRING ────────────────────────────────────────────────────────
 document.getElementById('cartTrigger').addEventListener('click', openCart);
 document.getElementById('cartClose').addEventListener('click', closeCart);
 document.getElementById('cartOverlay').addEventListener('click', closeCart);
@@ -1128,28 +1405,42 @@ document.getElementById('checkoutModalClose').addEventListener('click', closeChe
 document.getElementById('checkoutBackdrop').addEventListener('click', e => { if (e.target === e.currentTarget) closeCheckout(); });
 document.getElementById('confirmCloseBtn').addEventListener('click', () => { closeCheckout(); renderProducts(_activeFilter); });
 document.addEventListener('keydown', e => {
-  if (e.key === 'Escape') { closeCart(); closeCheckout(); }
+  if (e.key === 'Escape') { closeCart(); closeCheckout(); closeLightbox(); }
+  if (e.key === 'ArrowLeft')  { if (document.getElementById('lightboxOverlay').classList.contains('open')) lightboxNav(-1); }
+  if (e.key === 'ArrowRight') { if (document.getElementById('lightboxOverlay').classList.contains('open')) lightboxNav(1); }
 });
 
 // Handle Stripe success redirect (Phase 2)
 (function () {
   const p = new URLSearchParams(window.location.search);
-  if (p.get('order') === 'success') {
-    showToast('Payment received! Check your email for confirmation.', 'success');
-    history.replaceState({}, '', window.location.pathname);
-  }
-  if (p.get('order') === 'cancelled') {
-    showToast('Checkout cancelled — your cart is still here.', 'error');
-    history.replaceState({}, '', window.location.pathname);
-  }
+  if (p.get('order') === 'success') { showToast('Payment received! Check your email for confirmation.', 'success'); history.replaceState({}, '', window.location.pathname); }
+  if (p.get('order') === 'cancelled') { showToast('Checkout cancelled — your cart is still here.', 'error'); history.replaceState({}, '', window.location.pathname); }
 })();
 
 
 // ── INIT ──────────────────────────────────────────────────────────────────────
-cart.init();
-renderProducts('All');
-_renderCart();
-_updateTrigger();
+(async function initShop() {
+  // Show loading skeleton
+  document.getElementById('productGrid').innerHTML =
+    '<div class="product-empty"><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg><p>Loading products…</p></div>';
+
+  const [products, collections, banners] = await Promise.all([
+    _fetchProducts(),
+    _fetchCollections(),
+    _fetchBanners()
+  ]);
+
+  // Use Supabase products if available, otherwise fall back to static shop-data.js
+  _allProducts = products.length ? products : (window.BHSS_PRODUCTS || []);
+
+  _renderBanners(banners);
+  _buildFilterBar(collections);
+
+  cart.init();
+  renderProducts('All');
+  _renderCart();
+  _updateTrigger();
+})();
 </script>
 
 <script src="mobile-nav.js"></script>
