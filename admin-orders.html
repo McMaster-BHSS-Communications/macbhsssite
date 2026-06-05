@@ -33,7 +33,7 @@
     /* ── LOGIN GATE ── */
     #loginGate {
       min-height: 100vh; display: flex; align-items: center; justify-content: center;
-      background: var(--dark);
+      background: var(--dark); position: relative;
     }
     .login-box {
       background: var(--white); border-radius: 16px; padding: 40px 36px;
@@ -187,6 +187,10 @@
 
 <!-- Login Gate -->
 <div id="loginGate">
+  <a href="index.html" style="position:absolute;top:24px;left:28px;display:inline-flex;align-items:center;gap:7px;color:rgba(255,255,255,0.55);font-size:0.82rem;font-weight:500;text-decoration:none;transition:color 0.15s" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,0.55)'">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+    Back to Site
+  </a>
   <div class="login-box">
     <img src="assets/images/BHSSshield_100x97.png" alt="BHSS Logo" onerror="this.style.display='none'">
     <h1>BHSS Admin</h1>
@@ -210,6 +214,7 @@
         <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
         Export CSV
       </button>
+      <a href="admin.html" class="btn-solid">← BHSS Admin</a>
       <a href="shop.html" class="btn-outline">← Back to Shop</a>
       <button class="btn-outline" id="logoutBtn">Sign Out</button>
     </div>
@@ -279,6 +284,15 @@
       </div>
     </div>
 
+    <!-- Item Revenue Breakdown -->
+    <div style="margin-top:36px">
+      <div class="toolbar" style="margin-bottom:14px">
+        <h2>Revenue Breakdown by Item</h2>
+        <span style="font-size:0.8rem;color:var(--muted)">Non-cancelled orders only</span>
+      </div>
+      <div id="itemBreakdown"></div>
+    </div>
+
   </div><!-- /main -->
 </div><!-- /app -->
 
@@ -345,6 +359,54 @@ let _allOrders = [];
 function loadOrders() {
   _allOrders = getOrders();
   applyFilters();
+  renderItemBreakdown();
+}
+
+function renderItemBreakdown() {
+  const el = document.getElementById('itemBreakdown');
+  if (!el) return;
+  const orders = _allOrders.filter(o => o.status !== 'cancelled');
+  const map = {};
+  orders.forEach(o => {
+    (o.items || []).forEach(item => {
+      const key = item.name + (item.size ? ` (${item.size})` : '');
+      if (!map[key]) map[key] = { name: key, units: 0, revenue: 0 };
+      map[key].units   += (item.qty || 1);
+      map[key].revenue += (item.price || 0) * (item.qty || 1);
+    });
+  });
+  const rows = Object.values(map).sort((a, b) => b.revenue - a.revenue);
+  if (!rows.length) {
+    el.innerHTML = '<p style="font-size:0.82rem;color:var(--muted);padding:16px 0">No item data yet — orders will appear here once placed.</p>';
+    return;
+  }
+  const totalRev   = rows.reduce((s, r) => s + r.revenue, 0);
+  const totalUnits = rows.reduce((s, r) => s + r.units, 0);
+  el.innerHTML = `
+    <div class="table-wrap">
+      <table>
+        <thead><tr>
+          <th>Item</th>
+          <th style="text-align:right">Units Sold</th>
+          <th style="text-align:right">Revenue</th>
+          <th style="text-align:right">% of Total</th>
+        </tr></thead>
+        <tbody>
+          ${rows.map(r => `<tr>
+            <td class="td-name">${_esc(r.name)}</td>
+            <td style="text-align:right">${r.units}</td>
+            <td class="td-total" style="text-align:right">$${r.revenue.toFixed(2)}</td>
+            <td class="td-date" style="text-align:right">${totalRev > 0 ? Math.round(r.revenue / totalRev * 100) : 0}%</td>
+          </tr>`).join('')}
+          <tr style="background:var(--off);font-weight:700">
+            <td>Total</td>
+            <td style="text-align:right">${totalUnits}</td>
+            <td class="td-total" style="text-align:right;color:var(--blue)">$${totalRev.toFixed(2)}</td>
+            <td></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>`;
 }
 
 function applyFilters() {

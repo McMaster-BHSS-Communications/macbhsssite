@@ -334,7 +334,7 @@
 
     /* ─── FOOTER ─── */
     footer { background: var(--dark); color: rgba(255,255,255,0.55); padding: 48px 60px 40px; }
-    .footer-top { display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 40px; margin-bottom: 40px; }
+    .footer-top { display: grid; grid-template-columns: 1.5fr 1fr 1fr 1.5fr 0.6fr; gap: 40px; margin-bottom: 40px; }
     .footer-brand p.pre { font-size: 0.6rem; font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase; color: rgba(255,255,255,0.35); margin-bottom: 4px; }
     .footer-brand h3 { font-family: 'Familjen Grotesk', serif; font-size: 1.25rem; font-weight: 600; color: var(--white); line-height: 1.25; margin-bottom: 14px; }
     .footer-brand .desc { font-size: 0.76rem; line-height: 1.65; color: rgba(255,255,255,0.4); }
@@ -399,15 +399,15 @@
       <a href="committees.html" class="active">Committees</a>
       <div class="drop">
         <a href="committees.html">All Committees</a>
+        <a href="committeepages/chr_committee.html">Chair</a>
         <a href="committeepages/aca_committee.html">Academics</a>
-        <a href="committeepages/soc_committee.html">Social</a>
-        <a href="committeepages/int_committee.html">Internal</a>
+        <a href="committeepages/com_committee.html">Communications</a>
+        <a href="committeepages/edi_committee.html">Equity, Diversity &amp; Inclusion</a>
         <a href="committeepages/ext_committee.html">External</a>
         <a href="committeepages/fin_committee.html">Financial</a>
+        <a href="committeepages/int_committee.html">Internal</a>
         <a href="committeepages/log_committee.html">Logistics &amp; Elections</a>
-        <a href="committeepages/com_committee.html">Communications</a>
-        <a href="committeepages/chr_committee.html">Chair</a>
-        <a href="committeepages/edi_committee.html">Equity, Diversity & Inclusion</a>
+        <a href="committeepages/soc_committee.html">Social</a>
         <a href="committeepages/wwc_committee.html">Welcome Week</a>
         <div class="has-sidedrop">
           <a href="#">Year Councils</a>
@@ -449,15 +449,15 @@
 <div class="filter-bar-wrap">
   <div class="filter-bar" id="filterBar">
     <a class="filter-btn active" href="committees.html" style="--c:#1d4fa1">All</a>
+    <a class="filter-btn" href="committeepages/chr_committee.html" style="--c:#0DABDC">Chair</a>
     <a class="filter-btn" href="committeepages/aca_committee.html" style="--c:#293593">Academics</a>
-    <a class="filter-btn" href="committeepages/soc_committee.html" style="--c:#DD1084">Social</a>
-    <a class="filter-btn" href="committeepages/int_committee.html" style="--c:#F58120">Internal</a>
+    <a class="filter-btn" href="committeepages/com_committee.html" style="--c:#13A89E">Communications</a>
+    <a class="filter-btn" href="committeepages/edi_committee.html" style="--c:#6A2C8F">EDI</a>
     <a class="filter-btn" href="committeepages/ext_committee.html" style="--c:#EE2824">External</a>
     <a class="filter-btn" href="committeepages/fin_committee.html" style="--c:#46B749">Financial</a>
+    <a class="filter-btn" href="committeepages/int_committee.html" style="--c:#F58120">Internal</a>
     <a class="filter-btn" href="committeepages/log_committee.html" style="--c:#181718">Logistics</a>
-    <a class="filter-btn" href="committeepages/com_committee.html" style="--c:#13A89E">Communications</a>
-    <a class="filter-btn" href="committeepages/chr_committee.html" style="--c:#0DABDC">Chair</a>
-    <a class="filter-btn" href="committeepages/edi_committee.html" style="--c:#6A2C8F">EDI</a>
+    <a class="filter-btn" href="committeepages/soc_committee.html" style="--c:#DD1084">Social</a>
     <a class="filter-btn" href="committeepages/wwc_committee.html" style="--c:#1a90c9">Welcome Week</a>
     <a class="filter-btn" href="committeepages/fyc_committee.html" style="--c:#4DAADC">FYC</a>
     <a class="filter-btn" href="committeepages/syc_committee.html" style="--c:#449BD4">SYC</a>
@@ -469,9 +469,27 @@
 <!-- Committees Section -->
 <div class="committees-section">
 
-  <!-- Core Committees -->
+  <!-- Core Committees — Chair first, then alphabetical -->
   <p class="group-label">Core Committees</p>
   <div class="card-grid cols-4">
+
+    <!-- Chair -->
+    <div class="comm-card">
+      <div class="comm-card-banner">
+        <img src="assets/images/committee_titles/chr_title.png" alt="Chair banner" />
+        <div class="comm-card-banner-overlay"></div>
+      </div>
+      <div class="comm-card-body">
+        <div class="comm-card-title">Chair</div>
+        <p class="comm-card-desc">The Chair is responsible for organizing and coordinating the entire BHSS, working with other student groups and faculty within and outside of the BHSS.<br><br>The current BHSS Chair is Dania Ihsan.</p>
+        <div class="comm-card-ig">
+          <a href="#" target="_blank" aria-label="Chair Instagram">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="2" y="2" width="20" height="20" rx="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
+          </a>
+        </div>
+        <a class="comm-card-btn" href="committeepages/chr_committee.html">See More</a>
+      </div>
+    </div>
 
     <!-- Academics -->
     <div class="comm-card">
@@ -487,97 +505,7 @@
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="2" y="2" width="20" height="20" rx="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
           </a>
         </div>
-        <a class="comm-card-btn" href="#">See More</a>
-      </div>
-    </div>
-
-    <!-- Social -->
-    <div class="comm-card">
-      <div class="comm-card-banner">
-        <img src="assets/images/committee_titles/soc_title.png" alt="Social banner" />
-        <div class="comm-card-banner-overlay"></div>
-      </div>
-      <div class="comm-card-body">
-        <div class="comm-card-title">Social</div>
-        <p class="comm-card-desc">The Social Committee is responsible for organizing events, gatherings and formals, within BHSS and with other programs.<br><br>Socials is led by Valerie Han and Bonnie Wen.</p>
-        <div class="comm-card-ig">
-          <a href="#" target="_blank" aria-label="Social Instagram">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="2" y="2" width="20" height="20" rx="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
-          </a>
-        </div>
-        <a class="comm-card-btn" href="#">See More</a>
-      </div>
-    </div>
-
-    <!-- Internal -->
-    <div class="comm-card">
-      <div class="comm-card-banner">
-        <img src="assets/images/committee_titles/int_title.png" alt="Internal banner" />
-        <div class="comm-card-banner-overlay"></div>
-      </div>
-      <div class="comm-card-body">
-        <div class="comm-card-title">Internal</div>
-        <p class="comm-card-desc">The Internal Committee is responsible for buddy matching, social events and initiatives within the BHSS.<br><br>Internal is led by Haram Akram.</p>
-        <div class="comm-card-ig">
-          <a href="#" target="_blank" aria-label="Internal Instagram">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="2" y="2" width="20" height="20" rx="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
-          </a>
-        </div>
-        <a class="comm-card-btn" href="#">See More</a>
-      </div>
-    </div>
-
-    <!-- External -->
-    <div class="comm-card">
-      <div class="comm-card-banner">
-        <img src="assets/images/committee_titles/ext_title.png" alt="External banner" />
-        <div class="comm-card-banner-overlay"></div>
-      </div>
-      <div class="comm-card-body">
-        <div class="comm-card-title">External</div>
-        <p class="comm-card-desc">The External Committee is responsible for initiatives like HouseMatch, outreach, and inter-program events.<br><br>External is led by Hisham Sayed.</p>
-        <div class="comm-card-ig">
-          <a href="#" target="_blank" aria-label="External Instagram">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="2" y="2" width="20" height="20" rx="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
-          </a>
-        </div>
-        <a class="comm-card-btn" href="#">See More</a>
-      </div>
-    </div>
-
-    <!-- Financial -->
-    <div class="comm-card">
-      <div class="comm-card-banner">
-        <img src="assets/images/committee_titles/fin_title.png" alt="Financial banner" />
-        <div class="comm-card-banner-overlay"></div>
-      </div>
-      <div class="comm-card-body">
-        <div class="comm-card-title">Financial</div>
-        <p class="comm-card-desc">The Financial Committee is responsible for the procurement and distribution of funds across the BHSS and our affiliates throughout the school year.<br><br>Financial is led by Ashley Qian.</p>
-        <div class="comm-card-ig">
-          <a href="#" target="_blank" aria-label="Financial Instagram">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="2" y="2" width="20" height="20" rx="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
-          </a>
-        </div>
-        <a class="comm-card-btn" href="#">See More</a>
-      </div>
-    </div>
-
-    <!-- Elections & Logistics -->
-    <div class="comm-card">
-      <div class="comm-card-banner">
-        <img src="assets/images/committee_titles/log_title.png" alt="Elections & Logistics banner" />
-        <div class="comm-card-banner-overlay"></div>
-      </div>
-      <div class="comm-card-body">
-        <div class="comm-card-title">Elections and Logistics</div>
-        <p class="comm-card-desc">The Elections and Logistics Committee is responsible for managing BHSS logistics, as well as organizing elections throughout the school year.<br><br>Elections and Logistics is led by Graham Dinniwell and Bashar Alobeid.</p>
-        <div class="comm-card-ig">
-          <a href="#" target="_blank" aria-label="Logistics Instagram">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="2" y="2" width="20" height="20" rx="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
-          </a>
-        </div>
-        <a class="comm-card-btn" href="#">See More</a>
+        <a class="comm-card-btn" href="committeepages/aca_committee.html">See More</a>
       </div>
     </div>
 
@@ -595,35 +523,11 @@
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="2" y="2" width="20" height="20" rx="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
           </a>
         </div>
-        <a class="comm-card-btn" href="#">See More</a>
+        <a class="comm-card-btn" href="committeepages/com_committee.html">See More</a>
       </div>
     </div>
 
-    <!-- Chair -->
-    <div class="comm-card">
-      <div class="comm-card-banner">
-        <img src="assets/images/committee_titles/chr_title.png" alt="Chair banner" />
-        <div class="comm-card-banner-overlay"></div>
-      </div>
-      <div class="comm-card-body">
-        <div class="comm-card-title">Chair</div>
-        <p class="comm-card-desc">The Chair is responsible for organizing and coordinating the entire BHSS, working with other student groups and faculty within and outside of the BHSS.<br><br>The current BHSS Chair is Dania Ihsan.</p>
-        <div class="comm-card-ig">
-          <a href="#" target="_blank" aria-label="Chair Instagram">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="2" y="2" width="20" height="20" rx="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
-          </a>
-        </div>
-        <a class="comm-card-btn" href="#">See More</a>
-      </div>
-    </div>
-
-  </div><!-- /coreGrid -->
-
-  <!-- Special Committees -->
-  <p class="group-label">Special Committees</p>
-  <div class="card-grid cols-2">
-
-    <!-- EDI -->
+    <!-- EDI (moved from Special) -->
     <div class="comm-card">
       <div class="comm-card-banner">
         <img src="assets/images/committee_titles/edi_title.png" alt="EDI banner" />
@@ -637,9 +541,105 @@
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="2" y="2" width="20" height="20" rx="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
           </a>
         </div>
-        <a class="comm-card-btn" href="#">See More</a>
+        <a class="comm-card-btn" href="committeepages/edi_committee.html">See More</a>
       </div>
     </div>
+
+    <!-- External -->
+    <div class="comm-card">
+      <div class="comm-card-banner">
+        <img src="assets/images/committee_titles/ext_title.png" alt="External banner" />
+        <div class="comm-card-banner-overlay"></div>
+      </div>
+      <div class="comm-card-body">
+        <div class="comm-card-title">External</div>
+        <p class="comm-card-desc">The External Committee is responsible for initiatives like HouseMatch, outreach, and inter-program events.<br><br>External is led by Hisham Sayed.</p>
+        <div class="comm-card-ig">
+          <a href="#" target="_blank" aria-label="External Instagram">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="2" y="2" width="20" height="20" rx="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
+          </a>
+        </div>
+        <a class="comm-card-btn" href="committeepages/ext_committee.html">See More</a>
+      </div>
+    </div>
+
+    <!-- Financial -->
+    <div class="comm-card">
+      <div class="comm-card-banner">
+        <img src="assets/images/committee_titles/fin_title.png" alt="Financial banner" />
+        <div class="comm-card-banner-overlay"></div>
+      </div>
+      <div class="comm-card-body">
+        <div class="comm-card-title">Financial</div>
+        <p class="comm-card-desc">The Financial Committee is responsible for the procurement and distribution of funds across the BHSS and our affiliates throughout the school year.<br><br>Financial is led by Ashley Qian.</p>
+        <div class="comm-card-ig">
+          <a href="#" target="_blank" aria-label="Financial Instagram">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="2" y="2" width="20" height="20" rx="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
+          </a>
+        </div>
+        <a class="comm-card-btn" href="committeepages/fin_committee.html">See More</a>
+      </div>
+    </div>
+
+    <!-- Internal -->
+    <div class="comm-card">
+      <div class="comm-card-banner">
+        <img src="assets/images/committee_titles/int_title.png" alt="Internal banner" />
+        <div class="comm-card-banner-overlay"></div>
+      </div>
+      <div class="comm-card-body">
+        <div class="comm-card-title">Internal</div>
+        <p class="comm-card-desc">The Internal Committee is responsible for buddy matching, social events and initiatives within the BHSS.<br><br>Internal is led by Haram Akram.</p>
+        <div class="comm-card-ig">
+          <a href="#" target="_blank" aria-label="Internal Instagram">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="2" y="2" width="20" height="20" rx="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
+          </a>
+        </div>
+        <a class="comm-card-btn" href="committeepages/int_committee.html">See More</a>
+      </div>
+    </div>
+
+    <!-- Elections & Logistics -->
+    <div class="comm-card">
+      <div class="comm-card-banner">
+        <img src="assets/images/committee_titles/log_title.png" alt="Elections & Logistics banner" />
+        <div class="comm-card-banner-overlay"></div>
+      </div>
+      <div class="comm-card-body">
+        <div class="comm-card-title">Elections and Logistics</div>
+        <p class="comm-card-desc">The Elections and Logistics Committee is responsible for managing BHSS logistics, as well as organizing elections throughout the school year.<br><br>Elections and Logistics is led by Graham Dinniwell and Bashar Alobeid.</p>
+        <div class="comm-card-ig">
+          <a href="#" target="_blank" aria-label="Logistics Instagram">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="2" y="2" width="20" height="20" rx="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
+          </a>
+        </div>
+        <a class="comm-card-btn" href="committeepages/log_committee.html">See More</a>
+      </div>
+    </div>
+
+    <!-- Social -->
+    <div class="comm-card">
+      <div class="comm-card-banner">
+        <img src="assets/images/committee_titles/soc_title.png" alt="Social banner" />
+        <div class="comm-card-banner-overlay"></div>
+      </div>
+      <div class="comm-card-body">
+        <div class="comm-card-title">Social</div>
+        <p class="comm-card-desc">The Social Committee is responsible for organizing events, gatherings and formals, within BHSS and with other programs.<br><br>Socials is led by Valerie Han and Bonnie Wen.</p>
+        <div class="comm-card-ig">
+          <a href="#" target="_blank" aria-label="Social Instagram">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="2" y="2" width="20" height="20" rx="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
+          </a>
+        </div>
+        <a class="comm-card-btn" href="committeepages/soc_committee.html">See More</a>
+      </div>
+    </div>
+
+  </div><!-- /coreGrid -->
+
+  <!-- Special Committees -->
+  <p class="group-label">Special Committees</p>
+  <div class="card-grid cols-2">
 
     <!-- Welcome Week -->
     <div class="comm-card">
@@ -655,7 +655,7 @@
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="2" y="2" width="20" height="20" rx="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
           </a>
         </div>
-        <a class="comm-card-btn" href="#">See More</a>
+        <a class="comm-card-btn" href="committeepages/wwc_committee.html">See More</a>
       </div>
     </div>
 
@@ -674,7 +674,7 @@
       <div class="comm-card-body">
         <div class="comm-card-title">First Year Council</div>
         <p class="comm-card-desc">The First Year Council (FYC) is responsible for representing first-year students, organizing cohort-wide events, and fostering a supportive and engaging first year community.<br><br>The First Year Representative is Kaila Pak.</p>
-        <a class="comm-card-btn" href="#">See More</a>
+        <a class="comm-card-btn" href="committeepages/fyc_committee.html">See More</a>
       </div>
     </div>
 
@@ -687,7 +687,7 @@
       <div class="comm-card-body">
         <div class="comm-card-title">Second Year Council</div>
         <p class="comm-card-desc">The Second Year Council (SYC) is responsible for representing second-year students, organizing cohort-wide events, and fostering a supportive and engaging second year community.<br><br>The Second Year Representative is Ruaridh Dobson.</p>
-        <a class="comm-card-btn" href="#">See More</a>
+        <a class="comm-card-btn" href="committeepages/syc_committee.html">See More</a>
       </div>
     </div>
 
@@ -700,7 +700,7 @@
       <div class="comm-card-body">
         <div class="comm-card-title">Third Year Council</div>
         <p class="comm-card-desc">The Third Year Council (TYC) is responsible for representing third-year students, organizing cohort-wide events, and fostering a supportive and engaging third year community.<br><br>The Third Year Representative is Domi Zou.</p>
-        <a class="comm-card-btn" href="#">See More</a>
+        <a class="comm-card-btn" href="committeepages/tyc_committee.html">See More</a>
       </div>
     </div>
 
@@ -713,7 +713,7 @@
       <div class="comm-card-body">
         <div class="comm-card-title">Fourth Year Council</div>
         <p class="comm-card-desc">The Fourth Year Council (4YC) is responsible for representing fourth-year students, organizing cohort-wide events, and fostering a supportive and engaging fourth year community.<br><br>The Fourth Year Representative is Matthew Piroli.</p>
-        <a class="comm-card-btn" href="#">See More</a>
+        <a class="comm-card-btn" href="committeepages/4yc_committee.html">See More</a>
       </div>
     </div>
 
@@ -742,6 +742,10 @@
     <div class="footer-col">
       <h4>Contact</h4>
       <p>The Bachelors of Health Science Society's Website is designed and developed by the BHSS Communications Committee. If you have any questions, please reach out to <a href="mailto:bhsscom@mcmaster.ca" style="color:rgba(255,255,255,0.55);text-decoration:underline">bhsscom@mcmaster.ca</a> or <a href="https://instagram.com/macbhss" style="color:rgba(255,255,255,0.55);text-decoration:underline">@macbhss</a>.</p>
+    </div>
+    <div class="footer-col">
+      <h4>Other</h4>
+      <a href="admin.html">Admin</a>
     </div>
   </div>
   <div class="footer-bottom">

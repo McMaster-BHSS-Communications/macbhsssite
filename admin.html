@@ -322,7 +322,10 @@
     .promo-admin-row { border: 1px solid var(--border); border-radius: 12px; overflow: hidden; margin-bottom: 10px; }
     .promo-admin-bar { height: 6px; }
     .promo-admin-info { padding: 10px 14px; display: flex; align-items: center; gap: 10px; }
-    .promo-preview-box { border-radius: 10px; padding: 18px 22px; margin-bottom: 16px; }
+    .promo-preview-box { border-radius: 0; padding: 18px 22px; margin-bottom: 16px; position:relative; overflow:hidden; }
+    .promo-preview-bg-img { position:absolute; top:0; right:0; height:100%; width:50%; object-fit:cover; object-position:right center; }
+    .promo-preview-content { position:relative; z-index:1; display:inline-block; padding:4px 10px; border-radius:6px; }
+    .promo-preview-content.has-img { background:rgba(0,0,0,0.35); backdrop-filter:blur(4px); -webkit-backdrop-filter:blur(4px); }
     .upload-progress { font-size: 0.78rem; color: var(--muted); margin-top: 6px; text-align: center; }
   </style>
 </head>
@@ -408,9 +411,9 @@
         <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
         Promo Banners
       </button>
-      <a class="sidebar-link" href="admin-orders.html">
+      <a class="sidebar-link" href="admin-orders.html" style="background:rgba(122,0,60,0.08);color:var(--maroon);font-weight:600;border:1px solid rgba(122,0,60,0.15)">
         <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
-        Store Orders
+        Store Orders →
       </a>
 
       <div class="sidebar-label" style="margin-top:24px">Site</div>
@@ -712,7 +715,13 @@
           <h1 id="products-panel-title">Manage Products</h1>
           <p>Add, edit, and track inventory for all store items.</p>
         </div>
-        <button class="btn-secondary" onclick="clearProductForm()">+ New Product</button>
+        <div style="display:flex;gap:10px;align-items:center">
+          <a href="admin-orders.html" style="display:inline-flex;align-items:center;gap:8px;padding:10px 20px;background:var(--maroon);color:#fff;border-radius:8px;font-size:0.85rem;font-weight:600;text-decoration:none;transition:opacity 0.15s" onmouseover="this.style.opacity='0.85'" onmouseout="this.style.opacity='1'">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
+            View Store Orders
+          </a>
+          <button class="btn-secondary" onclick="clearProductForm()">+ New Product</button>
+        </div>
       </div>
       <div class="product-mgmt-grid">
         <!-- Form -->
@@ -740,19 +749,19 @@
           <div class="composer-grid">
             <div class="form-group full">
               <label>Product Name *</label>
-              <input type="text" id="p-name" placeholder="e.g. BHSS Crewneck — Maroon" />
+              <input type="text" id="p-name" placeholder="e.g. BHSS Crewneck — Maroon" oninput="updateProductPreview()" />
             </div>
             <div class="form-group full">
               <label>Description</label>
-              <textarea id="p-desc" rows="2" placeholder="Short description shown on the product card…"></textarea>
+              <textarea id="p-desc" rows="2" placeholder="Short description shown on the product card…" oninput="updateProductPreview()"></textarea>
             </div>
             <div class="form-group">
               <label>Price (CAD) *</label>
-              <input type="number" id="p-price" min="0" step="0.01" placeholder="0.00" />
+              <input type="number" id="p-price" min="0" step="0.01" placeholder="0.00" oninput="updateProductPreview()" />
             </div>
             <div class="form-group">
               <label>Stock Status</label>
-              <select id="p-stock">
+              <select id="p-stock" onchange="updateProductPreview()">
                 <option value="in">In Stock</option>
                 <option value="low">Low Stock</option>
                 <option value="out">Sold Out</option>
@@ -769,11 +778,11 @@
             <div class="form-group" style="display:flex;flex-direction:column;justify-content:flex-end;gap:10px">
               <label>Options</label>
               <label class="toggle-wrap">
-                <label class="toggle-switch"><input type="checkbox" id="p-featured" /><span class="toggle-slider"></span></label>
+                <label class="toggle-switch"><input type="checkbox" id="p-featured" onchange="updateProductPreview()" /><span class="toggle-slider"></span></label>
                 <span style="font-size:0.83rem;color:var(--mid)">Featured</span>
               </label>
               <label class="toggle-wrap">
-                <label class="toggle-switch"><input type="checkbox" id="p-active" checked /><span class="toggle-slider"></span></label>
+                <label class="toggle-switch"><input type="checkbox" id="p-active" checked onchange="updateProductPreview()" /><span class="toggle-slider"></span></label>
                 <span style="font-size:0.83rem;color:var(--mid)">Active (visible on site)</span>
               </label>
             </div>
@@ -808,6 +817,26 @@
           <div class="composer-actions">
             <button class="btn-primary" style="width:auto;padding:10px 28px" onclick="saveProduct()"><span id="p-save-label">Add Product</span></button>
             <button class="btn-secondary" onclick="clearProductForm()">Clear</button>
+          </div>
+
+          <!-- Live product preview -->
+          <div style="margin-top:24px;padding-top:20px;border-top:1px solid var(--border)">
+            <div style="font-size:0.68rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted);margin-bottom:10px">Shop Preview</div>
+            <div id="p-product-preview" style="border:1px solid var(--border);border-radius:14px;overflow:hidden;max-width:260px">
+              <div id="p-preview-img" style="aspect-ratio:1/1;background:var(--blue-pale);display:flex;align-items:center;justify-content:center;overflow:hidden">
+                <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="1"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+              </div>
+              <div style="padding:14px 16px 16px">
+                <div id="p-preview-name" style="font-family:'Familjen Grotesk',serif;font-size:1rem;font-weight:600;color:var(--text);line-height:1.3;margin-bottom:4px">Product Name</div>
+                <div id="p-preview-desc" style="font-size:0.78rem;color:var(--mid);line-height:1.55;margin-bottom:10px;display:-webkit-box;-webkit-line-clamp:2;line-clamp:2;-webkit-box-orient:vertical;overflow:hidden"></div>
+                <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
+                  <span id="p-preview-price" style="font-family:'Familjen Grotesk',serif;font-size:1.1rem;font-weight:700;color:var(--text)">$0.00</span>
+                  <span id="p-preview-stock" class="stock-pill in">In Stock</span>
+                </div>
+                <div id="p-preview-sizes" style="display:flex;flex-wrap:wrap;gap:5px"></div>
+                <div id="p-preview-badges" style="display:flex;gap:5px;flex-wrap:wrap;margin-top:6px"></div>
+              </div>
+            </div>
           </div>
 
           <!-- Collections manager -->
@@ -869,6 +898,10 @@
                 <input type="text" id="bn-bg-text" value="#7a003c" placeholder="#7a003c" style="flex:1;padding:9px 12px;border:1px solid var(--border);border-radius:8px;font-size:0.85rem;outline:none;font-family:'Inter',sans-serif" oninput="syncBannerColor('bg')" />
               </div>
             </div>
+            <div class="form-group full">
+              <label>Background Image <span style="color:var(--muted);font-weight:400">— anchored to right edge · recommended 600×120 px or taller · image shows on right side</span></label>
+              <input type="url" id="bn-bg-img" placeholder="https://… or leave blank for solid colour" oninput="updateBannerPreview()" style="width:100%;padding:9px 12px;border:1px solid var(--border);border-radius:8px;font-size:0.85rem;outline:none;font-family:'Inter',sans-serif" />
+            </div>
             <div class="form-group">
               <label>Text Color</label>
               <div style="display:flex;align-items:center;gap:8px">
@@ -880,10 +913,13 @@
           <!-- Preview -->
           <div style="margin-bottom:6px;font-size:0.68rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted)">Preview</div>
           <div class="promo-preview-box" id="bn-preview" style="background:#7a003c">
-            <div style="font-weight:700;font-size:1.1rem;font-family:'Familjen Grotesk',serif;color:#fff;margin-bottom:4px" id="bn-preview-title">Banner Title</div>
-            <div style="font-size:0.82rem;color:rgba(255,255,255,0.8)" id="bn-preview-sub"></div>
-            <div id="bn-preview-cta-wrap" style="margin-top:12px;display:none">
-              <span style="background:rgba(255,255,255,0.2);color:#fff;padding:6px 14px;border-radius:6px;font-size:0.8rem;font-weight:600" id="bn-preview-cta">Shop Now</span>
+            <img id="bn-preview-bgimg" src="" alt="" class="promo-preview-bg-img" style="display:none" />
+            <div class="promo-preview-content" id="bn-preview-content">
+              <div style="font-weight:700;font-size:1.1rem;font-family:'Familjen Grotesk',serif;color:#fff;margin-bottom:4px" id="bn-preview-title">Banner Title</div>
+              <div style="font-size:0.82rem;color:rgba(255,255,255,0.8)" id="bn-preview-sub"></div>
+              <div id="bn-preview-cta-wrap" style="margin-top:12px;display:none">
+                <span style="background:rgba(255,255,255,0.2);color:#fff;padding:6px 14px;border-radius:6px;font-size:0.8rem;font-weight:600" id="bn-preview-cta">Shop Now</span>
+              </div>
             </div>
           </div>
           <div class="composer-actions">
@@ -1431,6 +1467,7 @@ function toggleSizeChip(el) {
     _selectedSizes.push(s);
     el.classList.add('sel');
   }
+  updateProductPreview();
 }
 
 function addCustomSizeChip() {
@@ -1490,6 +1527,7 @@ function _renderImagePreviews() {
       <img src="${url}" alt="" />
       <button class="product-img-remove-btn" onclick="removeProductImage(${i})" title="Remove">✕</button>
     </div>`).join('');
+  updateProductPreview();
 }
 
 function removeProductImage(i) {
@@ -1581,6 +1619,48 @@ async function editProduct(id) {
   document.getElementById('panel-products').scrollIntoView({ behavior: 'smooth' });
 }
 
+function updateProductPreview() {
+  const name  = document.getElementById('p-name')?.value  || '';
+  const desc  = document.getElementById('p-desc')?.value  || '';
+  const price = parseFloat(document.getElementById('p-price')?.value) || 0;
+  const stock = document.getElementById('p-stock')?.value || 'in';
+  const featured = document.getElementById('p-featured')?.checked;
+  const active   = document.getElementById('p-active')?.checked ?? true;
+
+  const nameEl  = document.getElementById('p-preview-name');
+  const descEl  = document.getElementById('p-preview-desc');
+  const priceEl = document.getElementById('p-preview-price');
+  const stockEl = document.getElementById('p-preview-stock');
+  const imgEl   = document.getElementById('p-preview-img');
+  const sizesEl = document.getElementById('p-preview-sizes');
+  const badgesEl= document.getElementById('p-preview-badges');
+  if (!nameEl) return;
+
+  nameEl.textContent  = name  || 'Product Name';
+  nameEl.style.color  = name  ? 'var(--text)' : 'var(--muted)';
+  descEl.textContent  = desc;
+  priceEl.textContent = `$${price.toFixed(2)}`;
+  stockEl.textContent = stock === 'in' ? 'In Stock' : stock === 'low' ? 'Low Stock' : 'Sold Out';
+  stockEl.className   = `stock-pill ${stock}`;
+
+  // First image
+  const firstImg = _productImages && _productImages[0];
+  imgEl.innerHTML = firstImg
+    ? `<img src="${firstImg}" alt="" style="width:100%;height:100%;object-fit:cover">`
+    : `<svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="1"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>`;
+
+  // Sizes
+  sizesEl.innerHTML = _selectedSizes.map(s =>
+    `<span style="padding:3px 9px;border:1.5px solid var(--border);border-radius:5px;font-size:0.7rem;font-weight:600;color:var(--mid)">${s}</span>`
+  ).join('');
+
+  // Badges
+  const badges = [];
+  if (featured) badges.push(`<span class="stock-pill" style="background:rgba(29,79,161,0.1);color:var(--blue)">Featured</span>`);
+  if (!active)  badges.push(`<span class="stock-pill" style="background:rgba(90,90,90,0.1);color:#555">Hidden</span>`);
+  badgesEl.innerHTML = badges.join('');
+}
+
 function clearProductForm() {
   _editingProductId = null;
   _productImages = [];
@@ -1605,35 +1685,57 @@ function clearProductForm() {
   document.getElementById('product-cancel-edit').style.display = 'none';
 }
 
+function _productRowHtml(p, editable) {
+  const thumb = (p.images && p.images[0])
+    ? `<img src="${p.images[0]}" alt="" style="width:100%;height:100%;object-fit:cover">`
+    : p.image
+      ? `<img src="${p.image}" alt="" style="width:100%;height:100%;object-fit:cover">`
+      : `<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#9bb8d8" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg></div>`;
+  const stock = p.stock || 'in';
+  return `
+  <div class="product-admin-row">
+    <div class="product-admin-thumb">${thumb}</div>
+    <div style="flex:1;min-width:0">
+      <div style="font-size:0.87rem;font-weight:600;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${p.name}</div>
+      <div style="font-size:0.74rem;color:var(--muted);margin-top:2px">$${parseFloat(p.price||0).toFixed(2)}${p.inventory != null ? ' · Inv: ' + p.inventory : ''}</div>
+      <div style="margin-top:4px;display:flex;gap:4px;flex-wrap:wrap">
+        <span class="stock-pill ${stock}">${stock === 'in' ? 'In Stock' : stock === 'low' ? 'Low Stock' : 'Sold Out'}</span>
+        ${!p.active ? '<span class="stock-pill" style="background:rgba(90,90,90,0.1);color:#555">Hidden</span>' : ''}
+        ${p.featured ? '<span class="stock-pill" style="background:rgba(29,79,161,0.1);color:var(--blue)">Featured</span>' : ''}
+        ${!editable ? '<span class="stock-pill" style="background:rgba(245,129,32,0.1);color:#c4720a">Static — not in DB</span>' : ''}
+      </div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:5px;flex-shrink:0">
+      ${editable ? `<button class="btn-secondary" style="padding:5px 10px;font-size:0.72rem" onclick="editProduct('${p.id}')">Edit</button>
+      <button class="btn-danger" onclick="deleteProduct('${p.id}')">Delete</button>` : `<span style="font-size:0.7rem;color:var(--muted);text-align:center">Edit in<br>shop-data.js</span>`}
+    </div>
+  </div>`;
+}
+
 async function renderProductList() {
   const el = document.getElementById('product-admin-list');
   if (!el) return;
   el.innerHTML = '<p style="font-size:0.82rem;color:var(--muted);padding:16px 0">Loading…</p>';
   const { data, error } = await window.db.from('products').select('*').order('created_at', { ascending: false });
-  if (error) { el.innerHTML = `<p style="font-size:0.82rem;color:var(--red)">${error.message}</p>`; return; }
-  if (!data || !data.length) { el.innerHTML = '<p style="font-size:0.82rem;color:var(--muted);padding:16px 0">No products yet.</p>'; return; }
-  el.innerHTML = data.map(p => {
-    const thumb = (p.images && p.images[0])
-      ? `<img src="${p.images[0]}" alt="" style="width:100%;height:100%;object-fit:cover">`
-      : `<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#9bb8d8" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg></div>`;
-    return `
-    <div class="product-admin-row">
-      <div class="product-admin-thumb">${thumb}</div>
-      <div style="flex:1;min-width:0">
-        <div style="font-size:0.87rem;font-weight:600;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${p.name}</div>
-        <div style="font-size:0.74rem;color:var(--muted);margin-top:2px">$${parseFloat(p.price).toFixed(2)} · Inv: ${p.inventory ?? '—'}</div>
-        <div style="margin-top:4px;display:flex;gap:4px;flex-wrap:wrap">
-          <span class="stock-pill ${p.stock}">${p.stock === 'in' ? 'In Stock' : p.stock === 'low' ? 'Low Stock' : 'Sold Out'}</span>
-          ${!p.active ? '<span class="stock-pill" style="background:rgba(90,90,90,0.1);color:#555">Hidden</span>' : ''}
-          ${p.featured ? '<span class="stock-pill" style="background:rgba(29,79,161,0.1);color:var(--blue)">Featured</span>' : ''}
-        </div>
-      </div>
-      <div style="display:flex;flex-direction:column;gap:5px;flex-shrink:0">
-        <button class="btn-secondary" style="padding:5px 10px;font-size:0.72rem" onclick="editProduct('${p.id}')">Edit</button>
-        <button class="btn-danger" onclick="deleteProduct('${p.id}')">Delete</button>
-      </div>
-    </div>`;
-  }).join('');
+  if (error && error.code !== 'PGRST116') {
+    // Table likely doesn't exist yet — fall through to static fallback
+  }
+  const dbProducts = (!error && data && data.length) ? data : null;
+
+  if (dbProducts) {
+    el.innerHTML = dbProducts.map(p => _productRowHtml(p, true)).join('');
+    return;
+  }
+
+  // Fallback: show window.BHSS_PRODUCTS as read-only
+  const staticProds = (window.BHSS_PRODUCTS || []);
+  if (staticProds.length) {
+    el.innerHTML = `<p style="font-size:0.74rem;color:var(--muted);margin-bottom:10px;padding:8px 12px;background:#fffbeb;border:1px solid #fcd34d;border-radius:7px">
+      Supabase <code>products</code> table not set up yet — showing static shop-data.js items below (read-only). Run the SQL from setup to enable full editing.
+    </p>` + staticProds.map(p => _productRowHtml(p, false)).join('');
+  } else {
+    el.innerHTML = `<p style="font-size:0.82rem;color:var(--muted);padding:16px 0">No products yet. Set up the Supabase table or add items to shop-data.js.</p>`;
+  }
 }
 
 // ─────────────────────────────────────
@@ -1641,16 +1743,28 @@ async function renderProductList() {
 // ─────────────────────────────────────
 
 function updateBannerPreview() {
-  const title = document.getElementById('bn-title').value || 'Banner Title';
-  const sub   = document.getElementById('bn-sub').value;
-  const cta   = document.getElementById('bn-cta-text').value;
-  const bg    = document.getElementById('bn-bg').value;
-  const tc    = document.getElementById('bn-tc').value;
-  document.getElementById('bn-preview').style.background = bg;
+  const title  = document.getElementById('bn-title').value || 'Banner Title';
+  const sub    = document.getElementById('bn-sub').value;
+  const cta    = document.getElementById('bn-cta-text').value;
+  const bg     = document.getElementById('bn-bg').value;
+  const tc     = document.getElementById('bn-tc').value;
+  const bgImg  = document.getElementById('bn-bg-img').value.trim();
+  const previewEl  = document.getElementById('bn-preview');
+  const bgImgEl    = document.getElementById('bn-preview-bgimg');
+  const contentEl  = document.getElementById('bn-preview-content');
+  previewEl.style.background = bg;
   document.getElementById('bn-preview-title').style.color = tc;
   document.getElementById('bn-preview-title').textContent = title;
-  document.getElementById('bn-preview-sub').textContent  = sub;
-  document.getElementById('bn-preview-sub').style.color  = tc + 'cc';
+  document.getElementById('bn-preview-sub').textContent   = sub;
+  document.getElementById('bn-preview-sub').style.color   = tc + 'cc';
+  if (bgImg) {
+    bgImgEl.src = bgImg;
+    bgImgEl.style.display = 'block';
+    contentEl.classList.add('has-img');
+  } else {
+    bgImgEl.style.display = 'none';
+    contentEl.classList.remove('has-img');
+  }
   const wrap = document.getElementById('bn-preview-cta-wrap');
   if (cta) { wrap.style.display = 'block'; document.getElementById('bn-preview-cta').textContent = cta; }
   else      { wrap.style.display = 'none'; }
@@ -1679,6 +1793,7 @@ async function savePromoBanner() {
     cta_url:    document.getElementById('bn-cta-url').value.trim(),
     bg_color:   document.getElementById('bn-bg').value,
     text_color: document.getElementById('bn-tc').value,
+    bg_image:   document.getElementById('bn-bg-img').value.trim(),
     active:     true
   };
   const { error } = await window.db.from('promo_banners').insert(payload);
@@ -1730,7 +1845,7 @@ async function renderPromoList() {
 }
 
 function clearBannerForm() {
-  ['bn-title','bn-sub','bn-cta-text','bn-cta-url'].forEach(id => { const el = document.getElementById(id); if(el) el.value = ''; });
+  ['bn-title','bn-sub','bn-cta-text','bn-cta-url','bn-bg-img'].forEach(id => { const el = document.getElementById(id); if(el) el.value = ''; });
   document.getElementById('bn-bg').value = '#7a003c';
   document.getElementById('bn-bg-text').value = '#7a003c';
   document.getElementById('bn-tc').value = '#ffffff';

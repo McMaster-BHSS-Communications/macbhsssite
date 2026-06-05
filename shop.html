@@ -521,16 +521,20 @@
     .promo-banners-wrap { display: flex; flex-direction: column; gap: 0; }
     .promo-site-banner {
       padding: 14px 60px; display: flex; align-items: center; justify-content: space-between;
-      gap: 16px; font-family: 'Inter', sans-serif;
+      gap: 16px; font-family: 'Inter', sans-serif; position: relative; overflow: hidden;
     }
-    .promo-site-banner-inner { max-width: 1140px; margin: 0 auto; width: 100%; display: flex; align-items: center; gap: 20px; }
+    .promo-site-banner-bgimg { position: absolute; top: 0; right: 0; height: 100%; width: 45%; object-fit: cover; object-position: right center; pointer-events: none; }
+    .promo-site-banner-inner { max-width: 1140px; margin: 0 auto; width: 100%; display: flex; align-items: center; gap: 20px; position: relative; z-index: 1; }
     .promo-site-title { font-family: 'Familjen Grotesk', sans-serif; font-size: 0.98rem; font-weight: 700; }
     .promo-site-sub   { font-size: 0.8rem; opacity: 0.85; }
+    .promo-site-text-wrap { flex: 1; min-width: 0; display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+    .promo-site-text-blur { display: inline-block; padding: 3px 10px; border-radius: 5px; }
     .promo-site-cta   { flex-shrink: 0; padding: 6px 16px; border: 1.5px solid currentColor; border-radius: 6px; font-size: 0.78rem; font-weight: 600; text-decoration: none; color: inherit; transition: background 0.15s, color 0.15s; white-space: nowrap; }
     .promo-site-cta:hover { background: rgba(255,255,255,0.18); }
     @media (max-width: 768px) {
       .promo-site-banner { padding: 12px 24px; }
       .promo-site-banner-inner { flex-direction: column; align-items: flex-start; gap: 8px; }
+      .promo-site-banner-bgimg { width: 60%; }
     }
 
     /* ─────────────────────────────────────────────────────────────────────── */
@@ -975,16 +979,22 @@ async function _fetchBanners() {
 function _renderBanners(banners) {
   const wrap = document.getElementById('promoBannersWrap');
   if (!banners.length) { wrap.innerHTML = ''; return; }
-  wrap.innerHTML = banners.map(b => `
+  wrap.innerHTML = banners.map(b => {
+    const hasImg = b.bg_image && b.bg_image.trim();
+    const blurClass = hasImg ? ' promo-site-text-blur' : '';
+    const blurStyle = hasImg ? 'background:rgba(0,0,0,0.32);backdrop-filter:blur(5px);-webkit-backdrop-filter:blur(5px);border-radius:5px;' : '';
+    return `
     <div class="promo-site-banner" style="background:${b.bg_color};color:${b.text_color}">
+      ${hasImg ? `<img src="${b.bg_image}" alt="" class="promo-site-banner-bgimg" />` : ''}
       <div class="promo-site-banner-inner">
-        <div style="flex:1;min-width:0">
-          <span class="promo-site-title">${b.title}</span>
-          ${b.subtitle ? `<span class="promo-site-sub" style="margin-left:12px">${b.subtitle}</span>` : ''}
+        <div class="promo-site-text-wrap">
+          <span class="promo-site-title${blurClass}" style="${blurStyle}">${b.title}</span>
+          ${b.subtitle ? `<span class="promo-site-sub${blurClass}" style="${blurStyle}">${b.subtitle}</span>` : ''}
         </div>
         ${b.cta_text && b.cta_url ? `<a href="${b.cta_url}" class="promo-site-cta" style="color:${b.text_color};border-color:${b.text_color}">${b.cta_text}</a>` : ''}
       </div>
-    </div>`).join('');
+    </div>`;
+  }).join('');
 }
 
 // ── FILTER BAR ────────────────────────────────────────────────────────────────
