@@ -557,7 +557,7 @@
   </div>
 </div>
 
-<!-- Post modal -->
+<!-- Post modal popup -->
 <div class="modal-backdrop" id="modalBackdrop" role="dialog" aria-modal="true">
   <div class="modal" id="modal">
     <div class="modal-hero" id="modalHero">
@@ -777,7 +777,7 @@ document.getElementById('igNextBtn').addEventListener('click', () => {
   document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
 
   // Render the top 2 announcements into the panel
-  const announcements = await loadAnnouncements();
+  const announcements = loadAnnouncements();
   const container = document.getElementById('annPanelCards');
   announcements.slice(0, 2).forEach(ann => {
     const card = document.createElement('div');
