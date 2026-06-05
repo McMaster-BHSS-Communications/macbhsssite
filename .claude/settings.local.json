@@ -4,7 +4,11 @@
       "Bash(Get-ChildItem -Path \"c:\\\\Users\\\\klaus\\\\OneDrive\\\\Documents\\\\BHSS Website Files\" -Force)",
       "Bash(Select-Object Name, Mode)",
       "PowerShell(Get-ChildItem -Path \"c:\\\\Users\\\\klaus\\\\OneDrive\\\\Documents\\\\BHSS Website Files\\\\assets\" -Recurse | Select-Object FullName | ForEach-Object { $_.FullName.Replace\\(\"c:\\\\Users\\\\klaus\\\\OneDrive\\\\Documents\\\\BHSS Website Files\", \"\"\\) })",
-      "PowerShell(New-Item -ItemType Directory -Force \"c:\\\\Users\\\\klaus\\\\OneDrive\\\\Documents\\\\BHSS Website Files\\\\assets\\\\images\\\\merch\")"
+      "PowerShell(New-Item -ItemType Directory -Force \"c:\\\\Users\\\\klaus\\\\OneDrive\\\\Documents\\\\BHSS Website Files\\\\assets\\\\images\\\\merch\")",
+      "Read(//c/Users/Klaus/OneDrive/Documents/BHSS Website Files/**)"
+    ],
+    "additionalDirectories": [
+      "c:\\Users\\Klaus\\OneDrive\\Documents\\BHSS Website Files\\favicon"
     ]
   }
 }
