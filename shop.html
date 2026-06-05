@@ -1,0 +1,1152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Merch | Mac BHSS</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Familjen+Grotesk:wght@400;500;600;700&family=Inter:wght@300;400;500;600&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="mobile-nav.css" />
+  <!-- EmailJS — loaded before the page script so emailjs.init() is available -->
+  <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+  <style>
+    /* ─────────────────────────────────────────────────────────────────────── */
+    /* BASE — identical to all other BHSS pages                               */
+    /* ─────────────────────────────────────────────────────────────────────── */
+    :root {
+      --maroon:    #7a003c;
+      --maroon-dk: #5a002c;
+      --blue:      #1d4fa1;
+      --blue-mid:  #2e69c9;
+      --blue-lt:   #5b9bd5;
+      --blue-pale: #ddeaf7;
+      --dark:      #0f1b2d;
+      --text:      #1a2640;
+      --mid:       #4a5a7a;
+      --muted:     #8899bb;
+      --white:     #ffffff;
+      --off:       #f5f7fa;
+      --border:    #dde5f0;
+      --nav-h:     64px;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body { font-family: 'Inter', sans-serif; background: var(--off); color: var(--text); overflow-x: hidden; }
+
+    /* ─── MAINTENANCE BANNER ─── */
+    .banner {
+      background: var(--dark); color: var(--blue-lt);
+      text-align: center; font-family: 'Inter', sans-serif;
+      font-size: 0.75rem; font-style: italic; font-weight: 600;
+      letter-spacing: 0.03em; padding: 16px;
+    }
+
+    /* ─── NAV ─── */
+    nav.sitenav {
+      position: sticky; top: 0; z-index: 500;
+      height: var(--nav-h); background: var(--white);
+      border-bottom: 1px solid var(--border);
+      display: flex; align-items: center; padding: 0 32px; gap: 0;
+    }
+    .nav-logo { display: flex; align-items: center; gap: 10px; text-decoration: none; margin-right: 28px; flex-shrink: 0; }
+    .nav-logo-mark { width: 38px; height: 38px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-family: 'Familjen Grotesk', serif; font-size: 1rem; font-weight: 600; color: var(--blue); }
+    .nav-logo-text { font-family: 'Familjen Grotesk', serif; font-size: clamp(0.05rem, 3.5vw, 1.05rem); font-weight: 600; color: var(--text); line-height: 1.2; }
+    .nav-logo-text span { display: block; font-size: clamp(0.2rem, 3.5vw, 0.7rem); font-weight: 400; color: var(--muted); font-family: 'Inter', sans-serif; letter-spacing: 0.04em; }
+    .nav-links { display: flex; align-items: center; gap: 2px; list-style: none; }
+    .nav-links a { display: block; padding: 7px 13px; font-size: 0.83rem; font-weight: 500; color: var(--mid); text-decoration: none; border-radius: 6px; transition: background 0.15s, color 0.15s; white-space: nowrap; }
+    .nav-links a:hover, .nav-links a.active { background: var(--blue); color: var(--white); }
+    .has-drop { position: relative; }
+    .has-drop > a::after { content: ' ▾'; font-size: 0.6rem; opacity: 0.7; }
+    .drop { display: none; position: absolute; top: calc(100% + 6px); left: 0; background: var(--white); border: 1px solid var(--border); border-radius: 10px; box-shadow: 0 10px 32px rgba(0,0,0,0.1); min-width: 176px; padding: 6px; z-index: 300; }
+    .drop::before { content: ""; position: absolute; top: -20px; left: 0; width: 100%; height: 20px; background: transparent; }
+    .has-drop:hover .drop { display: block; }
+    .drop a { border-radius: 6px; font-size: 0.8rem; padding: 7px 12px; color: var(--mid); }
+    .drop a:hover { background: var(--blue-pale); color: var(--blue); }
+    .has-sidedrop { position: relative; }
+    .has-sidedrop > a::after { content: ' ▸'; font-size: 0.6rem; opacity: 0.7; }
+    .sidedrop { display: none; position: absolute; top: -200%; left: calc(100% + 8px); background: var(--white); border: 1px solid var(--border); border-radius: 10px; box-shadow: 0 10px 32px rgba(0,0,0,0.1); min-width: 220px; padding: 10px; z-index: 500; white-space: normal; }
+    .has-sidedrop::after { content: ""; position: absolute; top: 0; left: 100%; width: 12px; height: 100%; background: transparent; pointer-events: auto; }
+    .has-sidedrop:hover .sidedrop { display: block; }
+    .sidedrop a { display: block; border-radius: 6px; font-size: 0.8rem; padding: 8px 12px; color: var(--mid); }
+    .sidedrop a:hover { background: var(--blue-pale); color: var(--blue); }
+    .nav-resources { margin-left: auto; display: flex; align-items: center; }
+    .nav-resources a { display: flex; align-items: center; gap: 6px; padding: 8px 16px; background: var(--blue-pale); color: var(--blue); font-size: 0.8rem; font-weight: 600; text-decoration: none; border-radius: 8px; border: 1px solid rgba(45,105,201,0.2); transition: background 0.15s, color 0.15s; white-space: nowrap; }
+    .nav-resources a:hover { background: var(--blue); color: var(--white); }
+
+    /* ─── FOOTER ─── */
+    footer { background: var(--dark); color: rgba(255,255,255,0.55); padding: 48px 60px 40px; }
+    .footer-top { display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 40px; margin-bottom: 40px; }
+    .footer-brand p.pre { font-size: 0.6rem; font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase; color: rgba(255,255,255,0.35); margin-bottom: 4px; }
+    .footer-brand h3 { font-family: 'Familjen Grotesk', serif; font-size: 1.25rem; font-weight: 600; color: var(--white); line-height: 1.25; margin-bottom: 14px; }
+    .footer-brand .desc { font-size: 0.76rem; line-height: 1.65; color: rgba(255,255,255,0.4); }
+    .footer-brand .desc a { color: rgba(255,255,255,0.55); text-decoration: underline; }
+    .footer-col h4 { font-size: 0.7rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: rgba(255,255,255,0.5); margin-bottom: 12px; }
+    .footer-col p, .footer-col address { font-size: 0.78rem; font-style: normal; color: rgba(255,255,255,0.4); line-height: 1.65; padding-right: 40px; }
+    .footer-col a { display: inline-flex; color: rgba(255,255,255,0.45); text-decoration: none; font-size: 0.78rem; margin-bottom: 5px; transition: color 0.15s; }
+    .footer-col a:hover { color: var(--white); }
+    .footer-bottom { border-top: 1px solid rgba(255,255,255,0.07); padding-top: 20px; font-size: 0.72rem; color: rgba(255,255,255,0.25); display: flex; align-items: center; justify-content: space-between; }
+
+    /* ─────────────────────────────────────────────────────────────────────── */
+    /* SHOP HERO                                                               */
+    /* ─────────────────────────────────────────────────────────────────────── */
+    .shop-hero {
+      background: var(--blue); position: relative; overflow: hidden;
+      padding: 64px 60px 56px; text-align: center;
+    }
+    .shop-hero .sq {
+      position: absolute; border: 3px solid rgba(255,255,255,0.13);
+      border-radius: 6px; animation: floatSq 7s ease-in-out infinite alternate;
+    }
+    .shop-hero .sq1 { width: 58px; height: 58px; top: 18px;  left: 48px;   transform: rotate(14deg); }
+    .shop-hero .sq2 { width: 38px; height: 38px; bottom: 16px; right: 90px;  transform: rotate(-20deg); animation-delay: 1.5s; }
+    .shop-hero .sq3 { width: 26px; height: 26px; top: 30px;  right: 200px; transform: rotate(8deg);  animation-delay: 3s; }
+    .shop-hero .sq4 { width: 44px; height: 44px; bottom: 20px; left: 160px;  transform: rotate(-12deg); animation-delay: 0.8s; }
+    .shop-hero .sq5 { width: 18px; height: 18px; top: 50%;   right: 60px;  transform: rotate(30deg); animation-delay: 2s; }
+    @keyframes floatSq {
+      from { opacity: 0.7; transform: rotate(14deg) translateY(0); }
+      to   { opacity: 1;   transform: rotate(14deg) translateY(-14px); }
+    }
+    .shop-hero h1 {
+      font-family: 'Familjen Grotesk', sans-serif;
+      font-size: clamp(1.8rem, 5vw, 3.2rem); font-weight: 600;
+      color: var(--white); letter-spacing: -0.02em;
+      position: relative; z-index: 1; margin-bottom: 12px;
+    }
+    .shop-hero p {
+      font-size: clamp(0.85rem, 2vw, 1rem); color: rgba(255,255,255,0.8);
+      max-width: 540px; margin: 0 auto; line-height: 1.7;
+      position: relative; z-index: 1;
+    }
+
+    /* ─────────────────────────────────────────────────────────────────────── */
+    /* FILTER BAR                                                              */
+    /* ─────────────────────────────────────────────────────────────────────── */
+    .shop-filter-bar {
+      background: var(--white); border-bottom: 1px solid var(--border);
+      padding: 0 60px; position: sticky; top: var(--nav-h); z-index: 400;
+      display: flex; align-items: center; gap: 0;
+      overflow-x: auto; scrollbar-width: none;
+    }
+    .shop-filter-bar::-webkit-scrollbar { display: none; }
+    .shop-filter-btn {
+      flex-shrink: 0; padding: 14px 20px;
+      font-family: 'Familjen Grotesk', sans-serif;
+      font-size: 0.82rem; font-weight: 600; color: var(--mid);
+      background: none; border: none; border-bottom: 3px solid transparent;
+      cursor: pointer; transition: color 0.15s, border-color 0.15s;
+      white-space: nowrap; letter-spacing: 0.01em;
+    }
+    .shop-filter-btn:hover { color: var(--text); }
+    .shop-filter-btn.active { color: var(--blue); border-bottom-color: var(--blue); }
+
+    /* ─────────────────────────────────────────────────────────────────────── */
+    /* PRODUCT GRID                                                            */
+    /* ─────────────────────────────────────────────────────────────────────── */
+    .shop-section { max-width: 1140px; margin: 0 auto; padding: 48px 40px 80px; }
+
+    .product-grid {
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px;
+    }
+
+    .product-card {
+      background: var(--white); border: 1px solid var(--border);
+      border-radius: 16px; overflow: hidden;
+      transition: box-shadow 0.25s, transform 0.25s;
+      display: flex; flex-direction: column;
+    }
+    .product-card:hover {
+      box-shadow: 0 16px 48px rgba(0,0,0,0.1); transform: translateY(-4px);
+    }
+
+    /* 1:1 image */
+    .product-img-wrap {
+      position: relative; overflow: hidden;
+      background: var(--blue-pale); aspect-ratio: 1 / 1;
+    }
+    .product-img-wrap img {
+      width: 100%; height: 100%; object-fit: cover; display: block;
+      transition: transform 0.4s;
+    }
+    .product-card:hover .product-img-wrap img { transform: scale(1.05); }
+    .product-img-placeholder {
+      width: 100%; height: 100%; display: flex; align-items: center;
+      justify-content: center;
+      background: linear-gradient(135deg, var(--blue-pale) 0%, #c8d8f0 100%);
+    }
+
+    /* Badges */
+    .stock-badge {
+      position: absolute; top: 12px; right: 12px;
+      padding: 4px 10px; border-radius: 100px;
+      font-size: 0.68rem; font-weight: 700; letter-spacing: 0.06em;
+      text-transform: uppercase; backdrop-filter: blur(4px);
+    }
+    .stock-badge.in  { background: rgba(21,128,61,0.88); color: #fff; }
+    .stock-badge.low { background: rgba(202,138,4,0.9);  color: #fff; }
+    .stock-badge.out { background: rgba(90,90,90,0.85);  color: #fff; }
+    .product-featured-pill {
+      position: absolute; top: 12px; left: 12px;
+      padding: 3px 10px; border-radius: 100px;
+      font-size: 0.63rem; font-weight: 700; letter-spacing: 0.07em;
+      text-transform: uppercase; background: var(--blue); color: var(--white);
+    }
+
+    /* Card body */
+    .product-info { padding: 20px 20px 0; flex: 1; display: flex; flex-direction: column; gap: 8px; }
+    .product-name { font-family: 'Familjen Grotesk', sans-serif; font-size: 1.05rem; font-weight: 600; color: var(--text); line-height: 1.3; letter-spacing: -0.01em; }
+    .product-desc { font-size: 0.82rem; color: var(--mid); line-height: 1.6; flex: 1; }
+    .product-price { display: inline-flex; align-items: baseline; gap: 1px; font-family: 'Familjen Grotesk', sans-serif; font-size: 1.3rem; font-weight: 600; color: var(--blue); }
+    .product-price sup { font-size: 0.78rem; font-weight: 400; }
+
+    /* Size selector */
+    .size-selector { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 4px; }
+    .size-selector input[type="radio"] { display: none; }
+    .size-selector label {
+      display: flex; align-items: center; justify-content: center;
+      width: 40px; height: 32px; border: 1.5px solid var(--border);
+      border-radius: 6px; font-size: 0.72rem; font-weight: 600; color: var(--mid);
+      cursor: pointer; transition: border-color 0.15s, background 0.15s, color 0.15s;
+      user-select: none;
+    }
+    .size-selector label:hover { border-color: var(--blue-lt); color: var(--blue); }
+    .size-selector input[type="radio"]:checked + label { border-color: var(--blue); background: var(--blue); color: var(--white); }
+    .size-selector input[type="radio"]:disabled + label { opacity: 0.35; cursor: not-allowed; }
+
+    /* Size required shake */
+    @keyframes shakePulse {
+      0%,100% { transform: translateX(0); }
+      20%     { transform: translateX(-5px); }
+      40%     { transform: translateX(5px); }
+      60%     { transform: translateX(-3px); }
+      80%     { transform: translateX(3px); }
+    }
+
+    /* Add to cart button */
+    .add-to-cart {
+      margin: 16px 20px 20px; padding: 11px 20px;
+      background: var(--blue); color: var(--white); border: none;
+      border-radius: 8px; width: calc(100% - 40px);
+      font-family: 'Inter', sans-serif; font-size: 0.88rem; font-weight: 600;
+      cursor: pointer; transition: background 0.15s, transform 0.1s;
+      letter-spacing: 0.02em; display: flex; align-items: center; justify-content: center; gap: 8px;
+    }
+    .add-to-cart:hover:not(:disabled) { background: var(--blue-mid); }
+    .add-to-cart:active:not(:disabled) { transform: scale(0.98); }
+    .add-to-cart:disabled { background: var(--border); color: var(--muted); cursor: not-allowed; }
+
+    /* Empty state */
+    .product-empty { grid-column: 1 / -1; text-align: center; padding: 80px 20px; color: var(--muted); }
+    .product-empty svg { margin-bottom: 16px; opacity: 0.3; display: block; margin-left: auto; margin-right: auto; }
+    .product-empty p { font-size: 0.9rem; }
+
+    /* ─────────────────────────────────────────────────────────────────────── */
+    /* CART TRIGGER (floating action button)                                   */
+    /* ─────────────────────────────────────────────────────────────────────── */
+    .cart-trigger {
+      position: fixed; bottom: 28px; right: 28px; z-index: 600;
+      background: var(--blue); color: var(--white); border: none; border-radius: 50px;
+      height: 52px; padding: 0 22px;
+      display: flex; align-items: center; gap: 10px;
+      font-family: 'Inter', sans-serif; font-size: 0.85rem; font-weight: 600;
+      cursor: pointer; box-shadow: 0 8px 24px rgba(29,79,161,0.4);
+      transition: background 0.15s, transform 0.2s, box-shadow 0.2s;
+    }
+    .cart-trigger:hover { background: var(--blue-mid); transform: translateY(-2px); box-shadow: 0 12px 32px rgba(29,79,161,0.5); }
+    .cart-count {
+      background: #e53e3e; color: #fff; font-size: 0.68rem; font-weight: 700;
+      min-width: 18px; height: 18px; border-radius: 9px;
+      display: flex; align-items: center; justify-content: center; padding: 0 4px;
+    }
+    .cart-trigger[data-empty="true"] { display: none; }
+
+    /* ─────────────────────────────────────────────────────────────────────── */
+    /* CART DRAWER                                                             */
+    /* ─────────────────────────────────────────────────────────────────────── */
+    .cart-overlay {
+      display: none; position: fixed; inset: 0;
+      background: rgba(15,27,45,0.45); z-index: 700;
+    }
+    .cart-overlay.open { display: block; }
+    .cart-drawer {
+      position: fixed; top: 0; right: 0; bottom: 0; width: min(420px, 100vw);
+      background: var(--white); z-index: 710;
+      transform: translateX(100%); transition: transform 0.3s cubic-bezier(0.4,0,0.2,1);
+      display: flex; flex-direction: column;
+      box-shadow: -8px 0 40px rgba(0,0,0,0.12);
+    }
+    .cart-drawer.open { transform: translateX(0); }
+    .cart-header {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 20px 24px; border-bottom: 1px solid var(--border); flex-shrink: 0;
+    }
+    .cart-header h2 { font-family: 'Familjen Grotesk', sans-serif; font-size: 1.25rem; font-weight: 600; color: var(--text); }
+    .cart-close {
+      background: var(--off); border: 1px solid var(--border); border-radius: 50%;
+      width: 34px; height: 34px; display: flex; align-items: center; justify-content: center;
+      cursor: pointer; font-size: 1rem; color: var(--mid); transition: background 0.15s;
+    }
+    .cart-close:hover { background: var(--border); }
+    .cart-items-wrap { flex: 1; overflow-y: auto; padding: 16px 24px; }
+    .cart-empty-state {
+      display: flex; flex-direction: column; align-items: center;
+      justify-content: center; height: 100%; gap: 12px; color: var(--muted);
+    }
+    .cart-empty-state svg { opacity: 0.3; }
+    .cart-empty-state p { font-size: 0.88rem; }
+
+    /* Cart item row */
+    .cart-item {
+      display: flex; gap: 14px; align-items: flex-start;
+      padding: 16px 0; border-bottom: 1px solid var(--border);
+    }
+    .cart-item:last-child { border-bottom: none; }
+    .cart-item-img {
+      width: 72px; height: 72px; border-radius: 10px;
+      overflow: hidden; background: var(--blue-pale); flex-shrink: 0;
+    }
+    .cart-item-img img { width: 100%; height: 100%; object-fit: cover; }
+    .cart-item-body { flex: 1; min-width: 0; }
+    .cart-item-name { font-family: 'Familjen Grotesk', sans-serif; font-size: 0.92rem; font-weight: 600; color: var(--text); line-height: 1.3; }
+    .cart-item-size { font-size: 0.75rem; color: var(--muted); margin-top: 2px; }
+    .cart-item-price { font-size: 0.88rem; color: var(--blue); font-weight: 600; margin-top: 4px; }
+    .qty-control { display: flex; align-items: center; margin-top: 10px; border: 1px solid var(--border); border-radius: 7px; overflow: hidden; width: fit-content; }
+    .qty-btn { background: var(--off); border: none; cursor: pointer; width: 30px; height: 30px; font-size: 1rem; color: var(--mid); display: flex; align-items: center; justify-content: center; transition: background 0.12s; }
+    .qty-btn:hover { background: var(--border); }
+    .qty-display { width: 36px; text-align: center; font-size: 0.85rem; font-weight: 600; color: var(--text); border-left: 1px solid var(--border); border-right: 1px solid var(--border); line-height: 30px; }
+    .cart-item-remove { background: none; border: none; color: var(--muted); cursor: pointer; font-size: 0.9rem; padding: 4px; transition: color 0.15s; flex-shrink: 0; margin-top: 2px; }
+    .cart-item-remove:hover { color: #e53e3e; }
+
+    /* Cart footer */
+    .cart-footer { padding: 20px 24px; border-top: 1px solid var(--border); background: var(--off); flex-shrink: 0; }
+    .cart-subtotal-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
+    .cart-subtotal-label { font-size: 0.82rem; color: var(--mid); font-weight: 500; }
+    .cart-subtotal-value { font-family: 'Familjen Grotesk', sans-serif; font-size: 1.25rem; font-weight: 600; color: var(--text); }
+    .cart-checkout-btn {
+      width: 100%; padding: 13px; background: var(--blue); color: var(--white);
+      border: none; border-radius: 10px; font-family: 'Inter', sans-serif;
+      font-size: 0.92rem; font-weight: 600; cursor: pointer; transition: background 0.15s;
+      display: flex; align-items: center; justify-content: center; gap: 8px;
+    }
+    .cart-checkout-btn:hover { background: var(--blue-mid); }
+    .cart-note { text-align: center; font-size: 0.72rem; color: var(--muted); margin-top: 10px; line-height: 1.5; }
+
+    /* ─────────────────────────────────────────────────────────────────────── */
+    /* CHECKOUT MODAL                                                          */
+    /* ─────────────────────────────────────────────────────────────────────── */
+    .checkout-backdrop {
+      display: none; position: fixed; inset: 0; z-index: 800;
+      background: rgba(15,27,45,0.72); backdrop-filter: blur(6px);
+      align-items: flex-start; justify-content: center;
+      padding: 24px; overflow-y: auto;
+    }
+    .checkout-backdrop.open { display: flex; }
+    .checkout-modal {
+      background: var(--white); border-radius: 18px;
+      width: 100%; max-width: 660px; margin: auto;
+      box-shadow: 0 32px 80px rgba(0,0,0,0.25);
+      animation: modalIn 0.28s cubic-bezier(0.34,1.56,0.64,1);
+      overflow: hidden;
+    }
+    @keyframes modalIn {
+      from { opacity: 0; transform: scale(0.94) translateY(12px); }
+      to   { opacity: 1; transform: none; }
+    }
+    .checkout-modal-header {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 20px 28px; border-bottom: 1px solid var(--border); background: var(--off);
+    }
+    .checkout-modal-header h2 { font-family: 'Familjen Grotesk', sans-serif; font-size: 1.3rem; font-weight: 600; color: var(--text); }
+    .checkout-modal-close {
+      background: none; border: 1px solid var(--border); border-radius: 50%;
+      width: 34px; height: 34px; display: flex; align-items: center; justify-content: center;
+      cursor: pointer; font-size: 1rem; color: var(--mid); transition: background 0.15s;
+    }
+    .checkout-modal-close:hover { background: var(--border); }
+    .checkout-body { padding: 28px; }
+    .checkout-intro { font-size: 0.82rem; color: var(--mid); line-height: 1.65; margin-bottom: 24px; }
+
+    /* Form fields */
+    .form-group { margin-bottom: 18px; }
+    .form-group label { display: block; font-size: 0.78rem; font-weight: 600; color: var(--mid); margin-bottom: 6px; letter-spacing: 0.03em; text-transform: uppercase; }
+    .form-group input, .form-group textarea {
+      width: 100%; padding: 11px 14px; border: 1px solid var(--border);
+      border-radius: 8px; font-family: 'Inter', sans-serif; font-size: 0.88rem;
+      color: var(--text); background: var(--white);
+      transition: border-color 0.15s, box-shadow 0.15s; outline: none;
+    }
+    .form-group input:focus, .form-group textarea:focus {
+      border-color: var(--blue); box-shadow: 0 0 0 3px rgba(29,79,161,0.1);
+    }
+    .form-group .field-hint { font-size: 0.72rem; color: var(--muted); margin-top: 5px; line-height: 1.5; }
+
+    /* Order summary box */
+    .checkout-summary {
+      background: var(--off); border: 1px solid var(--border);
+      border-radius: 10px; padding: 16px 20px; margin-bottom: 24px;
+    }
+    .checkout-summary h3 {
+      font-family: 'Familjen Grotesk', sans-serif; font-size: 0.72rem; font-weight: 700;
+      color: var(--muted); text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 12px;
+    }
+    .checkout-summary-item { display: flex; justify-content: space-between; font-size: 0.84rem; color: var(--text); margin-bottom: 7px; }
+    .checkout-summary-item .item-name { color: var(--mid); max-width: 70%; }
+    .checkout-summary-divider { border: none; border-top: 1px solid var(--border); margin: 10px 0; }
+    .checkout-summary-total { display: flex; justify-content: space-between; font-family: 'Familjen Grotesk', sans-serif; font-size: 1rem; font-weight: 600; color: var(--text); }
+
+    /* Submit button */
+    .checkout-submit {
+      width: 100%; padding: 13px; background: var(--blue); color: var(--white);
+      border: none; border-radius: 10px; font-family: 'Inter', sans-serif;
+      font-size: 0.92rem; font-weight: 600; cursor: pointer; transition: background 0.15s;
+      display: flex; align-items: center; justify-content: center; gap: 8px;
+      margin-top: 4px;
+    }
+    .checkout-submit:hover:not(:disabled) { background: var(--blue-mid); }
+    .checkout-submit:disabled { background: var(--border); color: var(--muted); cursor: not-allowed; }
+    .checkout-submit.loading { pointer-events: none; }
+    .checkout-submit.loading .btn-text { opacity: 0.6; }
+    .checkout-submit.loading::after {
+      content: ''; width: 16px; height: 16px;
+      border: 2px solid rgba(255,255,255,0.3); border-top-color: #fff;
+      border-radius: 50%; animation: spin 0.7s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .checkout-secure-note {
+      text-align: center; font-size: 0.72rem; color: var(--muted); margin-top: 10px;
+      display: flex; align-items: center; justify-content: center; gap: 5px; line-height: 1.5;
+    }
+
+    /* ─────────────────────────────────────────────────────────────────────── */
+    /* CONFIRMATION SCREEN                                                     */
+    /* ─────────────────────────────────────────────────────────────────────── */
+    .confirmation-screen { display: none; text-align: center; padding: 8px 0 4px; }
+    .confirmation-screen.visible { display: block; }
+    .confirm-check {
+      width: 72px; height: 72px; border-radius: 50%;
+      background: #f0fdf4; border: 3px solid #22c55e;
+      display: flex; align-items: center; justify-content: center;
+      margin: 0 auto 20px;
+      animation: checkPop 0.5s cubic-bezier(0.34,1.56,0.64,1) forwards;
+    }
+    @keyframes checkPop {
+      from { transform: scale(0); opacity: 0; }
+      to   { transform: scale(1); opacity: 1; }
+    }
+    .confirm-title { font-family: 'Familjen Grotesk', sans-serif; font-size: 1.6rem; font-weight: 600; color: var(--text); margin-bottom: 8px; letter-spacing: -0.01em; }
+    .confirm-subtitle { font-size: 0.88rem; color: var(--mid); line-height: 1.6; margin-bottom: 20px; }
+    .confirm-order-id {
+      background: var(--blue-pale); border: 1px solid rgba(29,79,161,0.2);
+      border-radius: 10px; padding: 14px 20px; margin-bottom: 16px;
+    }
+    .confirm-order-id .label { font-size: 0.7rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); margin-bottom: 4px; }
+    .confirm-order-id .id-value { font-family: 'Familjen Grotesk', sans-serif; font-size: 1.4rem; font-weight: 600; color: var(--blue); letter-spacing: 0.04em; }
+    .confirm-email-notice {
+      font-size: 0.82rem; color: var(--mid); margin-bottom: 20px;
+      display: flex; align-items: center; justify-content: center; gap: 6px;
+    }
+    .confirm-items-summary {
+      background: var(--off); border: 1px solid var(--border);
+      border-radius: 10px; padding: 16px 20px; text-align: left; margin-bottom: 24px;
+    }
+    .confirm-item-row { display: flex; justify-content: space-between; font-size: 0.83rem; color: var(--mid); margin-bottom: 6px; }
+    .confirm-item-row:last-child { margin-bottom: 0; }
+    .confirm-total-row { display: flex; justify-content: space-between; font-size: 0.9rem; font-weight: 600; color: var(--text); padding-top: 10px; margin-top: 8px; border-top: 1px solid var(--border); }
+    .confirm-close-btn {
+      padding: 11px 28px; background: var(--blue-pale);
+      color: var(--blue); border: 1px solid rgba(29,79,161,0.2);
+      border-radius: 8px; font-family: 'Inter', sans-serif;
+      font-size: 0.88rem; font-weight: 600; cursor: pointer; transition: background 0.15s, color 0.15s;
+    }
+    .confirm-close-btn:hover { background: var(--blue); color: var(--white); }
+
+    /* ─────────────────────────────────────────────────────────────────────── */
+    /* TOAST NOTIFICATION                                                      */
+    /* ─────────────────────────────────────────────────────────────────────── */
+    .toast {
+      position: fixed; bottom: 96px; right: 28px; z-index: 9999;
+      background: var(--dark); color: var(--white);
+      padding: 12px 18px; border-radius: 10px;
+      font-size: 0.84rem; font-weight: 500;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.25);
+      transform: translateY(20px); opacity: 0;
+      transition: transform 0.28s, opacity 0.28s; pointer-events: none;
+      display: flex; align-items: center; gap: 8px; max-width: 300px;
+    }
+    .toast.show { transform: translateY(0); opacity: 1; }
+    .toast.success { border-left: 4px solid #22c55e; }
+    .toast.error   { border-left: 4px solid #e53e3e; }
+
+    /* ─────────────────────────────────────────────────────────────────────── */
+    /* RESPONSIVE                                                              */
+    /* ─────────────────────────────────────────────────────────────────────── */
+    @media (max-width: 960px) {
+      .product-grid { grid-template-columns: repeat(2, 1fr); }
+      .shop-hero { padding: 48px 40px 40px; }
+      .shop-section { padding: 36px 28px 60px; }
+      .shop-filter-bar { padding: 0 28px; }
+      footer { padding: 36px 40px 28px; }
+      .footer-top { grid-template-columns: 1fr 1fr; gap: 28px; }
+    }
+    @media (max-width: 768px) {
+      nav.sitenav { padding: 0 16px; }
+      .nav-links, .nav-resources { display: none; }
+      .shop-hero { padding: 36px 24px 32px; }
+      .shop-section { padding: 28px 20px 60px; }
+      .shop-filter-bar { padding: 0 20px; }
+      .cart-drawer { width: 100vw; }
+      .checkout-body { padding: 20px; }
+      footer { padding: 36px 24px 28px; }
+      .footer-top { grid-template-columns: 1fr; gap: 24px; }
+      .footer-bottom { flex-direction: column; gap: 6px; text-align: center; }
+      .footer-col p, .footer-col address { padding-right: 0; }
+    }
+    @media (max-width: 480px) {
+      .product-grid { grid-template-columns: 1fr; }
+      .cart-trigger { bottom: 16px; right: 16px; }
+      .toast { bottom: 84px; right: 16px; left: 16px; max-width: unset; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- Banner -->
+<div class="banner">Website is currently under maintenance. Some features may be non-functional.</div>
+
+<!-- Nav -->
+<nav class="sitenav">
+  <a href="index.html" class="nav-logo">
+    <img class="nav-logo-mark" src="assets/images/BHSSshield_100x97.png" alt="BHSS Logo">
+    <div class="nav-logo-text">Bachelor of Health Sciences Society<span>McMaster University</span></div>
+  </a>
+  <ul class="nav-links">
+    <li><a href="index.html">Home</a></li>
+    <li class="has-drop">
+      <a href="announcements.html">Announcements</a>
+      <div class="drop">
+        <a href="announcements.html">All Announcements</a>
+        <a href="announcements.html?filter=Academics">Academics</a>
+        <a href="announcements.html?filter=External">External</a>
+        <a href="announcements.html?filter=General">General</a>
+        <a href="announcements.html?filter=Finance">Finance</a>
+        <a href="announcements.html?filter=Internal">Internal</a>
+        <a href="announcements.html?filter=Social">Social</a>
+        <a href="announcements.html?filter=Elections">Elections</a>
+      </div>
+    </li>
+    <li class="has-drop">
+      <a href="committees.html">Committees</a>
+      <div class="drop">
+        <a href="committees.html">All Committees</a>
+        <a href="committeepages/aca_committee.html">Academics</a>
+        <a href="committeepages/soc_committee.html">Social</a>
+        <a href="committeepages/int_committee.html">Internal</a>
+        <a href="committeepages/ext_committee.html">External</a>
+        <a href="committeepages/fin_committee.html">Financial</a>
+        <a href="committeepages/log_committee.html">Logistics &amp; Elections</a>
+        <a href="committeepages/com_committee.html">Communications</a>
+        <a href="committeepages/chr_committee.html">Chair</a>
+        <a href="committeepages/edi_committee.html">Equity, Diversity &amp; Inclusion</a>
+        <a href="committeepages/wwc_committee.html">Welcome Week</a>
+        <div class="has-sidedrop">
+          <a href="#">Year Councils</a>
+          <div class="sidedrop">
+            <a href="committeepages/fyc_committee.html">First Year Council</a>
+            <a href="committeepages/syc_committee.html">Second Year Council</a>
+            <a href="committeepages/tyc_committee.html">Third Year Council</a>
+            <a href="committeepages/4yc_committee.html">Fourth Year Council</a>
+          </div>
+        </div>
+      </div>
+    </li>
+    <li><a href="resources.html">Resources</a></li>
+    <li><a href="shop.html" class="active">Merch</a></li>
+    <li><a href="bags.html">BAGs</a></li>
+    <li><a href="about.html">About Us</a></li>
+  </ul>
+  <div class="nav-resources">
+    <a href="resources.html">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
+      Academic Resources
+    </a>
+  </div>
+  <button class="hamburger" aria-label="Open menu"><span></span><span></span><span></span></button>
+</nav>
+
+<!-- Shop Hero -->
+<div class="shop-hero">
+  <div class="sq sq1"></div>
+  <div class="sq sq2"></div>
+  <div class="sq sq3"></div>
+  <div class="sq sq4"></div>
+  <div class="sq sq5"></div>
+  <h1>BHSS Merch</h1>
+  <p>Rep your Health Sci pride. All proceeds go directly back to supporting BHSS programming and events.</p>
+</div>
+
+<!-- Filter Bar -->
+<div class="shop-filter-bar">
+  <button class="shop-filter-btn active" data-filter="All">All Items</button>
+  <button class="shop-filter-btn" data-filter="Tops">Tops</button>
+  <button class="shop-filter-btn" data-filter="Accessories">Accessories</button>
+  <button class="shop-filter-btn" data-filter="New">Featured</button>
+</div>
+
+<!-- Product Grid -->
+<div class="shop-section">
+  <div class="product-grid" id="productGrid">
+    <!-- Rendered by JS -->
+  </div>
+</div>
+
+<!-- Cart Trigger (floating) -->
+<button class="cart-trigger" id="cartTrigger" data-empty="true" aria-label="View cart">
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+    <circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/>
+    <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/>
+  </svg>
+  Cart
+  <span class="cart-count" id="cartCount">0</span>
+</button>
+
+<!-- Cart Overlay -->
+<div class="cart-overlay" id="cartOverlay"></div>
+
+<!-- Cart Drawer -->
+<div class="cart-drawer" id="cartDrawer" role="dialog" aria-label="Shopping cart">
+  <div class="cart-header">
+    <h2>Your Cart</h2>
+    <button class="cart-close" id="cartClose" aria-label="Close cart">✕</button>
+  </div>
+  <div class="cart-items-wrap" id="cartItemsWrap"></div>
+  <div class="cart-footer" id="cartFooter" style="display:none">
+    <div class="cart-subtotal-row">
+      <span class="cart-subtotal-label">Subtotal</span>
+      <span class="cart-subtotal-value" id="cartSubtotal">$0.00</span>
+    </div>
+    <button class="cart-checkout-btn" id="cartCheckoutBtn">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+        <path d="M5 12h14M12 5l7 7-7 7"/>
+      </svg>
+      Proceed to Checkout
+    </button>
+    <p class="cart-note">No payment collected here — you'll be contacted to confirm your order and arrange payment.</p>
+  </div>
+</div>
+
+<!-- Checkout Modal -->
+<div class="checkout-backdrop" id="checkoutBackdrop" role="dialog" aria-modal="true" aria-label="Checkout">
+  <div class="checkout-modal" id="checkoutModal">
+    <div class="checkout-modal-header">
+      <h2 id="checkoutModalTitle">Complete Your Order</h2>
+      <button class="checkout-modal-close" id="checkoutModalClose" aria-label="Close checkout">✕</button>
+    </div>
+    <div class="checkout-body">
+
+      <!-- FORM VIEW -->
+      <div id="checkoutFormView">
+        <p class="checkout-intro">Fill in your details below. Your order will be submitted to the BHSS team, who will confirm availability and reach out to arrange payment and pickup.</p>
+
+        <!-- Order summary -->
+        <div class="checkout-summary" id="checkoutSummary">
+          <h3>Order Summary</h3>
+        </div>
+
+        <!-- Buyer fields -->
+        <div class="form-group">
+          <label for="buyerName">Full Name</label>
+          <input type="text" id="buyerName" placeholder="Jane Smith" autocomplete="name" />
+        </div>
+        <div class="form-group">
+          <label for="buyerEmail">McMaster Email</label>
+          <input type="email" id="buyerEmail" placeholder="smithj@mcmaster.ca" autocomplete="email" />
+          <p class="field-hint">Use your @mcmaster.ca address. Order confirmation will be sent here.</p>
+        </div>
+        <div class="form-group">
+          <label for="buyerMacId">Mac ID — Last 4 Digits</label>
+          <input type="text" id="buyerMacId" placeholder="e.g. 7842" maxlength="4" inputmode="numeric" pattern="[0-9]{4}" />
+          <p class="field-hint">Used for order lookup only. We only need the last 4 digits of your student number.</p>
+        </div>
+        <div class="form-group">
+          <label for="buyerNotes">Notes (optional)</label>
+          <textarea id="buyerNotes" rows="2" placeholder="Pickup preferences, questions, etc."></textarea>
+        </div>
+
+        <button class="checkout-submit" id="checkoutSubmitBtn" type="button">
+          <span class="btn-text">Place Order</span>
+        </button>
+        <p class="checkout-secure-note">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+            <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+          </svg>
+          No payment collected here. BHSS will contact you to arrange e-transfer or in-person payment.
+        </p>
+      </div><!-- /checkoutFormView -->
+
+      <!-- CONFIRMATION VIEW -->
+      <div class="confirmation-screen" id="confirmationScreen">
+        <div class="confirm-check">
+          <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#22c55e" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="20 6 9 17 4 12"/>
+          </svg>
+        </div>
+        <div class="confirm-title">Order Submitted!</div>
+        <div class="confirm-subtitle">Your order has been received by BHSS. We'll reach out to <strong id="confirmEmailDisplay"></strong> to confirm and arrange payment.</div>
+        <div class="confirm-order-id">
+          <div class="label">Your Order Reference</div>
+          <div class="id-value" id="confirmOrderId"></div>
+        </div>
+        <div class="confirm-email-notice">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/>
+          </svg>
+          Confirmation sent to your email
+        </div>
+        <div class="confirm-items-summary" id="confirmItemsSummary"></div>
+        <button class="confirm-close-btn" id="confirmCloseBtn">Continue Shopping</button>
+      </div><!-- /confirmationScreen -->
+
+    </div><!-- /checkout-body -->
+  </div><!-- /checkout-modal -->
+</div><!-- /checkout-backdrop -->
+
+<!-- Toast -->
+<div class="toast" id="toast" role="alert" aria-live="polite"></div>
+
+<!-- Footer -->
+<footer>
+  <div class="footer-top">
+    <div class="footer-brand">
+      <p class="pre">McMaster</p>
+      <h3>BACHELOR OF HEALTH<br>SCIENCES SOCIETY</h3>
+      <p class="desc">The McMaster Bachelor of Health Sciences Society recognizes that McMaster University sits on the traditional territories of the Haudenosaunee Confederacy and the Anishinaabe Nations, which is recognized by the "Dish With One Spoon" wampum agreement. <a href="#">Click here to learn more.</a></p>
+    </div>
+    <div class="footer-col">
+      <h4>Legal</h4>
+      <a href="#">Terms of Use</a><br>
+      <a href="#">Privacy Policy</a>
+    </div>
+    <div class="footer-col">
+      <h4>Office</h4>
+      <address>MDCL 3308, McMaster University<br>1280 Main Street West<br>Hamilton, ON&nbsp; L8S 4K1</address>
+    </div>
+    <div class="footer-col">
+      <h4>Contact</h4>
+      <p>Questions about your order? Email <a href="mailto:bhsscom@mcmaster.ca" style="color:rgba(255,255,255,0.55);text-decoration:underline">bhsscom@mcmaster.ca</a> with your order reference number.</p>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span>© 2026 McMaster Bachelor of Health Sciences Society</span>
+    <span>Built by BHSS Communications Committee</span>
+  </div>
+</footer>
+
+<!-- Data -->
+<script src="shop-data.js"></script>
+
+<script>
+/* =============================================================================
+   BHSS SHOP — JavaScript
+   All shop logic is here, before mobile-nav.js.
+   ============================================================================= */
+
+// ── EMAILJS CONFIGURATION ────────────────────────────────────────────────────
+// After setting up EmailJS (emailjs.com), replace these placeholders:
+const EMAILJS_PUBLIC_KEY      = 'YOUR_PUBLIC_KEY';       // Account → API Keys
+const EMAILJS_SERVICE_ID      = 'YOUR_SERVICE_ID';       // Email Services
+const EMAILJS_TEMPLATE_BUYER  = 'YOUR_BUYER_TEMPLATE_ID'; // buyer confirmation
+const EMAILJS_TEMPLATE_ADMIN  = 'YOUR_ADMIN_TEMPLATE_ID'; // admin notification
+const ADMIN_EMAIL             = 'bhsscom@mcmaster.ca';
+// ─────────────────────────────────────────────────────────────────────────────
+
+
+// ── CART STATE ────────────────────────────────────────────────────────────────
+// cart.items = [{ key, productId, name, price, size, qty, image }]
+const cart = {
+  items: [],
+
+  init() {
+    try {
+      const saved = sessionStorage.getItem('bhss_cart');
+      if (saved) this.items = JSON.parse(saved);
+    } catch (e) { this.items = []; }
+  },
+
+  _save() {
+    try { sessionStorage.setItem('bhss_cart', JSON.stringify(this.items)); } catch (e) {}
+  },
+
+  add(product, size, qty = 1) {
+    const key = product.id + '__' + (size || 'nosize');
+    const existing = this.items.find(i => i.key === key);
+    if (existing) {
+      existing.qty += qty;
+    } else {
+      this.items.push({ key, productId: product.id, name: product.name, price: product.price, size: size || null, qty, image: product.image || null });
+    }
+    this._save();
+    _renderCart();
+    _updateTrigger();
+  },
+
+  remove(key) {
+    this.items = this.items.filter(i => i.key !== key);
+    this._save(); _renderCart(); _updateTrigger();
+  },
+
+  setQty(key, qty) {
+    if (qty <= 0) { this.remove(key); return; }
+    const item = this.items.find(i => i.key === key);
+    if (item) { item.qty = qty; this._save(); _renderCart(); _updateTrigger(); }
+  },
+
+  get total() { return this.items.reduce((s, i) => s + i.price * i.qty, 0); },
+  get count()  { return this.items.reduce((s, i) => s + i.qty, 0); },
+
+  clear() { this.items = []; this._save(); _renderCart(); _updateTrigger(); }
+};
+
+
+// ── ORDER STORAGE ─────────────────────────────────────────────────────────────
+function _generateOrderId() {
+  const year = new Date().getFullYear();
+  const key  = 'bhss_order_counter_' + year;
+  const n    = (parseInt(localStorage.getItem(key) || '0', 10)) + 1;
+  localStorage.setItem(key, n);
+  return 'BHSS-' + year + '-' + String(n).padStart(4, '0');
+}
+
+function _saveOrder(order) {
+  let orders = [];
+  try { orders = JSON.parse(localStorage.getItem('bhss_orders') || '[]'); } catch (e) {}
+  orders.unshift(order);
+  try { localStorage.setItem('bhss_orders', JSON.stringify(orders)); } catch (e) {}
+}
+
+
+// ── PRODUCT RENDERING ─────────────────────────────────────────────────────────
+let _activeFilter = 'All';
+
+function renderProducts(filter) {
+  _activeFilter = filter;
+  const grid = document.getElementById('productGrid');
+  const all  = window.BHSS_PRODUCTS || [];
+  const list = all.filter(p =>
+    filter === 'All'  ? true :
+    filter === 'New'  ? p.featured :
+    p.category === filter
+  );
+
+  if (!list.length) {
+    grid.innerHTML = `<div class="product-empty">
+      <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1">
+        <circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/>
+        <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/>
+      </svg>
+      <p>No items in this category yet — check back soon!</p>
+    </div>`;
+    return;
+  }
+
+  grid.innerHTML = list.map(_buildCard).join('');
+
+  // Wire Add to Cart buttons
+  grid.querySelectorAll('.add-to-cart[data-product-id]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const pid     = btn.dataset.productId;
+      const product = (window.BHSS_PRODUCTS || []).find(p => p.id === pid);
+      if (!product || product.stock === 'out') return;
+
+      const card     = btn.closest('.product-card');
+      const hasSizes = product.sizes && product.sizes.length > 0;
+      const chosen   = hasSizes ? card.querySelector('input[name="size-' + pid + '"]:checked') : null;
+
+      if (hasSizes && !chosen) {
+        const sel = card.querySelector('.size-selector');
+        sel.style.animation = 'none';
+        void sel.offsetHeight; // force reflow
+        sel.style.animation = 'shakePulse 0.4s ease';
+        showToast('Please select a size', 'error');
+        return;
+      }
+
+      cart.add(product, chosen ? chosen.value : null);
+      openCart();
+      showToast(product.name + ' added to cart ✓', 'success');
+    });
+  });
+}
+
+function _buildCard(p) {
+  const stockClass = p.stock === 'in' ? 'in' : p.stock === 'low' ? 'low' : 'out';
+  const stockLabel = p.stock === 'in' ? 'In Stock' : p.stock === 'low' ? 'Low Stock' : 'Sold Out';
+  const isOut      = p.stock === 'out';
+  const hasSizes   = p.sizes && p.sizes.length > 0;
+
+  const imgInner = p.image
+    ? `<img src="${p.image}" alt="${p.name}" loading="lazy"
+         onerror="this.replaceWith(Object.assign(document.createElement('div'),{className:'product-img-placeholder',innerHTML:'<svg width=40 height=40 viewBox=\\'0 0 24 24\\' fill=none stroke=\\'#8899bb\\' stroke-width=1><rect x=3 y=3 width=18 height=18 rx=2/><circle cx=8.5 cy=8.5 r=1.5/><polyline points=\\'21 15 16 10 5 21\\'/></svg>'}))">`
+    : `<div class="product-img-placeholder"><svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#8899bb" stroke-width="1"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg></div>`;
+
+  const sizesHtml = hasSizes
+    ? `<div class="size-selector">${p.sizes.map(s =>
+        `<input type="radio" name="size-${p.id}" id="sz-${p.id}-${s}" value="${s}"${isOut ? ' disabled' : ''}>
+         <label for="sz-${p.id}-${s}">${s}</label>`
+      ).join('')}</div>`
+    : '';
+
+  return `<div class="product-card">
+  <div class="product-img-wrap">
+    ${imgInner}
+    <span class="stock-badge ${stockClass}">${stockLabel}</span>
+    ${p.featured ? '<span class="product-featured-pill">Featured</span>' : ''}
+  </div>
+  <div class="product-info">
+    <h3 class="product-name">${p.name}</h3>
+    <p class="product-desc">${p.description}</p>
+    <div class="product-price"><sup>$</sup>${p.price.toFixed(2)}</div>
+    ${sizesHtml}
+  </div>
+  <button class="add-to-cart" data-product-id="${p.id}"${isOut ? ' disabled' : ''}>
+    ${isOut
+      ? 'Sold Out'
+      : `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg> Add to Cart`}
+  </button>
+</div>`;
+}
+
+
+// ── CART DRAWER ───────────────────────────────────────────────────────────────
+function _renderCart() {
+  const wrap    = document.getElementById('cartItemsWrap');
+  const footer  = document.getElementById('cartFooter');
+  const subtotal = document.getElementById('cartSubtotal');
+
+  if (!cart.items.length) {
+    wrap.innerHTML = `<div class="cart-empty-state">
+      <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1">
+        <circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/>
+        <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/>
+      </svg>
+      <p>Your cart is empty</p>
+    </div>`;
+    footer.style.display = 'none';
+    return;
+  }
+
+  wrap.innerHTML = cart.items.map(item => `
+  <div class="cart-item">
+    <div class="cart-item-img">
+      ${item.image
+        ? `<img src="${item.image}" alt="${item.name}" loading="lazy">`
+        : `<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;background:var(--blue-pale)"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#8899bb" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg></div>`}
+    </div>
+    <div class="cart-item-body">
+      <div class="cart-item-name">${item.name}</div>
+      ${item.size ? `<div class="cart-item-size">Size: ${item.size}</div>` : ''}
+      <div class="cart-item-price">$${(item.price * item.qty).toFixed(2)}</div>
+      <div class="qty-control">
+        <button class="qty-btn qty-minus" data-key="${item.key}" aria-label="Decrease quantity">−</button>
+        <div class="qty-display">${item.qty}</div>
+        <button class="qty-btn qty-plus"  data-key="${item.key}" aria-label="Increase quantity">+</button>
+      </div>
+    </div>
+    <button class="cart-item-remove" data-key="${item.key}" aria-label="Remove item">✕</button>
+  </div>`).join('');
+
+  wrap.querySelectorAll('.qty-minus').forEach(b => b.addEventListener('click', () => {
+    const item = cart.items.find(i => i.key === b.dataset.key);
+    if (item) cart.setQty(b.dataset.key, item.qty - 1);
+  }));
+  wrap.querySelectorAll('.qty-plus').forEach(b => b.addEventListener('click', () => {
+    const item = cart.items.find(i => i.key === b.dataset.key);
+    if (item) cart.setQty(b.dataset.key, item.qty + 1);
+  }));
+  wrap.querySelectorAll('.cart-item-remove').forEach(b => b.addEventListener('click', () => cart.remove(b.dataset.key)));
+
+  subtotal.textContent = '$' + cart.total.toFixed(2);
+  footer.style.display = 'block';
+}
+
+function _updateTrigger() {
+  const t = document.getElementById('cartTrigger');
+  const c = document.getElementById('cartCount');
+  t.dataset.empty = cart.count === 0 ? 'true' : 'false';
+  c.textContent   = cart.count;
+}
+
+function openCart() {
+  document.getElementById('cartDrawer').classList.add('open');
+  document.getElementById('cartOverlay').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+function closeCart() {
+  document.getElementById('cartDrawer').classList.remove('open');
+  document.getElementById('cartOverlay').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+
+// ── CHECKOUT MODAL ────────────────────────────────────────────────────────────
+function openCheckout() {
+  closeCart();
+
+  // Populate summary
+  const summary = document.getElementById('checkoutSummary');
+  summary.innerHTML = `<h3>Order Summary</h3>
+    ${cart.items.map(i => `
+    <div class="checkout-summary-item">
+      <span class="item-name">${i.name}${i.size ? ' (' + i.size + ')' : ''} × ${i.qty}</span>
+      <span>$${(i.price * i.qty).toFixed(2)}</span>
+    </div>`).join('')}
+    <hr class="checkout-summary-divider">
+    <div class="checkout-summary-total"><span>Total</span><span>$${cart.total.toFixed(2)}</span></div>`;
+
+  // Reset to form view
+  document.getElementById('checkoutFormView').style.display = 'block';
+  document.getElementById('confirmationScreen').classList.remove('visible');
+  document.getElementById('checkoutModalTitle').textContent = 'Complete Your Order';
+  ['buyerName','buyerEmail','buyerMacId','buyerNotes'].forEach(id => { document.getElementById(id).value = ''; });
+
+  document.getElementById('checkoutBackdrop').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+function closeCheckout() {
+  document.getElementById('checkoutBackdrop').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+
+// ── TOAST ─────────────────────────────────────────────────────────────────────
+let _toastTimer;
+function showToast(msg, type) {
+  const el = document.getElementById('toast');
+  el.textContent = msg;
+  el.className   = 'toast ' + (type || 'success') + ' show';
+  clearTimeout(_toastTimer);
+  _toastTimer = setTimeout(() => { el.className = 'toast'; }, 3200);
+}
+
+
+// ── FORM SUBMIT ───────────────────────────────────────────────────────────────
+document.getElementById('checkoutSubmitBtn').addEventListener('click', async () => {
+  const name  = document.getElementById('buyerName').value.trim();
+  const email = document.getElementById('buyerEmail').value.trim();
+  const macId = document.getElementById('buyerMacId').value.trim();
+  const notes = document.getElementById('buyerNotes').value.trim();
+
+  if (!name)                         { showToast('Please enter your name', 'error');         document.getElementById('buyerName').focus();   return; }
+  if (!email || !email.includes('@')){ showToast('Please enter a valid email', 'error');     document.getElementById('buyerEmail').focus();  return; }
+  if (!/^\d{4}$/.test(macId))        { showToast('Enter the last 4 digits of your Mac ID', 'error'); document.getElementById('buyerMacId').focus();  return; }
+
+  const orderId   = _generateOrderId();
+  const itemsText = cart.items.map(i => `${i.name}${i.size ? ' (' + i.size + ')' : ''} ×${i.qty} — $${(i.price * i.qty).toFixed(2)}`).join('\n');
+  const total     = cart.total.toFixed(2);
+
+  const btn = document.getElementById('checkoutSubmitBtn');
+  btn.disabled  = true;
+  btn.classList.add('loading');
+
+  // ── EmailJS send ──────────────────────────────────────────────────────────
+  // Remove the guard below and fill in EMAILJS_* constants above to enable.
+  const emailJsConfigured = EMAILJS_PUBLIC_KEY !== 'YOUR_PUBLIC_KEY';
+
+  if (emailJsConfigured) {
+    try {
+      emailjs.init(EMAILJS_PUBLIC_KEY);
+      const params = {
+        to_name:      name,
+        to_email:     email,
+        order_id:     orderId,
+        items_list:   itemsText,
+        order_total:  '$' + total,
+        mac_id_last4: macId,
+        buyer_notes:  notes || 'None',
+        admin_email:  ADMIN_EMAIL
+      };
+      await emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_BUYER, { ...params, to_email: email });
+      await emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ADMIN, { ...params, to_email: ADMIN_EMAIL });
+    } catch (err) {
+      console.warn('EmailJS failed — order still recorded locally.', err);
+    }
+  }
+  // ─────────────────────────────────────────────────────────────────────────
+
+  // Save order to localStorage
+  _saveOrder({ orderId, name, email, macId, notes, items: [...cart.items], total: cart.total, submittedAt: new Date().toISOString(), status: 'pending' });
+
+  // Show confirmation screen
+  document.getElementById('checkoutFormView').style.display = 'none';
+  document.getElementById('confirmationScreen').classList.add('visible');
+  document.getElementById('checkoutModalTitle').textContent = 'Order Confirmed';
+  document.getElementById('confirmOrderId').textContent = orderId;
+  document.getElementById('confirmEmailDisplay').textContent = email;
+
+  document.getElementById('confirmItemsSummary').innerHTML =
+    cart.items.map(i => `<div class="confirm-item-row"><span>${i.name}${i.size ? ' (' + i.size + ')' : ''} × ${i.qty}</span><span>$${(i.price * i.qty).toFixed(2)}</span></div>`).join('') +
+    `<div class="confirm-total-row"><span>Total</span><span>$${total}</span></div>`;
+
+  cart.clear();
+
+  btn.disabled = false;
+  btn.classList.remove('loading');
+
+  // NOTE — Phase 2 Stripe upgrade:
+  // Replace the EmailJS block and _saveOrder call above with:
+  //
+  //   const res = await fetch('/.netlify/functions/create-checkout', {
+  //     method: 'POST',
+  //     headers: { 'Content-Type': 'application/json' },
+  //     body: JSON.stringify({ items: cart.items, buyerEmail: email, buyerName: name, macId, notes })
+  //   });
+  //   const { url } = await res.json();
+  //   window.location.href = url;  // Stripe Checkout handles everything from here
+});
+
+
+// ── FILTER BAR ────────────────────────────────────────────────────────────────
+document.querySelectorAll('.shop-filter-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.shop-filter-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    renderProducts(btn.dataset.filter);
+  });
+});
+
+
+// ── EVENT WIRING ──────────────────────────────────────────────────────────────
+document.getElementById('cartTrigger').addEventListener('click', openCart);
+document.getElementById('cartClose').addEventListener('click', closeCart);
+document.getElementById('cartOverlay').addEventListener('click', closeCart);
+document.getElementById('cartCheckoutBtn').addEventListener('click', openCheckout);
+document.getElementById('checkoutModalClose').addEventListener('click', closeCheckout);
+document.getElementById('checkoutBackdrop').addEventListener('click', e => { if (e.target === e.currentTarget) closeCheckout(); });
+document.getElementById('confirmCloseBtn').addEventListener('click', () => { closeCheckout(); renderProducts(_activeFilter); });
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') { closeCart(); closeCheckout(); }
+});
+
+// Handle Stripe success redirect (Phase 2)
+(function () {
+  const p = new URLSearchParams(window.location.search);
+  if (p.get('order') === 'success') {
+    showToast('Payment received! Check your email for confirmation.', 'success');
+    history.replaceState({}, '', window.location.pathname);
+  }
+  if (p.get('order') === 'cancelled') {
+    showToast('Checkout cancelled — your cart is still here.', 'error');
+    history.replaceState({}, '', window.location.pathname);
+  }
+})();
+
+
+// ── INIT ──────────────────────────────────────────────────────────────────────
+cart.init();
+renderProducts('All');
+_renderCart();
+_updateTrigger();
+</script>
+
+<script src="mobile-nav.js"></script>
+</body>
+</html>
