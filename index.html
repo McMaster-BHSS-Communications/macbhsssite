@@ -510,7 +510,7 @@
       </div>
     </li>
     <li><a href="resources.html">Resources</a></li>
-    <li><a href="shop.html">Merch</a></li>
+    <li><a href="shop.html">Store</a></li>
     <li><a href="bags.html">BAGs</a></li>
     <li><a href="about.html">About Us</a></li>
   </ul>
@@ -583,7 +583,9 @@
 <div class="discover-section">
   <div class="discover-grid">
     <div class="d-card">
-      <div class="d-card-icon"></div>
+      <div>
+        <svg width="30" height="30" viewBox="0 0 24 24" fill="#2e69c9" stroke-width="1.5"><path d="M10 10V5H15V10H20V15H15V20H10V15H5V10Z"/></svg>
+      </div>
       <h3>BHSS Committees</h3>
       <p>Learn more about the committees that make up BHSS, including Academics, Communications, EDI, External, Finance, Internal, Logistics & Elections, Social, and Welcome Week, as well as our Year Councils.</p>
       <a class="d-link" href="committees.html">Learn More →</a>
@@ -696,23 +698,34 @@ document.getElementById('igNextBtn').addEventListener('click', () => {
 });
 
 </script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="supabase-client.js"></script>
 <script src="announcements-data.js"></script>
 <script>
 // ── Home page announcements panel ──
-(function () {
-  function loadAnnouncements() {
-    const base = window.BHSS_ANNOUNCEMENTS || [];
-    let local = [];
-    try { local = JSON.parse(localStorage.getItem('bhss_announcements') || '[]'); } catch (e) {}
-    const merged = [...base];
-    local.forEach(item => {
-      if (!merged.find(a => a.id === item.id)) merged.push(item);
-    });
-    return merged.sort((a, b) => new Date(b.date) - new Date(a.date));
+(async function () {
+  async function loadAnnouncements() {
+    try {
+      const { data, error } = await window.db
+        .from('announcements')
+        .select('*')
+        .order('pinned', { ascending: false })
+        .order('date', { ascending: false });
+      if (error || !data) throw error;
+      return data.map(row => ({
+        id: row.id, title: row.title, category: row.category,
+        author: row.author, date: row.date, readTime: row.read_time,
+        excerpt: row.excerpt, body: row.body, image: row.image,
+        views: row.views, pinned: row.pinned
+      }));
+    } catch (err) {
+      console.warn('Supabase unavailable, using static fallback:', err);
+      return (window.BHSS_ANNOUNCEMENTS || []).sort((a, b) => new Date(b.date) - new Date(a.date));
+    }
   }
 
   function formatDate(str) {
-    const d = new Date(str + 'T00:00:00');
+    const d = new Date(str);
     return d.toLocaleDateString('en-CA', { year: 'numeric', month: 'long', day: 'numeric' });
   }
 
@@ -764,7 +777,7 @@ document.getElementById('igNextBtn').addEventListener('click', () => {
   document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
 
   // Render the top 2 announcements into the panel
-  const announcements = loadAnnouncements();
+  const announcements = await loadAnnouncements();
   const container = document.getElementById('annPanelCards');
   announcements.slice(0, 2).forEach(ann => {
     const card = document.createElement('div');

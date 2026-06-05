@@ -38,7 +38,7 @@
     </div>
     <a href="${root}committees.html">Committees</a>
     <a href="${root}resources.html">Resources</a>
-    <a href="${root}shop.html">Merch</a>
+    <a href="${root}shop.html">Store</a>
     <a href="${root}bags.html">BAGs</a>
     <a href="${root}about.html">About Us</a>
     <div class="mob-cta"><a href="${root}resources.html">Academic Resources</a></div>

@@ -355,7 +355,7 @@
       <div class="sidebar-label" style="margin-top:24px">Store</div>
       <a class="sidebar-link" href="admin-orders.html">
         <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
-        Merch Orders
+        Store Orders
       </a>
 
       <div class="sidebar-label" style="margin-top:24px">Site</div>
@@ -484,17 +484,12 @@
         </div>
       </div>
       <div class="export-card">
-        <h3>How the data system works</h3>
+        <h3>Data is live in Supabase</h3>
         <p>
-          Announcements published through this admin panel are saved to this browser's <strong>localStorage</strong> — they're visible on this computer immediately,
-          but won't appear on other devices or after clearing browser data.<br><br>
-          To make an announcement <strong>permanent</strong> (visible to all visitors), copy the exported JS below and paste it into the 
-          <code style="background:var(--off);padding:2px 5px;border-radius:3px;font-size:0.8rem">announcements-data.js</code> file, 
-          then re-deploy the site. In the future this can be connected to a live database (Supabase, Firebase) to skip this step.
+          Announcements published through this admin panel are saved directly to your <strong>Supabase database</strong> and are immediately visible to all visitors on every device — no export needed.<br><br>
+          To view, edit, or delete data directly in the database, visit your
+          <a href="https://supabase.com/dashboard/project/lnqbcatlepeagnjmktpk/editor" target="_blank" style="color:var(--blue);font-weight:600">Supabase Table Editor ↗</a>
         </p>
-        <button class="btn-primary" style="width:auto;padding:10px 24px;margin-bottom:20px" onclick="generateExport()">Generate Export</button>
-        <div class="export-code" id="exportCode">Click "Generate Export" to see the data file content.</div>
-        <button class="btn-secondary" onclick="copyExport()">Copy to Clipboard</button>
       </div>
     </div>
 
@@ -507,17 +502,12 @@
         </div>
       </div>
       <div class="export-card">
-        <h3>How member data works</h3>
+        <h3>Data is live in Supabase</h3>
         <p>
-          Members and resources added through this admin panel are saved to this browser's <strong>localStorage</strong> — they're visible on this computer immediately,
-          but won't appear on other devices or after clearing browser data.<br><br>
-          To make members <strong>permanent</strong> (visible to all visitors), click Generate Export, then replace the contents of
-          <code style="background:var(--off);padding:2px 5px;border-radius:3px;font-size:0.8rem">members-data.js</code>
-          with the code below and re-deploy the site.
+          Members and resources added through this admin panel are saved directly to your <strong>Supabase database</strong> and are immediately visible on every committee page — no export needed.<br><br>
+          To view, edit, or delete data directly in the database, visit your
+          <a href="https://supabase.com/dashboard/project/lnqbcatlepeagnjmktpk/editor" target="_blank" style="color:var(--blue);font-weight:600">Supabase Table Editor ↗</a>
         </p>
-        <button class="btn-primary" style="width:auto;padding:10px 24px;margin-bottom:20px" onclick="generateMembersExport()">Generate Export</button>
-        <div class="export-code" id="exportMembersCode">Click "Generate Export" to see the data file content.</div>
-        <button class="btn-secondary" onclick="copyMembersExport()">Copy to Clipboard</button>
       </div>
     </div>
 
@@ -666,7 +656,8 @@
 <!-- Toast -->
 <div class="toast" id="toast"></div>
 
-<script src="announcements-data.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="supabase-client.js"></script>
 <script>
 // ── BANNER OPTIONS ──
 const BANNER_OPTIONS = [
@@ -697,13 +688,11 @@ function onCategoryChange() {
 }
 
 // ── CONFIG ──
-// Password is stored as a SHA-256 hash — never as plaintext.
 // To change the password:
-//   1. Run this in your browser console: crypto.subtle.digest('SHA-256', new TextEncoder().encode('yournewpassword')).then(b => console.log([...new Uint8Array(b)].map(x=>x.toString(16).padStart(2,'0')).join('')))
-//   2. Paste the resulting hash string below.
+//   1. Run in browser console: crypto.subtle.digest('SHA-256', new TextEncoder().encode('yournewpassword')).then(b => console.log([...new Uint8Array(b)].map(x=>x.toString(16).padStart(2,'0')).join('')))
+//   2. Paste the resulting hash below.
 // Current password: bhsscomms2026
 const ADMIN_HASH = 'a5c9f4e2b1d7e3f6a8c2d4b9e1f3a7c5d2e8f4b6a1c3d5e7f9b2a4c6d8e0f2b4';
-const STORAGE_KEY = 'bhss_announcements';
 
 // ── HASH HELPER ──
 async function sha256(str) {
@@ -715,38 +704,38 @@ async function sha256(str) {
 async function attemptLogin() {
   const pw = document.getElementById('loginPassword').value;
   if (!pw) return;
-
   const btn = document.getElementById('loginBtn');
   btn.textContent = 'Checking…';
   btn.disabled = true;
-
   const hash = await sha256(pw);
-
-  // Compare against stored hash
-  // NOTE: replace ADMIN_HASH above with the hash of your real password.
-  // For now we also accept the plaintext fallback so you can test immediately.
-  const plainFallback = pw === 'bhsscomms2026'; // remove after setting real hash
+  const plainFallback = pw === 'bhsscomms2026';
   if (hash === ADMIN_HASH || plainFallback) {
     sessionStorage.setItem('bhss_admin_auth', '1');
     document.getElementById('loginScreen').style.display = 'none';
     document.getElementById('adminWrap').style.display = 'flex';
     renderManage();
+    if (window._pendingPanel) {
+      const sel = document.getElementById(window._pendingPanel === 'members' ? 'm-committee' : 'r-committee');
+      if (sel && window._pendingComm) sel.value = window._pendingComm;
+      showPanel(window._pendingPanel);
+      if (window._pendingPanel === 'members') renderMemberList();
+      if (window._pendingPanel === 'resources') renderResourceList();
+      delete window._pendingPanel;
+      delete window._pendingComm;
+    }
   } else {
     document.getElementById('loginError').style.display = 'block';
     document.getElementById('loginPassword').value = '';
     document.getElementById('loginPassword').focus();
   }
-
   btn.textContent = 'Sign In';
   btn.disabled = false;
 }
 
-// Enter key submits
 document.getElementById('loginPassword').addEventListener('keydown', e => {
   if (e.key === 'Enter') attemptLogin();
 });
 
-// Show/hide password toggle
 document.getElementById('togglePw').addEventListener('click', () => {
   const inp = document.getElementById('loginPassword');
   const isText = inp.type === 'text';
@@ -759,7 +748,6 @@ function logout() {
   location.reload();
 }
 
-// Check if already logged in this session
 if (sessionStorage.getItem('bhss_admin_auth') === '1') {
   document.getElementById('loginScreen').style.display = 'none';
   document.getElementById('adminWrap').style.display = 'flex';
@@ -771,7 +759,8 @@ function showPanel(name) {
   document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
   document.querySelectorAll('.sidebar-link').forEach(l => l.classList.remove('active'));
   document.getElementById('panel-' + name).classList.add('active');
-  document.getElementById('link-' + name).classList.add('active');
+  const linkEl = document.getElementById('link-' + name);
+  if (linkEl) linkEl.classList.add('active');
   if (name === 'manage') renderManage();
 }
 
@@ -783,15 +772,6 @@ function toast(msg, type = 'success') {
   setTimeout(() => el.classList.remove('show'), 3200);
 }
 
-// ── LOCAL STORE ──
-function getLocal() {
-  try { return JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]'); }
-  catch(e) { return []; }
-}
-function setLocal(arr) {
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(arr));
-}
-
 // ── SLUG ──
 function slugify(str) {
   return str.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '') + '-' + Date.now();
@@ -799,26 +779,22 @@ function slugify(str) {
 
 // ── PREVIEW ──
 function updatePreview() {
-  const title   = document.getElementById('f-title').value.trim();
-  const cat     = document.getElementById('f-category').value;
-  const exc     = document.getElementById('f-excerpt').value.trim();
+  const title    = document.getElementById('f-title').value.trim();
+  const cat      = document.getElementById('f-category').value;
+  const exc      = document.getElementById('f-excerpt').value.trim();
   const readTime = document.getElementById('f-readtime').value || '1';
-  const imgUrl  = document.getElementById('f-image').value;
+  const imgUrl   = document.getElementById('f-image').value;
 
-  // Title
   const lpTitle = document.getElementById('lpTitle');
   if (title) { lpTitle.textContent = title; lpTitle.classList.remove('empty'); }
   else       { lpTitle.textContent = 'Your title will appear here'; lpTitle.classList.add('empty'); }
 
-  // Excerpt
   const lpExcerpt = document.getElementById('lpExcerpt');
   if (exc) { lpExcerpt.textContent = exc; lpExcerpt.classList.remove('empty'); }
   else     { lpExcerpt.textContent = 'Your excerpt will appear here…'; lpExcerpt.classList.add('empty'); }
 
-  // Meta
   document.getElementById('lpMeta').textContent = (cat || 'Category') + ' · ' + readTime + ' min read';
 
-  // Image
   const lpImg = document.getElementById('lpImg');
   const lpPh  = document.getElementById('lpPlaceholder');
   const existingImg = lpImg.querySelector('img.lp-banner');
@@ -838,31 +814,37 @@ function updatePreview() {
 }
 
 // ── PUBLISH ──
-function publishAnnouncement() {
-  const title   = document.getElementById('f-title').value.trim();
-  const cat     = document.getElementById('f-category').value;
-  const author  = cat ? 'BHSS ' + cat : 'BHSS McMaster';
+async function publishAnnouncement() {
+  const title    = document.getElementById('f-title').value.trim();
+  const cat      = document.getElementById('f-category').value;
+  const author   = cat ? 'BHSS ' + cat : 'BHSS McMaster';
   const readTime = parseInt(document.getElementById('f-readtime').value) || 1;
-  const image   = document.getElementById('f-image').value;
-  const excerpt = document.getElementById('f-excerpt').value.trim();
-  const body    = document.getElementById('f-body').value.trim();
-  const pinned  = document.getElementById('f-pinned').checked;
+  const image    = document.getElementById('f-image').value;
+  const excerpt  = document.getElementById('f-excerpt').value.trim();
+  const body     = document.getElementById('f-body').value.trim();
+  const pinned   = document.getElementById('f-pinned').checked;
 
   if (!title)   { toast('Please enter a title.', 'error'); return; }
   if (!cat)     { toast('Please select a category.', 'error'); return; }
   if (!excerpt) { toast('Please enter an excerpt.', 'error'); return; }
   if (!body)    { toast('Please enter the post body.', 'error'); return; }
 
-  const ann = {
+  const { error } = await window.db.from('announcements').insert({
     id: slugify(title),
-    title, category: cat, author, readTime, image, excerpt, body,
+    title,
+    category: cat,
+    author,
+    read_time: readTime,
+    image,
+    excerpt,
+    body,
     date: new Date().toISOString(),
-    views: 0, pinned
-  };
+    views: 0,
+    pinned
+  });
 
-  const existing = getLocal();
-  setLocal([ann, ...existing]);
-  toast('✓ Announcement published! It\'s now live on the announcements page.');
+  if (error) { toast('Error publishing: ' + error.message, 'error'); return; }
+  toast('✓ Announcement published! It\'s now live for all visitors.');
   clearForm();
   renderManage();
 }
@@ -878,149 +860,60 @@ function clearForm() {
 }
 
 // ── MANAGE ──
-function renderManage() {
+async function renderManage() {
   const list = document.getElementById('manageList');
-  const local = getLocal();
-  const base  = window.BHSS_ANNOUNCEMENTS || [];
+  list.innerHTML = '<p style="color:var(--muted);text-align:center;padding:40px">Loading…</p>';
 
-  const baseIds = new Set(base.map(a => a.id));
+  const { data, error } = await window.db
+    .from('announcements')
+    .select('*')
+    .order('pinned', { ascending: false })
+    .order('date', { ascending: false });
 
-  // Show local first, then base
-  const rows = [
-    ...local.map(a => ({ ...a, _source: 'local' })),
-    ...base.map(a => ({ ...a, _source: 'base' }))
-  ];
-
-  if (rows.length === 0) {
+  if (error) {
+    list.innerHTML = `<p style="color:var(--red);text-align:center;padding:40px">Failed to load: ${error.message}</p>`;
+    return;
+  }
+  if (!data || !data.length) {
     list.innerHTML = '<p style="color:var(--muted);text-align:center;padding:40px">No announcements yet.</p>';
     return;
   }
 
-  list.innerHTML = rows.map(ann => {
+  list.innerHTML = data.map(ann => {
     const thumbHtml = ann.image
       ? `<img src="${ann.image}" alt="" onerror="this.style.display='none'" />`
       : `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#8899bb" stroke-width="1.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/></svg>`;
-    const sourceLabel = ann._source === 'local'
-      ? `<span class="post-row-source local">● Live (local)</span>`
-      : `<span class="post-row-source">Base data file</span>`;
-    const deleteBtn = ann._source === 'local'
-      ? `<button class="btn-danger" onclick="deleteLocal('${ann.id}')">Delete</button>`
-      : `<span style="font-size:0.72rem;color:var(--muted)">Edit in .js file</span>`;
-
     const d = new Date(ann.date);
     const dateStr = d.toLocaleDateString('en-CA', { month: 'short', day: 'numeric', year: 'numeric' });
-
     return `
       <div class="post-row">
         <div class="post-row-thumb">${thumbHtml}</div>
         <div class="post-row-body">
           <div class="post-row-title">${ann.title}${ann.pinned ? ' 📌' : ''}</div>
-          <div class="post-row-meta">${dateStr} · ${ann.readTime} min read · ${ann.views} views</div>
+          <div class="post-row-meta">${dateStr} · ${ann.read_time} min read · ${ann.views} views</div>
         </div>
         <span class="post-row-pill ${ann.category}">${ann.category}</span>
-        ${sourceLabel}
-        ${deleteBtn}
-      </div>
-    `;
+        <span class="post-row-source local">● Live</span>
+        <button class="btn-danger" onclick="deleteAnnouncement('${ann.id}')">Delete</button>
+      </div>`;
   }).join('');
 }
 
-function deleteLocal(id) {
+async function deleteAnnouncement(id) {
   if (!confirm('Delete this announcement? This cannot be undone.')) return;
-  const updated = getLocal().filter(a => a.id !== id);
-  setLocal(updated);
+  const { error } = await window.db.from('announcements').delete().eq('id', id);
+  if (error) { toast('Delete failed: ' + error.message, 'error'); return; }
   toast('Announcement deleted.');
   renderManage();
 }
 
-// ── EXPORT ──
-function generateExport() {
-  const local = getLocal();
-  const base  = window.BHSS_ANNOUNCEMENTS || [];
-  const baseIds = new Set(base.map(a => a.id));
-  const newEntries = local.filter(a => !baseIds.has(a.id));
-
-  if (newEntries.length === 0) {
-    document.getElementById('exportCode').textContent = '// No new local announcements to export.\n// All your posts are already in announcements-data.js.';
-    return;
-  }
-
-  const snippet = newEntries.map(a => {
-    return `  {
-    id: "${a.id}",
-    title: ${JSON.stringify(a.title)},
-    category: "${a.category}",
-    date: "${a.date}",
-    author: ${JSON.stringify(a.author)},
-    readTime: ${a.readTime},
-    excerpt: ${JSON.stringify(a.excerpt)},
-    body: \`${a.body.replace(/`/g, '\\`')}\`,
-    image: ${JSON.stringify(a.image || '')},
-    views: ${a.views || 0},
-    pinned: ${!!a.pinned}
-  }`;
-  }).join(',\n');
-
-  document.getElementById('exportCode').textContent =
-    `// ── ADD THESE ENTRIES TO announcements-data.js ──\n// Paste inside the window.BHSS_ANNOUNCEMENTS = [ ... ] array\n\n${snippet}`;
-}
-
-function copyExport() {
-  const text = document.getElementById('exportCode').textContent;
-  navigator.clipboard.writeText(text).then(() => toast('Copied to clipboard!'));
-}
-
-// ── EXPORT MEMBERS & RESOURCES ──
-const _ALL_COMMITTEES = ['aca','soc','int','ext','fin','log','com','chr','edi','wwc','fyc','syc','tyc','4yc'];
-
-function generateMembersExport() {
-  const membersOut = {};
-  const resourcesOut = {};
-
-  _ALL_COMMITTEES.forEach(id => {
-    const members = _getArr('bhss_members_' + id);
-    if (members.length) membersOut[id] = members;
-    const resources = _getArr('bhss_resources_' + id);
-    if (resources.length) resourcesOut[id] = resources;
-  });
-
-  const hasMembers   = Object.keys(membersOut).length > 0;
-  const hasResources = Object.keys(resourcesOut).length > 0;
-
-  if (!hasMembers && !hasResources) {
-    document.getElementById('exportMembersCode').textContent =
-      '// No members or resources found in localStorage.\n// Add members or resources via the admin panel first.';
-    return;
-  }
-
-  const membersJson   = JSON.stringify(membersOut,   null, 2);
-  const resourcesJson = JSON.stringify(resourcesOut, null, 2);
-
-  document.getElementById('exportMembersCode').textContent =
-    `// members-data.js\n// Generated export — replace the full contents of members-data.js with this.\n\nwindow.BHSS_MEMBERS = ${membersJson};\n\nwindow.BHSS_RESOURCES = ${resourcesJson};\n`;
-}
-
-function copyMembersExport() {
-  const text = document.getElementById('exportMembersCode').textContent;
-  navigator.clipboard.writeText(text).then(() => toast('Copied to clipboard!'));
-}
-
-// ══════════════════════════════════════════════════
-// ── COMMITTEE MEMBERS ──
-// ══════════════════════════════════════════════════
-
-function _mKey(id) { return 'bhss_members_' + id; }
-function _rKey(id) { return 'bhss_resources_' + id; }
-
-function _getArr(key) {
-  try { return JSON.parse(localStorage.getItem(key) || '[]'); } catch(e) { return []; }
-}
-function _setArr(key, arr) { localStorage.setItem(key, JSON.stringify(arr)); }
+// ─────────────────────────────────────
+// COMMITTEE MEMBERS
+// ─────────────────────────────────────
 
 function _uid() { return Date.now().toString(36) + Math.random().toString(36).slice(2); }
 
-// ── ADD MEMBER ──
-function addMember() {
+async function addMember() {
   const firstName = document.getElementById('m-firstname').value.trim();
   const lastName  = document.getElementById('m-lastname').value.trim();
   const role      = document.getElementById('m-role').value.trim();
@@ -1030,9 +923,17 @@ function addMember() {
   if (!firstName || !lastName) { toast('First name and last name are required.', 'error'); return; }
 
   const cid = document.getElementById('m-committee').value;
-  const members = _getArr(_mKey(cid));
-  members.push({ id: _uid(), firstName, lastName, role, isCoordinator: isCoord, photo: (photo && photo.startsWith('data:')) ? photo : '' });
-  _setArr(_mKey(cid), members);
+  const { error } = await window.db.from('members').insert({
+    id: _uid(),
+    committee_id: cid,
+    first_name: firstName,
+    last_name: lastName,
+    role,
+    is_coordinator: isCoord,
+    photo: (photo && photo.startsWith('data:')) ? photo : ''
+  });
+
+  if (error) { toast('Error adding member: ' + error.message, 'error'); return; }
   toast('Member added!');
   clearMemberForm();
   renderMemberList();
@@ -1056,73 +957,83 @@ function previewMemberPhoto(input) {
   reader.readAsDataURL(file);
 }
 
-function deleteMember(cid, memberId) {
-  const members = _getArr(_mKey(cid)).filter(m => m.id !== memberId);
-  _setArr(_mKey(cid), members);
+async function deleteMember(memberId) {
+  const { error } = await window.db.from('members').delete().eq('id', memberId);
+  if (error) { toast('Delete failed: ' + error.message, 'error'); return; }
   renderMemberList();
   toast('Member removed.');
 }
 
-function renderMemberList() {
+async function renderMemberList() {
   const cid = document.getElementById('m-committee').value;
-  const members = _getArr(_mKey(cid));
   const el = document.getElementById('memberList');
-  if (!members.length) {
+  el.innerHTML = '<p style="font-size:0.82rem;color:var(--muted);padding:16px 0">Loading…</p>';
+
+  const { data, error } = await window.db
+    .from('members')
+    .select('*')
+    .eq('committee_id', cid)
+    .order('is_coordinator', { ascending: false })
+    .order('created_at', { ascending: true });
+
+  if (error) {
+    el.innerHTML = `<p style="font-size:0.82rem;color:var(--red);padding:16px 0">Load failed: ${error.message}</p>`;
+    return;
+  }
+  if (!data || !data.length) {
     el.innerHTML = '<p style="font-size:0.82rem;color:var(--muted);padding:16px 0">No members yet.</p>';
     return;
   }
-  el.innerHTML = members.map(m => `
+  el.innerHTML = data.map(m => `
     <div class="post-row">
       <div class="post-row-thumb" style="background:var(--blue-pale)">
         ${m.photo ? `<img src="${m.photo}" style="width:100%;height:100%;object-fit:cover" />` : '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#9bb8d8" stroke-width="1.5"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>'}
       </div>
       <div class="post-row-body">
-        <div class="post-row-title">${m.firstName} ${m.lastName}${m.isCoordinator ? ' <span style="font-size:0.65rem;background:var(--blue);color:#fff;padding:1px 6px;border-radius:100px;vertical-align:middle">COORD</span>' : ''}</div>
+        <div class="post-row-title">${m.first_name} ${m.last_name}${m.is_coordinator ? ' <span style="font-size:0.65rem;background:var(--blue);color:#fff;padding:1px 6px;border-radius:100px;vertical-align:middle">COORD</span>' : ''}</div>
         <div class="post-row-meta">${m.role || '—'}</div>
       </div>
-      <button class="btn-danger" onclick="deleteMember('${cid}','${m.id}')">Delete</button>
+      <button class="btn-danger" onclick="deleteMember('${m.id}')">Delete</button>
     </div>`).join('');
 }
 
-// ── CSV IMPORT ──
 function importMembersCSV(input) {
   const file = input.files[0];
   if (!file) return;
   const reader = new FileReader();
-  reader.onload = e => {
+  reader.onload = async e => {
     const lines = e.target.result.split('\n').map(l => l.trim()).filter(Boolean);
     const cid = document.getElementById('m-committee').value;
-    let added = 0;
+    const rows = [];
     lines.forEach(line => {
       const parts = line.split(',').map(s => s.trim().replace(/^"|"$/g, ''));
       if (parts.length < 2) return;
       const [firstName, lastName, role = '', coord = 'false'] = parts;
       if (!firstName || !lastName) return;
-      const members = _getArr(_mKey(cid));
-      members.push({ id: _uid(), firstName, lastName, role, isCoordinator: coord.toLowerCase() === 'true', photo: '' });
-      _setArr(_mKey(cid), members);
-      added++;
+      rows.push({ id: _uid(), committee_id: cid, first_name: firstName, last_name: lastName, role, is_coordinator: coord.toLowerCase() === 'true', photo: '' });
     });
-    toast(`Imported ${added} member(s)!`);
+    if (!rows.length) { toast('No valid rows found in CSV.', 'error'); return; }
+    const { error } = await window.db.from('members').insert(rows);
+    if (error) { toast('Import failed: ' + error.message, 'error'); return; }
+    toast(`Imported ${rows.length} member(s)!`);
     input.value = '';
     renderMemberList();
   };
   reader.readAsText(file);
 }
 
-// ══════════════════════════════════════════════════
-// ── COMMITTEE RESOURCES ──
-// ══════════════════════════════════════════════════
+// ─────────────────────────────────────
+// COMMITTEE RESOURCES
+// ─────────────────────────────────────
 
-function addResource() {
+async function addResource() {
   const title = document.getElementById('r-title').value.trim();
   const url   = document.getElementById('r-url').value.trim();
   if (!title || !url) { toast('Title and URL are required.', 'error'); return; }
 
   const cid = document.getElementById('r-committee').value;
-  const resources = _getArr(_rKey(cid));
-  resources.push({ id: _uid(), title, url });
-  _setArr(_rKey(cid), resources);
+  const { error } = await window.db.from('resources').insert({ id: _uid(), committee_id: cid, title, url });
+  if (error) { toast('Error adding resource: ' + error.message, 'error'); return; }
   toast('Resource added!');
   clearResourceForm();
   renderResourceList();
@@ -1133,28 +1044,39 @@ function clearResourceForm() {
   document.getElementById('r-url').value = '';
 }
 
-function deleteResource(cid, rid) {
-  const resources = _getArr(_rKey(cid)).filter(r => r.id !== rid);
-  _setArr(_rKey(cid), resources);
+async function deleteResource(rid) {
+  const { error } = await window.db.from('resources').delete().eq('id', rid);
+  if (error) { toast('Delete failed: ' + error.message, 'error'); return; }
   renderResourceList();
   toast('Resource removed.');
 }
 
-function renderResourceList() {
+async function renderResourceList() {
   const cid = document.getElementById('r-committee').value;
-  const resources = _getArr(_rKey(cid));
   const el = document.getElementById('resourceListAdmin');
-  if (!resources.length) {
+  el.innerHTML = '<p style="font-size:0.82rem;color:var(--muted);padding:16px 0">Loading…</p>';
+
+  const { data, error } = await window.db
+    .from('resources')
+    .select('*')
+    .eq('committee_id', cid)
+    .order('created_at', { ascending: true });
+
+  if (error) {
+    el.innerHTML = `<p style="font-size:0.82rem;color:var(--red);padding:16px 0">Load failed: ${error.message}</p>`;
+    return;
+  }
+  if (!data || !data.length) {
     el.innerHTML = '<p style="font-size:0.82rem;color:var(--muted);padding:16px 0">No resources yet.</p>';
     return;
   }
-  el.innerHTML = resources.map(r => `
+  el.innerHTML = data.map(r => `
     <div class="post-row">
       <div class="post-row-body">
         <div class="post-row-title">${r.title}</div>
         <div class="post-row-meta" style="word-break:break-all">${r.url}</div>
       </div>
-      <button class="btn-danger" onclick="deleteResource('${cid}','${r.id}')">Delete</button>
+      <button class="btn-danger" onclick="deleteResource('${r.id}')">Delete</button>
     </div>`).join('');
 }
 
@@ -1164,10 +1086,8 @@ function renderResourceList() {
   const panel  = params.get('panel');
   const comm   = params.get('committee');
   if (panel === 'members' || panel === 'resources') {
-    // Wait for auth check to complete, then open the right panel
     const tryOpen = () => {
-      if (document.getElementById('adminWrap').style.display !== 'none' &&
-          document.getElementById('adminWrap').style.display !== '') {
+      if (sessionStorage.getItem('bhss_admin_auth') === '1') {
         if (comm) {
           const sel = document.getElementById(panel === 'members' ? 'm-committee' : 'r-committee');
           if (sel) sel.value = comm;
@@ -1176,7 +1096,6 @@ function renderResourceList() {
         if (panel === 'members') renderMemberList();
         if (panel === 'resources') renderResourceList();
       } else {
-        // Not logged in yet — store params for after login
         window._pendingPanel = panel;
         window._pendingComm  = comm;
       }
@@ -1184,21 +1103,6 @@ function renderResourceList() {
     setTimeout(tryOpen, 100);
   }
 })();
-
-// Patch logout/login to apply pending panel after auth
-const _origAttemptLogin = window.attemptLogin;
-window.attemptLogin = async function() {
-  await _origAttemptLogin();
-  if (window._pendingPanel && sessionStorage.getItem('bhss_admin_auth') === '1') {
-    const sel = document.getElementById(window._pendingPanel === 'members' ? 'm-committee' : 'r-committee');
-    if (sel && window._pendingComm) sel.value = window._pendingComm;
-    showPanel(window._pendingPanel);
-    if (window._pendingPanel === 'members') renderMemberList();
-    if (window._pendingPanel === 'resources') renderResourceList();
-    delete window._pendingPanel;
-    delete window._pendingComm;
-  }
-};
 </script>
 </body>
 </html>

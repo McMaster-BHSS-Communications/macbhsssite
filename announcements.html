@@ -464,7 +464,7 @@
       </div>
     </li>
     <li><a href="resources.html">Resources</a></li>
-    <li><a href="shop.html">Merch</a></li>
+    <li><a href="shop.html">Store</a></li>
     <li><a href="bags.html">BAGs</a></li>
     <li><a href="about.html">About Us</a></li>
   </ul>
@@ -575,38 +575,41 @@
 </footer>
 
 <!-- Load the data file first, then run page logic -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="supabase-client.js"></script>
 <script src="announcements-data.js"></script>
 <script>
 // ─────────────────────────────────────────────────────────
 // ANNOUNCEMENTS PAGE LOGIC
-// Data source: window.BHSS_ANNOUNCEMENTS (from announcements-data.js)
-//              + localStorage (from admin.html drafts)
+// Data source: Supabase (primary) → window.BHSS_ANNOUNCEMENTS (fallback)
 // ─────────────────────────────────────────────────────────
 
 let activeFilter = 'All';
 let allAnnouncements = [];
 
-// ── Merge base data with any admin-published localStorage entries ──
-function loadAnnouncements() {
-  const base = window.BHSS_ANNOUNCEMENTS || [];
-  let local = [];
+async function loadAnnouncements() {
   try {
-    local = JSON.parse(localStorage.getItem('bhss_announcements') || '[]');
-  } catch(e) {}
-
-  // Merge: local entries override base entries with same id; new local entries prepend
-  const baseIds = new Set(base.map(a => a.id));
-  const newLocal = local.filter(a => !baseIds.has(a.id));
-  const merged = [...newLocal, ...base];
-
-  // Sort: pinned first, then by date descending
-  merged.sort((a, b) => {
-    if (a.pinned && !b.pinned) return -1;
-    if (!a.pinned && b.pinned) return 1;
-    return new Date(b.date) - new Date(a.date);
-  });
-
-  return merged;
+    const { data, error } = await window.db
+      .from('announcements')
+      .select('*')
+      .order('pinned', { ascending: false })
+      .order('date', { ascending: false });
+    if (error || !data) throw error;
+    return data.map(row => ({
+      id: row.id, title: row.title, category: row.category,
+      author: row.author, date: row.date, readTime: row.read_time,
+      excerpt: row.excerpt, body: row.body, image: row.image,
+      views: row.views, pinned: row.pinned
+    }));
+  } catch (err) {
+    console.warn('Supabase unavailable, using static fallback:', err);
+    const base = window.BHSS_ANNOUNCEMENTS || [];
+    return [...base].sort((a, b) => {
+      if (a.pinned && !b.pinned) return -1;
+      if (!a.pinned && b.pinned) return 1;
+      return new Date(b.date) - new Date(a.date);
+    });
+  }
 }
 
 // ── Format date ──
@@ -795,18 +798,19 @@ document.querySelectorAll('.drop a[data-filter]').forEach(link => {
 });
 
 // ── Init ──
-allAnnouncements = loadAnnouncements();
+(async function() {
+  allAnnouncements = await loadAnnouncements();
 
-// Apply ?filter=Category from URL if present
-const urlFilter = new URLSearchParams(window.location.search).get('filter');
-if (urlFilter) {
-  activeFilter = urlFilter;
-  document.querySelectorAll('.filter-btn').forEach(b => {
-    b.classList.toggle('active', b.dataset.filter === urlFilter);
-  });
-}
+  const urlFilter = new URLSearchParams(window.location.search).get('filter');
+  if (urlFilter) {
+    activeFilter = urlFilter;
+    document.querySelectorAll('.filter-btn').forEach(b => {
+      b.classList.toggle('active', b.dataset.filter === urlFilter);
+    });
+  }
 
-render();
+  render();
+})();
 
 </script>
 <script src="mobile-nav.js"></script>
