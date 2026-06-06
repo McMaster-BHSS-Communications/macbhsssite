@@ -407,6 +407,10 @@
         <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/><path d="M9 18H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4"/></svg>
         Export Members, Resources
       </button>
+      <button class="sidebar-link" onclick="showPanel('page-resources')" id="link-page-resources">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+        Resources Page
+      </button>
 
       <div class="sidebar-label" style="margin-top:24px">Store</div>
       <button class="sidebar-link" onclick="showPanel('products')" id="link-products">
@@ -710,6 +714,112 @@
         <div style="width:320px;flex-shrink:0">
           <div style="font-size:0.68rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted);margin-bottom:10px">Current Resources</div>
           <div id="resourceListAdmin" class="posts-list"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PAGE RESOURCES PANEL -->
+    <div class="panel" id="panel-page-resources">
+      <div class="topbar">
+        <div>
+          <h1>Resources Page</h1>
+          <p>Add and edit resources that appear on the public Resources page.</p>
+        </div>
+        <div style="display:flex;gap:10px;align-items:center">
+          <button class="btn-secondary" onclick="clearPageResourceForm()">+ New Resource</button>
+          <button class="btn-secondary" onclick="loadPageResourcesPanel()">↻ Refresh</button>
+        </div>
+      </div>
+
+      <div class="composer-outer" style="align-items:flex-start;gap:28px">
+        <!-- Form -->
+        <div class="composer-card" style="flex:1">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;padding-bottom:14px;border-bottom:1px solid var(--border)">
+            <h3 id="pr-form-heading" style="font-family:'Familjen Grotesk',serif;font-size:1.1rem;font-weight:600">Add Resource</h3>
+            <button class="btn-secondary" id="pr-cancel-edit" onclick="clearPageResourceForm()" style="display:none;font-size:0.78rem;padding:6px 14px">Cancel Edit</button>
+          </div>
+          <input type="hidden" id="pr-editing-id" value="" />
+
+          <div class="composer-grid">
+            <div class="form-group full">
+              <label>Title *</label>
+              <input type="text" id="pr-title" placeholder="e.g. 2026–2027 Budget" oninput="updatePageResourcePreview()" />
+            </div>
+            <div class="form-group full">
+              <label>Description <span style="color:var(--muted);font-weight:400">— shown on the card and in the modal</span></label>
+              <textarea id="pr-description" rows="3" placeholder="Short description of this resource…" oninput="updatePageResourcePreview()"></textarea>
+            </div>
+            <div class="form-group">
+              <label>Section *</label>
+              <select id="pr-section" onchange="updatePageResourcePreview()">
+                <option value="">— Select section —</option>
+                <option value="administration">Administration</option>
+                <option value="opportunities">Opportunities</option>
+                <option value="students">For Students</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Committee *</label>
+              <select id="pr-committee" onchange="updatePageResourcePreview()">
+                <option value="chr">Chair</option>
+                <option value="aca">Academics</option>
+                <option value="com">Communications</option>
+                <option value="edi">EDI</option>
+                <option value="ext">External</option>
+                <option value="fin">Financial</option>
+                <option value="int">Internal</option>
+                <option value="log">Elections &amp; Logistics</option>
+                <option value="soc">Social</option>
+                <option value="wwc">Welcome Week</option>
+                <option value="fyc">First Year Council</option>
+                <option value="syc">Second Year Council</option>
+                <option value="tyc">Third Year Council</option>
+                <option value="4yc">Fourth Year Council</option>
+              </select>
+            </div>
+            <div class="form-group full">
+              <label>URL *</label>
+              <input type="url" id="pr-url" placeholder="https://…" />
+            </div>
+            <div class="form-group">
+              <label>Sort Order <span style="color:var(--muted);font-weight:400">— lower = first</span></label>
+              <input type="number" id="pr-sort" value="0" min="0" />
+            </div>
+          </div>
+
+          <div class="composer-actions">
+            <button class="btn-primary" style="width:auto;padding:10px 24px" onclick="savePageResource()"><span id="pr-save-label">Add Resource</span></button>
+            <button class="btn-secondary" onclick="clearPageResourceForm()">Clear</button>
+          </div>
+
+          <!-- Live Preview -->
+          <div style="margin-top:28px;padding-top:22px;border-top:1px solid var(--border)">
+            <div style="font-size:0.68rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted);margin-bottom:12px">Card Preview</div>
+            <div id="pr-preview-card" style="border:1px solid var(--border);border-radius:0 0 14px 14px;overflow:hidden;max-width:280px;display:flex;flex-direction:column;background:#fff">
+              <div style="padding:20px 18px 14px;flex:1">
+                <div id="pr-preview-title" style="font-family:'Familjen Grotesk',serif;font-size:1rem;font-weight:700;color:var(--text);line-height:1.3;margin-bottom:7px">Resource title</div>
+                <div id="pr-preview-desc" style="font-size:0.79rem;color:var(--mid);line-height:1.6;display:-webkit-box;-webkit-line-clamp:3;line-clamp:3;-webkit-box-orient:vertical;overflow:hidden"></div>
+              </div>
+              <div id="pr-preview-footer" style="padding:14px 18px 18px;display:flex;align-items:flex-end;justify-content:space-between;min-height:88px;background:linear-gradient(to bottom,#fff 0%,#46B749 100%)">
+                <img id="pr-preview-logo" src="assets/svg/committee_logos/fin_logo.svg" alt="" style="width:36px;height:36px;filter:brightness(0) invert(1);opacity:0.9;object-fit:contain" />
+                <span id="pr-preview-comm" style="font-family:'Familjen Grotesk',serif;font-size:0.95rem;font-weight:700;color:white;letter-spacing:0.02em">Financial</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Resource list -->
+        <div style="width:340px;flex-shrink:0">
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">
+            <div style="font-size:0.68rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted)">All Resources</div>
+            <select id="pr-filter-section" onchange="renderPageResourceList()" style="margin-left:auto;padding:5px 8px;border:1px solid var(--border);border-radius:6px;font-size:0.75rem;color:var(--mid);outline:none;font-family:'Inter',sans-serif;background:var(--white)">
+              <option value="">All Sections</option>
+              <option value="administration">Administration</option>
+              <option value="opportunities">Opportunities</option>
+              <option value="students">For Students</option>
+            </select>
+          </div>
+          <div id="pr-list" class="posts-list"></div>
         </div>
       </div>
     </div>
@@ -1054,9 +1164,10 @@ function showPanel(name) {
   document.getElementById('panel-' + name).classList.add('active');
   const linkEl = document.getElementById('link-' + name);
   if (linkEl) linkEl.classList.add('active');
-  if (name === 'manage')   renderManage();
-  if (name === 'products') loadProductPanel();
-  if (name === 'promos')   renderPromoList();
+  if (name === 'manage')          renderManage();
+  if (name === 'products')        loadProductPanel();
+  if (name === 'promos')          renderPromoList();
+  if (name === 'page-resources')  loadPageResourcesPanel();
 }
 
 // ── TOAST ──
@@ -1857,6 +1968,153 @@ function clearBannerForm() {
   document.getElementById('bn-tc').value = '#ffffff';
   document.getElementById('bn-tc-text').value = '#ffffff';
   updateBannerPreview();
+}
+
+// ─────────────────────────────────────
+// PAGE RESOURCES
+// ─────────────────────────────────────
+
+const PR_COMMITTEES = {
+  chr: { name: 'Chair',                  color: '#0DABDC', logo: 'assets/svg/committee_logos/chr_logo.svg' },
+  aca: { name: 'Academics',              color: '#293593', logo: 'assets/svg/committee_logos/aca_logo.svg' },
+  com: { name: 'Communications',         color: '#13A89E', logo: 'assets/svg/committee_logos/com_logo.svg' },
+  edi: { name: 'EDI',                    color: '#6A2C8F', logo: 'assets/svg/committee_logos/edi_logo.svg' },
+  ext: { name: 'External',              color: '#EE2824', logo: 'assets/svg/committee_logos/ext_logo.svg' },
+  fin: { name: 'Financial',             color: '#46B749', logo: 'assets/svg/committee_logos/fin_logo.svg' },
+  int: { name: 'Internal',              color: '#F58120', logo: 'assets/svg/committee_logos/int_logo.svg' },
+  log: { name: 'Elections & Logistics', color: '#181718', logo: 'assets/svg/committee_logos/log_logo.svg' },
+  soc: { name: 'Social',               color: '#DD1084', logo: 'assets/svg/committee_logos/soc_logo.svg' },
+  wwc: { name: 'Welcome Week',          color: '#1a90c9', logo: 'assets/svg/committee_logos/wwc_logo.svg' },
+  fyc: { name: 'First Year Council',    color: '#4DAADC', logo: 'assets/svg/committee_logos/public_logo.svg' },
+  syc: { name: 'Second Year Council',   color: '#449BD4', logo: 'assets/svg/committee_logos/public_logo.svg' },
+  tyc: { name: 'Third Year Council',    color: '#396AB3', logo: 'assets/svg/committee_logos/public_logo.svg' },
+  '4yc': { name: 'Fourth Year Council', color: '#292D73', logo: 'assets/svg/committee_logos/public_logo.svg' },
+};
+
+let _prEditingId = null;
+
+async function loadPageResourcesPanel() {
+  renderPageResourceList();
+  updatePageResourcePreview();
+}
+
+function updatePageResourcePreview() {
+  const title = document.getElementById('pr-title').value.trim();
+  const desc  = document.getElementById('pr-description').value.trim();
+  const ckey  = document.getElementById('pr-committee').value || 'fin';
+  const comm  = PR_COMMITTEES[ckey] || PR_COMMITTEES.fin;
+
+  document.getElementById('pr-preview-title').textContent = title || 'Resource title';
+  document.getElementById('pr-preview-desc').textContent  = desc;
+  document.getElementById('pr-preview-footer').style.background = `linear-gradient(to bottom,#fff 0%,${comm.color} 100%)`;
+  document.getElementById('pr-preview-logo').src   = comm.logo;
+  document.getElementById('pr-preview-comm').textContent = comm.name;
+}
+
+async function savePageResource() {
+  const title   = document.getElementById('pr-title').value.trim();
+  const desc    = document.getElementById('pr-description').value.trim();
+  const section = document.getElementById('pr-section').value;
+  const comm    = document.getElementById('pr-committee').value;
+  const url     = document.getElementById('pr-url').value.trim();
+  const sort    = parseInt(document.getElementById('pr-sort').value) || 0;
+
+  if (!title)   { toast('Title is required.', 'error'); return; }
+  if (!section) { toast('Please select a section.', 'error'); return; }
+  if (!url)     { toast('URL is required.', 'error'); return; }
+
+  const payload = { title, description: desc, section, committee: comm, url, sort_order: sort };
+  let error;
+
+  if (_prEditingId) {
+    ({ error } = await window.db.from('page_resources').update(payload).eq('id', _prEditingId));
+    if (!error) toast('Resource updated!');
+  } else {
+    ({ error } = await window.db.from('page_resources').insert(payload));
+    if (!error) toast('Resource added!');
+  }
+
+  if (error) { toast('Error: ' + error.message, 'error'); return; }
+  clearPageResourceForm();
+  renderPageResourceList();
+}
+
+function clearPageResourceForm() {
+  _prEditingId = null;
+  document.getElementById('pr-editing-id').value = '';
+  document.getElementById('pr-title').value        = '';
+  document.getElementById('pr-description').value  = '';
+  document.getElementById('pr-section').value      = '';
+  document.getElementById('pr-committee').value    = 'chr';
+  document.getElementById('pr-url').value          = '';
+  document.getElementById('pr-sort').value         = '0';
+  document.getElementById('pr-form-heading').textContent = 'Add Resource';
+  document.getElementById('pr-save-label').textContent   = 'Add Resource';
+  document.getElementById('pr-cancel-edit').style.display = 'none';
+  updatePageResourcePreview();
+}
+
+function editPageResource(item) {
+  _prEditingId = item.id;
+  document.getElementById('pr-editing-id').value   = item.id;
+  document.getElementById('pr-title').value         = item.title || '';
+  document.getElementById('pr-description').value   = item.description || '';
+  document.getElementById('pr-section').value       = item.section || '';
+  document.getElementById('pr-committee').value     = item.committee || 'com';
+  document.getElementById('pr-url').value           = item.url || '';
+  document.getElementById('pr-sort').value          = item.sort_order ?? 0;
+  document.getElementById('pr-form-heading').textContent = 'Edit Resource';
+  document.getElementById('pr-save-label').textContent   = 'Save Changes';
+  document.getElementById('pr-cancel-edit').style.display = 'block';
+  updatePageResourcePreview();
+  document.getElementById('pr-title').scrollIntoView({ behavior: 'smooth', block: 'center' });
+}
+
+async function deletePageResource(id) {
+  if (!confirm('Delete this resource? This cannot be undone.')) return;
+  const { error } = await window.db.from('page_resources').delete().eq('id', id);
+  if (error) { toast('Delete failed: ' + error.message, 'error'); return; }
+  if (_prEditingId === id) clearPageResourceForm();
+  toast('Resource deleted.');
+  renderPageResourceList();
+}
+
+async function renderPageResourceList() {
+  const el = document.getElementById('pr-list');
+  if (!el) return;
+  el.innerHTML = '<p style="font-size:0.82rem;color:var(--muted);padding:16px 0">Loading…</p>';
+
+  const filterSection = document.getElementById('pr-filter-section').value;
+  let query = window.db.from('page_resources').select('*').order('sort_order').order('created_at');
+  if (filterSection) query = query.eq('section', filterSection);
+
+  const { data, error } = await query;
+
+  if (error) {
+    el.innerHTML = `<p style="font-size:0.82rem;color:var(--red);padding:16px 0">Load failed: ${error.message}</p>`;
+    return;
+  }
+  if (!data || !data.length) {
+    el.innerHTML = '<p style="font-size:0.82rem;color:var(--muted);padding:16px 0">No resources yet.</p>';
+    return;
+  }
+
+  const sectionLabel = { administration: 'Administration', opportunities: 'Opportunities', students: 'For Students' };
+  el.innerHTML = data.map(r => {
+    const comm = PR_COMMITTEES[r.committee] || PR_COMMITTEES.com;
+    return `
+      <div class="post-row" style="align-items:flex-start">
+        <div style="width:14px;height:14px;border-radius:3px;background:${comm.color};flex-shrink:0;margin-top:4px"></div>
+        <div class="post-row-body" style="flex:1;min-width:0">
+          <div class="post-row-title" style="white-space:normal;word-break:break-word">${r.title}</div>
+          <div class="post-row-meta">${sectionLabel[r.section] || r.section} · ${comm.name}</div>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:5px;flex-shrink:0">
+          <button class="btn-secondary" style="font-size:0.72rem;padding:5px 10px" onclick="editPageResource(${JSON.stringify(r).replace(/"/g,'&quot;')})">Edit</button>
+          <button class="btn-danger" onclick="deletePageResource('${r.id}')">Delete</button>
+        </div>
+      </div>`;
+  }).join('');
 }
 
 // ── URL PARAM AUTO-OPEN ──
