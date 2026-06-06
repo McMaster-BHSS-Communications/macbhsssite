@@ -399,10 +399,7 @@
         <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
         Manage Members
       </button>
-      <button class="sidebar-link" onclick="showPanel('resources')" id="link-resources">
-        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
-        Manage Resources
-      </button>
+
       <button class="sidebar-link" onclick="showPanel('export-members')" id="link-export-members">
         <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/><path d="M9 18H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4"/></svg>
         Export Members, Resources
@@ -779,7 +776,7 @@
             </div>
             <div class="form-group full">
               <label>URL *</label>
-              <input type="url" id="pr-url" placeholder="https://…" />
+              <input type="url" id="pr-url" placeholder="https://… (include the FULL link, or the link will fail)" />
             </div>
             <div class="form-group">
               <label>Sort Order <span style="color:var(--muted);font-weight:400">— lower = first</span></label>

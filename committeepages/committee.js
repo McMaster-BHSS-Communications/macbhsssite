@@ -17,9 +17,10 @@ async function renderResources() {
 
   try {
     const { data, error } = await window.db
-      .from('resources')
+      .from('page_resources')
       .select('*')
-      .eq('committee_id', COMMITTEE_ID)
+      .eq('committee', COMMITTEE_ID)
+      .order('sort_order', { ascending: true })
       .order('created_at', { ascending: true });
     if (error) throw error;
 
