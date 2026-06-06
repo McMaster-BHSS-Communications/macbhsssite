@@ -10,6 +10,22 @@ function _esc(s) {
     .replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 }
 
+function _seniority(role) {
+  const m = (role || '').match(/level\s+(I{1,3}|IV)/i);
+  if (!m) return 0;
+  return { 'I': 1, 'II': 2, 'III': 3, 'IV': 4 }[m[1].toUpperCase()] || 0;
+}
+
+function _sortMembers(arr) {
+  return [...arr].sort((a, b) => {
+    const sd = _seniority(b.role) - _seniority(a.role);
+    if (sd !== 0) return sd;
+    const la = (a.last_name || '').toLowerCase(), lb = (b.last_name || '').toLowerCase();
+    if (la !== lb) return la < lb ? -1 : 1;
+    return (a.first_name || '').toLowerCase() < (b.first_name || '').toLowerCase() ? -1 : 1;
+  });
+}
+
 // ── RENDER RESOURCES ──
 async function renderResources() {
   const el = document.getElementById('resourceList');
@@ -48,14 +64,12 @@ async function renderMembers() {
     const { data, error } = await window.db
       .from('members')
       .select('*')
-      .eq('committee_id', COMMITTEE_ID)
-      .order('is_coordinator', { ascending: false })
-      .order('created_at', { ascending: true });
+      .eq('committee_id', COMMITTEE_ID);
     if (error) throw error;
 
     const members = data || [];
-    const coords = members.filter(m => m.is_coordinator);
-    const rest   = members.filter(m => !m.is_coordinator);
+    const coords = _sortMembers(members.filter(m => m.is_coordinator));
+    const rest   = _sortMembers(members.filter(m => !m.is_coordinator));
 
     const coordEl = document.getElementById('coordinatorCard');
     if (coordEl) {

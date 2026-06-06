@@ -469,19 +469,16 @@
 <!-- Committees Section -->
 <div class="committees-section">
 
-  <!-- Core Committees — Chair first, then alphabetical -->
-  <p class="group-label">Core Committees</p>
-  <div class="card-grid cols-4">
-
-    <!-- Chair -->
-    <div class="comm-card">
+  <!-- Chair — standalone, centered -->
+  <div style="display:flex;justify-content:center;margin-bottom:40px">
+    <div class="comm-card" style="max-width:280px;width:100%">
       <div class="comm-card-banner">
         <img src="assets/images/committee_titles/chr_title.png" alt="Chair banner" />
         <div class="comm-card-banner-overlay"></div>
       </div>
       <div class="comm-card-body">
         <div class="comm-card-title">Chair</div>
-        <p class="comm-card-desc">The Chair is responsible for organizing and coordinating the entire BHSS, working with other student groups and faculty within and outside of the BHSS.<br><br>The current BHSS Chair is <span class="coord-name" data-comm="chr">[RENAME!]</span>.</p>
+        <p class="comm-card-desc">The Chair is responsible for organizing and coordinating the entire BHSS, working with other student groups and faculty within and outside of the BHSS.<br><br><span class="coord-sentence" data-comm="chr" data-active="The current BHSS Chair is %NAMES%.">The Chair is a vacant position and will be re-elected.</span></p>
         <div class="comm-card-ig">
           <a href="#" target="_blank" aria-label="Chair Instagram">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="2" y="2" width="20" height="20" rx="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
@@ -490,6 +487,11 @@
         <a class="comm-card-btn" href="committeepages/chr_committee.html">See More</a>
       </div>
     </div>
+  </div>
+
+  <!-- Core Committees -->
+  <p class="group-label">Core Committees</p>
+  <div class="card-grid cols-4">
 
     <!-- Academics -->
     <div class="comm-card">
@@ -499,7 +501,7 @@
       </div>
       <div class="comm-card-body">
         <div class="comm-card-title">Academics</div>
-        <p class="comm-card-desc">The Academics committee is responsible for providing academic resources, workshops and guidance to BHSS students.<br><br>Academics is led by <span class="coord-name" data-comm="aca">[RENAME!]</span>.</p>
+        <p class="comm-card-desc">The Academics committee is responsible for providing academic resources, workshops and guidance to BHSS students.<br><br><span class="coord-sentence" data-comm="aca" data-active="Academics is led by %NAMES%.">The Academics Coordinator is a vacant position and will be re-elected.</span></p>
         <div class="comm-card-ig">
           <a href="#" target="_blank" aria-label="Academics Instagram">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="2" y="2" width="20" height="20" rx="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
@@ -517,7 +519,7 @@
       </div>
       <div class="comm-card-body">
         <div class="comm-card-title">Communications</div>
-        <p class="comm-card-desc">The Communications Committee is responsible for both internal and public-facing communications across multiple platforms.<br><br>Communications is led by <span class="coord-name" data-comm="com">[RENAME!]</span>.</p>
+        <p class="comm-card-desc">The Communications Committee is responsible for both internal and public-facing communications across multiple platforms.<br><br><span class="coord-sentence" data-comm="com" data-active="Communications is led by %NAMES%.">The Communications Coordinator is a vacant position and will be re-elected.</span></p>
         <div class="comm-card-ig">
           <a href="https://www.instagram.com/macbhss/" target="_blank" aria-label="Communications Instagram">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="2" y="2" width="20" height="20" rx="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
@@ -535,7 +537,7 @@
       </div>
       <div class="comm-card-body">
         <div class="comm-card-title">Equity, Diversity, &amp; Inclusion</div>
-        <p class="comm-card-desc">The Equity, Diversity, &amp; Inclusion (EDI) Committee represents student voices and fosters an inclusive, safe, and equitable environment within the HHSP.<br><br>EDI is led by <span class="coord-name" data-comm="edi">[RENAME!]</span>.</p>
+        <p class="comm-card-desc">The Equity, Diversity, &amp; Inclusion (EDI) Committee represents student voices and fosters an inclusive, safe, and equitable environment within the HHSP.<br><br><span class="coord-sentence" data-comm="edi" data-active="EDI is led by %NAMES%.">The EDI Coordinator is a vacant position and will be rehired.</span></p>
         <div class="comm-card-ig">
           <a href="#" target="_blank" aria-label="EDI Instagram">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="2" y="2" width="20" height="20" rx="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
@@ -553,7 +555,7 @@
       </div>
       <div class="comm-card-body">
         <div class="comm-card-title">External</div>
-        <p class="comm-card-desc">The External Committee is responsible for initiatives like HouseMatch, outreach, and inter-program events.<br><br>External is led by <span class="coord-name" data-comm="ext">[RENAME!]</span>.</p>
+        <p class="comm-card-desc">The External Committee is responsible for initiatives like HouseMatch, outreach, and inter-program events.<br><br><span class="coord-sentence" data-comm="ext" data-active="External is led by %NAMES%.">The External Coordinator is a vacant position and will be re-elected.</span></p>
         <div class="comm-card-ig">
           <a href="#" target="_blank" aria-label="External Instagram">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="2" y="2" width="20" height="20" rx="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
@@ -571,7 +573,7 @@
       </div>
       <div class="comm-card-body">
         <div class="comm-card-title">Financial</div>
-        <p class="comm-card-desc">The Financial Committee is responsible for the procurement and distribution of funds across the BHSS and our affiliates throughout the school year.<br><br>Financial is led by <span class="coord-name" data-comm="fin">[RENAME!]</span>.</p>
+        <p class="comm-card-desc">The Financial Committee is responsible for the procurement and distribution of funds across the BHSS and our affiliates throughout the school year.<br><br><span class="coord-sentence" data-comm="fin" data-active="Financial is led by %NAMES%.">The Financial Coordinator is a vacant position and will be re-elected.</span></p>
         <div class="comm-card-ig">
           <a href="#" target="_blank" aria-label="Financial Instagram">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="2" y="2" width="20" height="20" rx="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
@@ -589,7 +591,7 @@
       </div>
       <div class="comm-card-body">
         <div class="comm-card-title">Internal</div>
-        <p class="comm-card-desc">The Internal Committee is responsible for buddy matching, social events and initiatives within the BHSS.<br><br>Internal is led by <span class="coord-name" data-comm="int">[RENAME!]</span>.</p>
+        <p class="comm-card-desc">The Internal Committee is responsible for buddy matching, social events and initiatives within the BHSS.<br><br><span class="coord-sentence" data-comm="int" data-active="Internal is led by %NAMES%.">The Internal Coordinator is a vacant position and will be re-elected.</span></p>
         <div class="comm-card-ig">
           <a href="#" target="_blank" aria-label="Internal Instagram">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="2" y="2" width="20" height="20" rx="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
@@ -607,7 +609,7 @@
       </div>
       <div class="comm-card-body">
         <div class="comm-card-title">Elections and Logistics</div>
-        <p class="comm-card-desc">The Elections and Logistics Committee is responsible for managing BHSS logistics, as well as organizing elections throughout the school year.<br><br>Elections and Logistics is led by <span class="coord-name" data-comm="log">[RENAME!]</span>.</p>
+        <p class="comm-card-desc">The Elections and Logistics Committee is responsible for managing BHSS logistics, as well as organizing elections throughout the school year.<br><br><span class="coord-sentence" data-comm="log" data-active="Elections and Logistics is led by %NAMES%.">The Elections and Logistics Coordinator is a vacant position and will be rehired.</span></p>
         <div class="comm-card-ig">
           <a href="#" target="_blank" aria-label="Logistics Instagram">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="2" y="2" width="20" height="20" rx="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
@@ -625,7 +627,7 @@
       </div>
       <div class="comm-card-body">
         <div class="comm-card-title">Social</div>
-        <p class="comm-card-desc">The Social Committee is responsible for organizing events, gatherings and formals, within BHSS and with other programs.<br><br>Socials is led by <span class="coord-name" data-comm="soc">[RENAME!]</span>.</p>
+        <p class="comm-card-desc">The Social Committee is responsible for organizing events, gatherings and formals, within BHSS and with other programs.<br><br><span class="coord-sentence" data-comm="soc" data-active="Socials is led by %NAMES%.">The Social Coordinator is a vacant position and will be re-elected.</span></p>
         <div class="comm-card-ig">
           <a href="#" target="_blank" aria-label="Social Instagram">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="2" y="2" width="20" height="20" rx="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
@@ -649,7 +651,7 @@
       </div>
       <div class="comm-card-body">
         <div class="comm-card-title">Welcome Week</div>
-        <p class="comm-card-desc">The Welcome Week Committee is responsible for helping new students transition to university during Welcome week through social, academic, and community-building events.<br><br>The Welcome Week Coordinators are <span class="coord-name" data-comm="wwc">[RENAME!]</span>.</p>
+        <p class="comm-card-desc">The Welcome Week Committee is responsible for helping new students transition to university during Welcome week through social, academic, and community-building events.<br><br><span class="coord-sentence" data-comm="wwc" data-active="The Welcome Week Coordinators are %NAMES%.">The Welcome Week Coordinator is a vacant position and will be rehired.</span></p>
         <div class="comm-card-ig">
           <a href="#" target="_blank" aria-label="Welcome Week Instagram">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="2" y="2" width="20" height="20" rx="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
@@ -673,7 +675,7 @@
       </div>
       <div class="comm-card-body">
         <div class="comm-card-title">First Year Council</div>
-        <p class="comm-card-desc">The First Year Council (FYC) is responsible for representing first-year students, organizing cohort-wide events, and fostering a supportive and engaging first year community.<br><br>The First Year Representative is <span class="coord-name" data-comm="fyc">[RENAME!]</span>.</p>
+        <p class="comm-card-desc">The First Year Council (FYC) is responsible for representing first-year students, organizing cohort-wide events, and fostering a supportive and engaging first year community.<br><br><span class="coord-sentence" data-comm="fyc" data-active="The First Year Representative is %NAMES%.">The First Year Council Coordinator is a vacant position and will be re-elected.</span></p>
         <a class="comm-card-btn" href="committeepages/fyc_committee.html">See More</a>
       </div>
     </div>
@@ -686,7 +688,7 @@
       </div>
       <div class="comm-card-body">
         <div class="comm-card-title">Second Year Council</div>
-        <p class="comm-card-desc">The Second Year Council (SYC) is responsible for representing second-year students, organizing cohort-wide events, and fostering a supportive and engaging second year community.<br><br>The Second Year Representative is <span class="coord-name" data-comm="syc">[RENAME!]</span>.</p>
+        <p class="comm-card-desc">The Second Year Council (SYC) is responsible for representing second-year students, organizing cohort-wide events, and fostering a supportive and engaging second year community.<br><br><span class="coord-sentence" data-comm="syc" data-active="The Second Year Representative is %NAMES%.">The Second Year Council Coordinator is a vacant position and will be re-elected.</span></p>
         <a class="comm-card-btn" href="committeepages/syc_committee.html">See More</a>
       </div>
     </div>
@@ -699,7 +701,7 @@
       </div>
       <div class="comm-card-body">
         <div class="comm-card-title">Third Year Council</div>
-        <p class="comm-card-desc">The Third Year Council (TYC) is responsible for representing third-year students, organizing cohort-wide events, and fostering a supportive and engaging third year community.<br><br>The Third Year Representative is <span class="coord-name" data-comm="tyc">[RENAME!]</span>.</p>
+        <p class="comm-card-desc">The Third Year Council (TYC) is responsible for representing third-year students, organizing cohort-wide events, and fostering a supportive and engaging third year community.<br><br><span class="coord-sentence" data-comm="tyc" data-active="The Third Year Representative is %NAMES%.">The Third Year Council Coordinator is a vacant position and will be re-elected.</span></p>
         <a class="comm-card-btn" href="committeepages/tyc_committee.html">See More</a>
       </div>
     </div>
@@ -712,7 +714,7 @@
       </div>
       <div class="comm-card-body">
         <div class="comm-card-title">Fourth Year Council</div>
-        <p class="comm-card-desc">The Fourth Year Council (4YC) is responsible for representing fourth-year students, organizing cohort-wide events, and fostering a supportive and engaging fourth year community.<br><br>The Fourth Year Representative is <span class="coord-name" data-comm="4yc">[RENAME!]</span>.</p>
+        <p class="comm-card-desc">The Fourth Year Council (4YC) is responsible for representing fourth-year students, organizing cohort-wide events, and fostering a supportive and engaging fourth year community.<br><br><span class="coord-sentence" data-comm="4yc" data-active="The Fourth Year Representative is %NAMES%.">The Fourth Year Council Coordinator is a vacant position and will be re-elected.</span></p>
         <a class="comm-card-btn" href="committeepages/4yc_committee.html">See More</a>
       </div>
     </div>
@@ -761,24 +763,31 @@
 async function loadCoordinatorNames() {
   const { data, error } = await window.db
     .from('members')
-    .select('committee_id, first_name, last_name')
-    .eq('is_coordinator', true)
-    .order('created_at', { ascending: true });
+    .select('committee_id, first_name, last_name, role')
+    .eq('is_coordinator', true);
 
   if (error || !data || !data.length) return;
 
-  const byComm = {};
-  data.forEach(m => {
-    (byComm[m.committee_id] = byComm[m.committee_id] || [])
-      .push(m.first_name + ' ' + m.last_name);
-  });
+  const _sen = r => { const m=(r||'').match(/level\s+(I{1,3}|IV)/i); if(!m) return 0; return {'I':1,'II':2,'III':3,'IV':4}[m[1].toUpperCase()]||0; };
 
-  document.querySelectorAll('.coord-name[data-comm]').forEach(span => {
-    const names = byComm[span.dataset.comm];
-    if (!names || !names.length) return;
-    if (names.length === 1) span.textContent = names[0];
-    else if (names.length === 2) span.textContent = names[0] + ' and ' + names[1];
-    else span.textContent = names.slice(0, -1).join(', ') + ', and ' + names[names.length - 1];
+  const byComm = {};
+  data.forEach(m => { (byComm[m.committee_id] = byComm[m.committee_id] || []).push(m); });
+  Object.values(byComm).forEach(arr => arr.sort((a, b) => {
+    const sd = _sen(b.role) - _sen(a.role); if(sd) return sd;
+    const la=(a.last_name||'').toLowerCase(), lb=(b.last_name||'').toLowerCase();
+    if(la!==lb) return la<lb?-1:1;
+    return (a.first_name||'').toLowerCase()<(b.first_name||'').toLowerCase()?-1:1;
+  }));
+
+  document.querySelectorAll('.coord-sentence[data-comm]').forEach(span => {
+    const members = byComm[span.dataset.comm];
+    if (!members || !members.length) return;
+    const names = members.map(m => m.first_name + ' ' + m.last_name);
+    let formatted;
+    if (names.length === 1) formatted = names[0];
+    else if (names.length === 2) formatted = names[0] + ' and ' + names[1];
+    else formatted = names.slice(0, -1).join(', ') + ', and ' + names[names.length - 1];
+    span.textContent = (span.dataset.active || '%NAMES%.').replace('%NAMES%', formatted);
   });
 }
 
