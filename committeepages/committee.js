@@ -48,7 +48,7 @@ async function renderResources() {
     el.innerHTML = items.map(r => `
       <div class="resource-item">
         <div class="resource-icon">
-          <img src="../assets/images/BHSSshield_100x97.png" alt="" />
+          <img src="../assets/images/logoNEW@4x.png" alt="" />
         </div>
         <a class="resource-link" href="${_esc(r.url)}" target="_blank" rel="noopener">${_esc(r.title)}</a>
       </div>`).join('');
@@ -93,7 +93,7 @@ function _cardHTML(m, large) {
   const cls   = large ? 'person-card coordinator' : 'person-card';
   const photo = m.photo
     ? `<img class="person-photo" src="${_esc(m.photo)}" alt="" />`
-    : `<div class="person-shield-bg"><img src="../assets/images/BHSSshield_100x97.png" alt="" /></div>`;
+    : `<div class="person-shield-bg"><img src="../assets/images/logoNEW@4x.png" alt="" /></div>`;
   return `<div class="${cls}">
     <div class="person-card-top">${photo}<div class="person-firstname">${_esc(m.first_name)}</div></div>
     <div class="person-card-bottom">
