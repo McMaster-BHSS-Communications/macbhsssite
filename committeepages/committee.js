@@ -95,7 +95,8 @@ function _cardHTML(m, large) {
     ? `<img class="person-photo" src="${_esc(m.photo)}" alt="" />`
     : `<div class="person-shield-bg"><img src="../assets/images/portrait/${COMMITTEE_ID}_portrait@4x.png" onerror="this.src='../assets/images/logoNEW@4x.png'" alt="" /></div>`;
   return `<div class="${cls}">
-    <div class="person-card-top">${photo}<div class="person-firstname">${_esc(m.first_name)}</div></div>
+    <div class="person-card-top">${photo}</div>
+    <div class="person-firstname">${_esc(m.first_name)}</div>
     <div class="person-card-bottom">
       <div class="person-lastname">${_esc(m.last_name)}</div>
       <div class="person-role">${_esc(m.role)}</div>
