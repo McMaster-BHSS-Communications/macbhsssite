@@ -423,6 +423,13 @@
         Store Orders
       </a>
 
+      <div class="sidebar-label" style="margin-top:24px">Outreach</div>
+      <button class="sidebar-link" onclick="showPanel('contact')" id="link-contact">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+        Contact Submissions
+        <span id="contact-unread-badge" style="display:none;margin-left:auto;background:#ef4444;color:#fff;font-size:0.6rem;font-weight:700;padding:1px 6px;border-radius:100px"></span>
+      </button>
+
       <div class="sidebar-label" style="margin-top:24px">Site</div>
       <a class="sidebar-link" href="index.html" target="_blank">
         <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
@@ -1054,6 +1061,38 @@
       </div>
     </div>
 
+    <!-- CONTACT SUBMISSIONS PANEL -->
+    <div class="panel" id="panel-contact">
+      <div class="topbar">
+        <div>
+          <h1>Contact Submissions</h1>
+          <p>Messages sent through the About Us page contact form.</p>
+        </div>
+        <button class="btn-secondary" onclick="loadContactSubmissions()">↻ Refresh</button>
+      </div>
+
+      <!-- Filter bar -->
+      <div style="display:flex;gap:8px;margin-bottom:24px;align-items:center">
+        <button class="btn-secondary" id="cf-filter-all"    onclick="setContactFilter('all')"        style="font-size:0.78rem;padding:7px 14px;background:var(--blue);color:#fff;border-color:var(--blue)">All</button>
+        <button class="btn-secondary" id="cf-filter-unread" onclick="setContactFilter('unread')"     style="font-size:0.78rem;padding:7px 14px">Unread</button>
+        <button class="btn-secondary" id="cf-filter-read"   onclick="setContactFilter('read')"       style="font-size:0.78rem;padding:7px 14px">Read</button>
+        <button class="btn-secondary" id="cf-filter-responded" onclick="setContactFilter('responded')" style="font-size:0.78rem;padding:7px 14px">Responded</button>
+      </div>
+
+      <div id="contactList" class="posts-list">
+        <p style="color:var(--muted);text-align:center;padding:40px">Loading…</p>
+      </div>
+
+      <!-- Detail modal -->
+      <div id="contactModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.45);z-index:999;align-items:center;justify-content:center;padding:24px">
+        <div style="background:#fff;border-radius:16px;padding:36px;max-width:600px;width:100%;max-height:80vh;overflow-y:auto;position:relative">
+          <button onclick="closeContactModal()" style="position:absolute;top:16px;right:16px;background:none;border:none;cursor:pointer;color:var(--muted);font-size:1.2rem;line-height:1">✕</button>
+          <div id="contactModalBody"></div>
+          <div style="display:flex;gap:10px;margin-top:24px;padding-top:20px;border-top:1px solid var(--border)" id="contactModalActions"></div>
+        </div>
+      </div>
+    </div>
+
   </div>
 </div>
 
@@ -1169,6 +1208,7 @@ function showPanel(name) {
   if (name === 'products')        loadProductPanel();
   if (name === 'promos')          renderPromoList();
   if (name === 'page-resources')  loadPageResourcesPanel();
+  if (name === 'contact')         loadContactSubmissions();
 }
 
 // ── TOAST ──
@@ -2170,6 +2210,167 @@ async function renderPageResourceList() {
         </div>
       </div>`;
   }).join('');
+}
+
+// ─────────────────────────────────────
+// CONTACT SUBMISSIONS
+// ─────────────────────────────────────
+
+let _contactFilter = 'all';
+let _contactData   = [];
+
+function setContactFilter(f) {
+  _contactFilter = f;
+  ['all','unread','read','responded'].forEach(k => {
+    const el = document.getElementById('cf-filter-' + k);
+    if (!el) return;
+    el.style.background = k === f ? 'var(--blue)' : '';
+    el.style.color      = k === f ? '#fff' : '';
+    el.style.borderColor = k === f ? 'var(--blue)' : '';
+  });
+  renderContactList();
+}
+
+async function loadContactSubmissions() {
+  const el = document.getElementById('contactList');
+  if (!el) return;
+  el.innerHTML = '<p style="color:var(--muted);text-align:center;padding:40px">Loading…</p>';
+
+  const { data, error } = await window.db
+    .from('contact_submissions')
+    .select('*')
+    .order('created_at', { ascending: false });
+
+  if (error) {
+    el.innerHTML = `<p style="color:var(--red);text-align:center;padding:40px">Failed to load: ${error.message}</p>`;
+    return;
+  }
+
+  _contactData = data || [];
+
+  // Update unread badge in sidebar
+  const unreadCount = _contactData.filter(r => r.status === 'unread').length;
+  const badge = document.getElementById('contact-unread-badge');
+  if (badge) {
+    badge.textContent = unreadCount;
+    badge.style.display = unreadCount ? 'inline-block' : 'none';
+  }
+
+  renderContactList();
+}
+
+function renderContactList() {
+  const el = document.getElementById('contactList');
+  if (!el) return;
+
+  const filtered = _contactFilter === 'all'
+    ? _contactData
+    : _contactData.filter(r => r.status === _contactFilter);
+
+  if (!filtered.length) {
+    el.innerHTML = `<p style="color:var(--muted);text-align:center;padding:40px">${_contactFilter === 'all' ? 'No submissions yet.' : 'No ' + _contactFilter + ' submissions.'}</p>`;
+    return;
+  }
+
+  const statusColors = { unread: '#ef4444', read: '#3b82f6', responded: '#15803d' };
+  const statusLabels = { unread: 'Unread', read: 'Read', responded: 'Responded' };
+
+  el.innerHTML = filtered.map(r => {
+    const d = new Date(r.created_at);
+    const dateStr = d.toLocaleDateString('en-CA', { month: 'short', day: 'numeric', year: 'numeric', hour: '2-digit', minute: '2-digit' });
+    const statusColor = statusColors[r.status] || '#999';
+    const statusLabel = statusLabels[r.status] || r.status;
+    const preview = (r.message || '').replace(/\n/g, ' ').slice(0, 100);
+    return `
+      <div class="post-row" style="cursor:pointer;${r.status === 'unread' ? 'border-left:3px solid #ef4444;' : ''}" onclick="openContactModal('${r.id}')">
+        <div style="flex-shrink:0">
+          <div style="width:10px;height:10px;border-radius:50%;background:${statusColor};margin-top:5px"></div>
+        </div>
+        <div class="post-row-body">
+          <div class="post-row-title" style="font-weight:${r.status === 'unread' ? '700' : '600'}">${r.name || '—'}</div>
+          <div class="post-row-meta">${r.email || ''} · ${r.subject || 'No subject'} · ${dateStr}</div>
+          <div style="font-size:0.76rem;color:var(--muted);margin-top:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:500px">${preview}${preview.length >= 100 ? '…' : ''}</div>
+        </div>
+        <span style="flex-shrink:0;padding:3px 10px;border-radius:100px;font-size:0.68rem;font-weight:700;letter-spacing:0.05em;text-transform:uppercase;background:${statusColor}22;color:${statusColor}">${statusLabel}</span>
+        <div style="display:flex;gap:6px;flex-shrink:0" onclick="event.stopPropagation()">
+          ${r.status !== 'read'       ? `<button class="btn-secondary" style="font-size:0.72rem;padding:5px 10px" onclick="updateContactStatus('${r.id}','read')">Mark Read</button>` : ''}
+          ${r.status !== 'responded'  ? `<button class="btn-secondary" style="font-size:0.72rem;padding:5px 10px" onclick="updateContactStatus('${r.id}','responded')">Mark Responded</button>` : ''}
+          <button class="btn-danger"   onclick="deleteContactSubmission('${r.id}')">Delete</button>
+        </div>
+      </div>`;
+  }).join('');
+}
+
+function openContactModal(id) {
+  const r = _contactData.find(x => x.id === id);
+  if (!r) return;
+
+  const d = new Date(r.created_at);
+  const dateStr = d.toLocaleDateString('en-CA', { month: 'long', day: 'numeric', year: 'numeric', hour: '2-digit', minute: '2-digit' });
+  const statusColors = { unread: '#ef4444', read: '#3b82f6', responded: '#15803d' };
+  const statusLabels = { unread: 'Unread', read: 'Read', responded: 'Responded' };
+
+  document.getElementById('contactModalBody').innerHTML = `
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:24px;padding-bottom:16px;border-bottom:1px solid var(--border)">
+      <div>
+        <div style="font-family:'Familjen Grotesk',serif;font-size:1.3rem;font-weight:600;color:var(--text)">${r.name || '—'}</div>
+        <div style="font-size:0.78rem;color:var(--muted);margin-top:2px">${r.email || ''} · ${dateStr}</div>
+      </div>
+      <span style="margin-left:auto;flex-shrink:0;padding:3px 12px;border-radius:100px;font-size:0.68rem;font-weight:700;letter-spacing:0.05em;text-transform:uppercase;background:${(statusColors[r.status]||'#999')}22;color:${statusColors[r.status]||'#999'}">${statusLabels[r.status]||r.status}</span>
+    </div>
+    <div style="margin-bottom:16px">
+      <div style="font-size:0.68rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted);margin-bottom:5px">Subject</div>
+      <div style="font-size:0.9rem;font-weight:600;color:var(--text)">${r.subject || '—'}</div>
+    </div>
+    <div>
+      <div style="font-size:0.68rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted);margin-bottom:8px">Message</div>
+      <div style="font-size:0.88rem;color:var(--mid);line-height:1.75;white-space:pre-wrap;background:var(--off);padding:16px 18px;border-radius:10px">${r.message || '—'}</div>
+    </div>`;
+
+  document.getElementById('contactModalActions').innerHTML = `
+    <a href="mailto:${r.email}?subject=Re: ${encodeURIComponent(r.subject||'Your message to BHSS')}" class="btn-primary" style="text-decoration:none;display:inline-flex;align-items:center;gap:6px">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+      Reply by Email
+    </a>
+    ${r.status !== 'read'      ? `<button class="btn-secondary" onclick="updateContactStatus('${r.id}','read');closeContactModal()">Mark Read</button>` : ''}
+    ${r.status !== 'responded' ? `<button class="btn-secondary" onclick="updateContactStatus('${r.id}','responded');closeContactModal()">Mark Responded</button>` : ''}
+    <button class="btn-danger" onclick="deleteContactSubmission('${r.id}');closeContactModal()">Delete</button>`;
+
+  const modal = document.getElementById('contactModal');
+  modal.style.display = 'flex';
+  modal.style.alignItems = 'center';
+  modal.style.justifyContent = 'center';
+
+  // Auto-mark as read when opened
+  if (r.status === 'unread') updateContactStatus(r.id, 'read', true);
+}
+
+function closeContactModal() {
+  document.getElementById('contactModal').style.display = 'none';
+}
+
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeContactModal(); });
+document.getElementById('contactModal')?.addEventListener('click', e => { if (e.target === document.getElementById('contactModal')) closeContactModal(); });
+
+async function updateContactStatus(id, status, silent = false) {
+  const { error } = await window.db.from('contact_submissions').update({ status }).eq('id', id);
+  if (error) { if (!silent) toast('Error: ' + error.message, 'error'); return; }
+  const item = _contactData.find(x => x.id === id);
+  if (item) item.status = status;
+  const unreadCount = _contactData.filter(r => r.status === 'unread').length;
+  const badge = document.getElementById('contact-unread-badge');
+  if (badge) { badge.textContent = unreadCount; badge.style.display = unreadCount ? 'inline-block' : 'none'; }
+  if (!silent) toast(status === 'read' ? 'Marked as read.' : 'Marked as responded.');
+  renderContactList();
+}
+
+async function deleteContactSubmission(id) {
+  if (!confirm('Delete this submission? This cannot be undone.')) return;
+  const { error } = await window.db.from('contact_submissions').delete().eq('id', id);
+  if (error) { toast('Delete failed: ' + error.message, 'error'); return; }
+  _contactData = _contactData.filter(x => x.id !== id);
+  toast('Submission deleted.');
+  renderContactList();
 }
 
 // ── URL PARAM AUTO-OPEN ──
