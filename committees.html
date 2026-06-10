@@ -166,19 +166,23 @@
       padding: 64px 60px 56px;
       text-align: center;
     }
-    .page-hero .sq {
-      position: absolute; border: 3px solid rgba(255,255,255,0.13);
-      border-radius: 6px; animation: floatSq 7s ease-in-out infinite alternate;
+    .page-hero .decor-img {
+      position: absolute; pointer-events: none; user-select: none; opacity: 1;
+      animation: floatDecor 7s ease-in-out infinite alternate;
     }
-    .page-hero .sq1 { width: 58px; height: 58px; top: 18px; left: 48px; transform: rotate(14deg); }
-    .page-hero .sq2 { width: 38px; height: 38px; bottom: 16px; right: 90px; transform: rotate(-20deg); animation-delay: 1.5s; }
-    .page-hero .sq3 { width: 26px; height: 26px; top: 30px; right: 200px; transform: rotate(8deg); animation-delay: 3s; }
-    .page-hero .sq4 { width: 44px; height: 44px; bottom: 20px; left: 160px; transform: rotate(-12deg); animation-delay: 0.8s; }
-    .page-hero .sq5 { width: 18px; height: 18px; top: 50%; right: 60px; transform: rotate(30deg); animation-delay: 2s; }
-    @keyframes floatSq {
-      from { transform: rotate(14deg) translateY(0); opacity: 0.7; }
-      to   { transform: rotate(14deg) translateY(-14px); opacity: 1; }
+    @keyframes floatDecor {
+      from { transform: rotate(var(--r, 0deg)) translateY(0); }
+      to   { transform: rotate(var(--r, 0deg)) translateY(-12px); }
     }
+    .page-hero .decor-img1 { width: 90px;  top: 10px;   left: 36px;   --r: -8deg; }
+    .page-hero .decor-img2 { width: 66px;  bottom: 12px; right: 72px;  --r: 18deg; }
+    .page-hero .decor-img3 { width: 50px;  top: 20px;   right: 160px; --r: -4deg; }
+    .page-hero .decor-img4 { width: 78px;  bottom: 14px; left: 130px;  --r: 10deg; }
+    .page-hero .decor-img5 { width: 42px;  top: 44%;    right: 48px;  --r: 24deg; }
+
+    /* ─── SECTION BACKGROUND DECOR ─── */
+    .section-bg-decor { position: absolute; pointer-events: none; user-select: none; opacity: 1; z-index: -10; }
+    .chair-side-img { flex-shrink: 0; pointer-events: none; user-select: none; opacity: 1; width: 110px; align-self: center; }
     .page-hero h1 {
       font-family: 'Familjen Grotesk', sans-serif;
       font-size: clamp(1.8rem, 5vw, 3.2rem);
@@ -241,6 +245,7 @@
       padding: 48px 40px 72px;
       max-width: 1200px;
       margin: 0 auto;
+      position: relative;
     }
 
     /* ─── GROUP HEADINGS ─── */
@@ -365,6 +370,10 @@
       footer { padding: 36px 24px 28px; }
       .footer-top { grid-template-columns: 1fr; gap: 24px; }
       .footer-bottom { flex-direction: column; gap: 6px; text-align: center; }
+      .chair-side-img { display: none; }
+      .page-hero .decor-img3, .page-hero .decor-img5 { display: none; }
+      .section-bg-decor[style*="right:"] { right: -25px !important; left: auto !important; }
+      .section-bg-decor[style*="left:"] { left: -25px !important; right: auto !important; }
     }
 
 </style>
@@ -437,11 +446,11 @@
 
 <!-- Page Hero -->
 <div class="page-hero">
-  <div class="sq sq1"></div>
-  <div class="sq sq2"></div>
-  <div class="sq sq3"></div>
-  <div class="sq sq4"></div>
-  <div class="sq sq5"></div>
+  <img class="decor-img decor-img1" src="assets/svg/decor/sqs1.svg" alt="" aria-hidden="true">
+  <img class="decor-img decor-img2" src="assets/svg/decor/sqs3.svg" alt="" aria-hidden="true">
+  <img class="decor-img decor-img3" src="assets/svg/decor/sqs5.svg" alt="" aria-hidden="true">
+  <img class="decor-img decor-img4" src="assets/svg/decor/sqs7.svg" alt="" aria-hidden="true">
+  <img class="decor-img decor-img5" src="assets/svg/decor/sqs2.svg" alt="" aria-hidden="true">
   <h1>Community is our greatest strength.</h1>
   <p>The Bachelor of Health Sciences Society is comprised of multiple committees dedicated to a wide range of goals and tasks — <em>all completely run by passionate students across the HHSP.</em></p>
 </div>
@@ -470,9 +479,15 @@
 
 <!-- Committees Section -->
 <div class="committees-section">
+  <img class="section-bg-decor" src="assets/svg/decor/sqs4.svg" alt="" aria-hidden="true" style="width:200px;top:-20px;right:-30px;transform:rotate(12deg)">
+  <img class="section-bg-decor" src="assets/svg/decor/sqs5.svg" alt="" aria-hidden="true" style="width:100px;top:100px;left:-20px;transform:rotate(-20deg)">
+  <img class="section-bg-decor" src="assets/svg/decor/sqs1.svg" alt="" aria-hidden="true" style="width:200px;top:400px;left:-45px;transform:rotate(-40deg)">
+  <img class="section-bg-decor" src="assets/svg/decor/sqs8.svg" alt="" aria-hidden="true" style="width:180px;bottom:60px;left:-20px;transform:rotate(-10deg)">
+  <img class="section-bg-decor" src="assets/svg/decor/sqs6.svg" alt="" aria-hidden="true" style="width:140px;bottom:200px;right:10px;transform:rotate(6deg)">
 
   <!-- Chair — standalone, centered -->
-  <div style="display:flex;justify-content:center;margin-bottom:40px">
+  <div style="display:flex;justify-content:center;align-items:center;gap:48px;margin-bottom:40px">
+    <img class="chair-side-img" src="assets/svg/decor/sqs6.svg" alt="" aria-hidden="true" style="transform:rotate(-8deg)">
     <div class="comm-card" style="max-width:280px;width:100%">
       <div class="comm-card-banner">
         <img src="assets/images/committee_titles/chr_title.png" alt="Chair banner" />
@@ -489,6 +504,7 @@
         <a class="comm-card-btn" href="committeepages/chr_committee.html">See More</a>
       </div>
     </div>
+    <img class="chair-side-img" src="assets/svg/decor/sqs2.svg" alt="" aria-hidden="true" style="transform:rotate(10deg)">
   </div>
 
   <!-- Core Committees -->

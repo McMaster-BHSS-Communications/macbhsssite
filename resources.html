@@ -82,8 +82,9 @@
       position: relative;
       overflow: hidden;
       background: var(--dark);
-      background-size: cover;
-      background-position: center;
+      background-size: auto 100%;
+      background-position: right center;
+      background-repeat: no-repeat;
       cursor: pointer;
       border-radius: 0;
       min-height: 200px;
@@ -101,13 +102,14 @@
       content: '';
       position: absolute;
       inset: 0;
-      background: linear-gradient(to top, rgba(8,14,26,0.88) 0%, rgba(8,14,26,0.35) 55%, transparent 100%);
       z-index: 1;
       pointer-events: none;
-      transition: background 0.25s;
+      background: linear-gradient(to top, rgba(29,79,161,0.9) 0%, rgba(29,79,161,0.5) 55%, transparent 100%);
+      opacity: 0;
+      transition: opacity 0.3s ease;
     }
     .hero-banner:hover::before {
-      background: linear-gradient(to top, rgba(29,79,161,0.9) 0%, rgba(29,79,161,0.5) 55%, transparent 100%);
+      opacity: 1;
     }
     .hero-banner-content { position: relative; z-index: 2; }
     .hero-banner h2 {
@@ -452,19 +454,19 @@
 
 <!-- Hero Banners — add style="background-image: url('...')" to any banner to add a background photo -->
 <div class="banners-section">
-  <a href="#section-administration" class="hero-banner">
+  <a href="#section-administration" class="hero-banner" style="background-image: url('assets/images/banners/administration_resources.png');">
     <div class="hero-banner-content">
       <h2>Administration</h2>
       <p>See the Society's administrative documents</p>
     </div>
   </a>
-  <a href="#section-opportunities" class="hero-banner">
+  <a href="#section-opportunities" class="hero-banner" style="background-image: url('assets/images/banners/opportunity_resources.png')">
     <div class="hero-banner-content">
       <h2>Opportunities</h2>
       <p>View opportunities and roles within the Society</p>
     </div>
   </a>
-  <a href="#section-students" class="hero-banner full">
+  <a href="#section-students" class="hero-banner full" style="background-image: url('assets/images/banners/student_resources.png')">
     <div class="hero-banner-content">
       <h2>For Students</h2>
       <p>Peruse through a collection of materials to aid your semester</p>

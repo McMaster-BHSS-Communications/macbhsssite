@@ -102,19 +102,20 @@
       background: var(--blue); position: relative; overflow: hidden;
       padding: 64px 60px 56px; text-align: center;
     }
-    .shop-hero .sq {
-      position: absolute; border: 3px solid rgba(255,255,255,0.13);
-      border-radius: 6px; animation: floatSq 7s ease-in-out infinite alternate;
+    .shop-hero .decor-img {
+      position: absolute; pointer-events: none; user-select: none; opacity: 1;
+      animation: floatDecor 7s ease-in-out infinite alternate;
     }
-    .shop-hero .sq1 { width: 58px; height: 58px; top: 18px;  left: 48px;   transform: rotate(14deg); }
-    .shop-hero .sq2 { width: 38px; height: 38px; bottom: 16px; right: 90px;  transform: rotate(-20deg); animation-delay: 1.5s; }
-    .shop-hero .sq3 { width: 26px; height: 26px; top: 30px;  right: 200px; transform: rotate(8deg);  animation-delay: 3s; }
-    .shop-hero .sq4 { width: 44px; height: 44px; bottom: 20px; left: 160px;  transform: rotate(-12deg); animation-delay: 0.8s; }
-    .shop-hero .sq5 { width: 18px; height: 18px; top: 50%;   right: 60px;  transform: rotate(30deg); animation-delay: 2s; }
-    @keyframes floatSq {
-      from { opacity: 0.7; transform: rotate(14deg) translateY(0); }
-      to   { opacity: 1;   transform: rotate(14deg) translateY(-14px); }
+    @keyframes floatDecor {
+      from { transform: rotate(var(--r, 0deg)) translateY(0); }
+      to   { transform: rotate(var(--r, 0deg)) translateY(-12px); }
     }
+    .shop-hero .decor-img1 { width: 90px;  top: 10px;   left: 36px;   --r: -8deg; }
+    .shop-hero .decor-img2 { width: 66px;  bottom: 12px; right: 72px;  --r: 18deg; }
+    .shop-hero .decor-img3 { width: 50px;  top: 20px;   right: 160px; --r: -4deg; }
+    .shop-hero .decor-img4 { width: 78px;  bottom: 14px; left: 130px;  --r: 10deg; }
+    .shop-hero .decor-img5 { width: 42px;  top: 44%;    right: 48px;  --r: 24deg; }
+    .section-bg-decor { position: absolute; pointer-events: none; user-select: none; opacity: 1; z-index: -10; }
     .shop-hero h1 {
       font-family: 'Familjen Grotesk', sans-serif;
       font-size: clamp(1.8rem, 5vw, 3.2rem); font-weight: 600;
@@ -151,7 +152,7 @@
     /* ─────────────────────────────────────────────────────────────────────── */
     /* PRODUCT GRID                                                            */
     /* ─────────────────────────────────────────────────────────────────────── */
-    .shop-section { max-width: 1140px; margin: 0 auto; padding: 48px 40px 80px; }
+    .shop-section { max-width: 1140px; margin: 0 auto; padding: 48px 40px 80px; position: relative; }
 
     .product-grid {
       display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px;
@@ -161,7 +162,7 @@
       background: var(--white); border: 1px solid var(--border);
       border-radius: 16px; overflow: hidden;
       transition: box-shadow 0.25s, transform 0.25s;
-      display: flex; flex-direction: column;
+      display: flex; flex-direction: column; z-index: 10;
     }
     .product-card:hover {
       box-shadow: 0 16px 48px rgba(0,0,0,0.1); transform: translateY(-4px);
@@ -513,6 +514,8 @@
       .product-grid { grid-template-columns: 1fr; }
       .cart-trigger { bottom: 16px; right: 16px; }
       .toast { bottom: 84px; right: 16px; left: 16px; max-width: unset; }
+      .section-bg-decor[style*="right:"] { right: -25px !important; left: auto !important; }
+      .section-bg-decor[style*="left:"] { left: -25px !important; right: auto !important; }
     }
 
     /* ─────────────────────────────────────────────────────────────────────── */
@@ -729,11 +732,11 @@
 
 <!-- Shop Hero -->
 <div class="shop-hero">
-  <div class="sq sq1"></div>
-  <div class="sq sq2"></div>
-  <div class="sq sq3"></div>
-  <div class="sq sq4"></div>
-  <div class="sq sq5"></div>
+  <img class="decor-img decor-img1" src="assets/svg/decor/sqs1.svg" alt="" aria-hidden="true">
+  <img class="decor-img decor-img2" src="assets/svg/decor/sqs5.svg" alt="" aria-hidden="true">
+  <img class="decor-img decor-img3" src="assets/svg/decor/sqs3.svg" alt="" aria-hidden="true">
+  <img class="decor-img decor-img4" src="assets/svg/decor/sqs7.svg" alt="" aria-hidden="true">
+  <img class="decor-img decor-img5" src="assets/svg/decor/sqs2.svg" alt="" aria-hidden="true">
   <h1>HHSP Store</h1>
   <p>Rep your Health Sci pride. All proceeds go directly back to supporting BHSS programming and events.</p>
 </div>
@@ -748,6 +751,8 @@
 
 <!-- Product Grid -->
 <div class="shop-section">
+  <img class="section-bg-decor" src="assets/svg/decor/sqs4.svg" alt="" aria-hidden="true" style="width:200px;top:-20px;right:-20px;transform:rotate(14deg)">
+  <img class="section-bg-decor" src="assets/svg/decor/sqs6.svg" alt="" aria-hidden="true" style="width:170px;bottom:60px;left:-10px;transform:rotate(-12deg)">
   <div class="product-grid" id="productGrid">
     <!-- Rendered by JS -->
   </div>

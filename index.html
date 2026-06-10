@@ -315,18 +315,18 @@
       background: var(--blue); position: relative;
       overflow: hidden; padding: 52px 60px; text-align: center;
     }
-    .sq {
-      position: absolute; border: 3px solid rgba(255,255,255,0.13);
-      border-radius: 6px; animation: floatSq 7s ease-in-out infinite alternate;
+    .banner-decor {
+      position: absolute; pointer-events: none; user-select: none; opacity: 1;
+      animation: floatDecor 7s ease-in-out infinite alternate;
     }
-    .sq1 { width: 58px; height: 58px; top: 18px; left: 48px; transform: rotate(14deg); }
-    .sq2 { width: 38px; height: 38px; bottom: 16px; right: 90px; transform: rotate(-20deg); animation-delay: 1.5s; }
-    .sq3 { width: 26px; height: 26px; top: 30px; right: 200px; transform: rotate(8deg); animation-delay: 3s; }
-    .sq4 { width: 44px; height: 44px; bottom: 20px; left: 160px; transform: rotate(-12deg); animation-delay: 0.8s; }
-    @keyframes floatSq {
-      from { transform: rotate(14deg) translateY(0); opacity: 0.7; }
-      to   { transform: rotate(14deg) translateY(-14px); opacity: 1; }
+    @keyframes floatDecor {
+      from { transform: rotate(var(--r, 0deg)) translateY(0); }
+      to   { transform: rotate(var(--r, 0deg)) translateY(-12px); }
     }
+    .banner-decor1 { width: 90px;  top: 10px;   left: 36px;   --r: -8deg; }
+    .banner-decor2 { width: 66px;  bottom: 12px; right: 72px;  --r: 18deg;  animation-delay: 1.5s; }
+    .banner-decor3 { width: 50px;  top: 16px;   right: 160px; --r: -4deg;  animation-delay: 3s; }
+    .banner-decor4 { width: 78px;  bottom: 14px; left: 130px;  --r: 10deg;  animation-delay: 0.8s; }
     .discover-banner h2 {
       font-family: 'Familjen Grotesk', sans-serif;
       font-size: 2.4rem; font-weight: 600; color: var(--white);
@@ -334,7 +334,8 @@
     }
 
     /* ─── DISCOVER CARDS ─── */
-    .discover-section { background: var(--off); padding: 0 0 60px; }
+    .discover-section { background: var(--off); padding: 0 0 60px; position: relative; overflow: hidden; }
+    .section-bg-decor { position: absolute; pointer-events: none; user-select: none; opacity: 1; z-index: -10; }
     .discover-grid {
       display: grid; grid-template-columns: repeat(3, 1fr);
       gap: 20px; max-width: 1100px; margin: 0 auto;
@@ -342,7 +343,7 @@
     }
     .d-card {
       background: var(--blue-pale); border: 1px solid rgba(45,105,201,0.15);
-      border-radius: 14px; padding: 36px 28px 32px;
+      border-radius: 2px; padding: 36px 28px 32px;
       display: flex; flex-direction: column; align-items: center;
       text-align: center; gap: 12px;
       transition: transform 0.22s, box-shadow 0.22s;
@@ -460,6 +461,8 @@
       footer { padding: 36px 24px 28px; }
       .footer-top { grid-template-columns: 1fr; gap: 24px; }
       .footer-bottom { flex-direction: column; gap: 6px; text-align: center; }
+      .section-bg-decor[style*="right:"] { right: -25px !important; left: auto !important; }
+      .section-bg-decor[style*="left:"] { left: -25px !important; right: auto !important; }
     }
   </style>
 </head>
@@ -580,27 +583,31 @@
 
 <!-- Discover banner -->
 <div class="discover-banner">
-  <div class="sq sq1"></div><div class="sq sq2"></div>
-  <div class="sq sq3"></div><div class="sq sq4"></div>
+  <img class="banner-decor banner-decor1" src="assets/svg/decor/sqs2.svg" alt="" aria-hidden="true">
+  <img class="banner-decor banner-decor2" src="assets/svg/decor/sqs4.svg" alt="" aria-hidden="true">
+  <img class="banner-decor banner-decor3" src="assets/svg/decor/sqs6.svg" alt="" aria-hidden="true">
+  <img class="banner-decor banner-decor4" src="assets/svg/decor/sqs8.svg" alt="" aria-hidden="true">
   <h2>Discover more</h2>
 </div>
 
 <!-- Discover cards -->
 <div class="discover-section">
+  <img class="section-bg-decor" src="assets/svg/decor/sqs1.svg" alt="" aria-hidden="true" style="width:190px;top:-10px;right:-20px;transform:rotate(10deg)">
+  <img class="section-bg-decor" src="assets/svg/decor/sqs5.svg" alt="" aria-hidden="true" style="width:160px;bottom:-10px;left:-10px;transform:rotate(-8deg)">
   <div class="discover-grid">
     <div class="d-card">
       <div>
         <svg width="30" height="30" viewBox="0 0 24 24" fill="#2e69c9" stroke-width="1.5"><path d="M10 10V5H15V10H20V15H15V20H10V15H5V10Z"/></svg>
       </div>
       <h3>BHSS Committees</h3>
-      <p>Learn more about the committees that make up BHSS, including Academics, Communications, EDI, External, Finance, Internal, Logistics & Elections, Social, and Welcome Week, as well as our Year Councils.</p>
+      <p>Learn more about the committees that make up the BHSS, including Academics, Communications, EDI, External, Finance, Internal, Logistics & Elections, Social, and Welcome Week, as well as our Year Councils.</p>
       <a class="d-link" href="committees.html">Learn More →</a>
     </div>
     <div class="d-card featured">
       <div><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="1.5"><path d="M22 19a2 2 0 01-2 2H4a2 2 0 01-2-2 2 2 0 012-2 3 3 0 014-4 4 4 0 014-4 6 6 0 016 6 4-4 0 014 4z"/></svg></div>
       <h3>BHSS Resource Hub</h3>
-      <p>Trying to sign up for an event? Looking for the BHSS Academics Google Drive? Thinking of applying for a BHSS position? Check out our resources tab to find everything BHSS!</p>
-      <a class="d-link" href="https://drive.google.com/drive/u/0/folders/1YlpnrLa7I39miOYMrV8sf2DoPRnFAx20" target="_blank">See More →</a>
+      <p>Trying to sign up for an event? Need to find administrative resources? Looking for the BHSS Academics Google Drive? Thinking of applying for a BHSS position? Check out our resources tab to find everything BHSS!</p>
+      <a class="d-link" href="resources.html">See More →</a>
     </div>
     <div class="d-card">
       <div><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#2e69c9" stroke-width="1.5"><path d="M17 19a2 2 0 01-2 2H4a2 2 0 01-2-2V8a2 2 0 012-2H15a2 2 0 012 2zM6 6V4a2 2 0 012-2H11a2 2 0 012 2V6z"/></svg></div>

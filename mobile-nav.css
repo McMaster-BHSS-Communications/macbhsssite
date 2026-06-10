@@ -2,7 +2,7 @@
    mobile-nav.css — Shared mobile navigation drawer styles
    Included by all pages via <link rel="stylesheet" href="...mobile-nav.css">
    Relies on CSS variables (--text, --white, --border, --mid, --muted,
-   --blue, --blue-pale) defined in each page's :root.
+   --blue, --blue-pale, --off) defined in each page's :root.
 ═══════════════════════════════════════════════════════════════ */
 
 /* ─── HAMBURGER BUTTON ─── */
@@ -20,8 +20,35 @@
 .mobile-nav-header { display: flex; align-items: center; justify-content: space-between; padding: 16px 20px; border-bottom: 1px solid var(--border); }
 .mobile-nav-header span { font-family: 'Familjen Grotesk', serif; font-weight: 600; font-size: 0.95rem; color: var(--text); }
 .mobile-nav-header button { background: none; border: none; cursor: pointer; font-size: 1.2rem; color: var(--mid); line-height: 1; padding: 4px; }
-.mobile-nav a { display: block; padding: 13px 24px; font-size: 0.9rem; font-weight: 500; color: var(--text); text-decoration: none; border-bottom: 1px solid var(--border); transition: background 0.12s; }
-.mobile-nav a:hover { background: var(--blue-pale); }
-.mobile-nav .mob-section { padding: 10px 24px 4px; font-size: 0.68rem; font-weight: 600; letter-spacing: 0.08em; color: var(--muted); text-transform: uppercase; }
-.mobile-nav .mob-sub a { padding-left: 36px; font-size: 0.85rem; color: var(--mid); }
-.mobile-nav .mob-cta a { color: var(--blue); font-weight: 600; margin-top: 8px; }
+
+/* Direct-child links (Home, Resources, Store, BAGs, About Us) */
+.mobile-nav > a { display: block; padding: 13px 24px; font-size: 0.9rem; font-weight: 500; color: var(--text); text-decoration: none; border-bottom: 1px solid var(--border); transition: background 0.12s; }
+.mobile-nav > a:hover { background: var(--blue-pale); }
+
+/* ─── DROPDOWN ITEMS ─── */
+.mob-dropdown { border-bottom: 1px solid var(--border); }
+
+/* Row: page link + chevron toggle side by side */
+.mob-dropdown-row { display: flex; align-items: stretch; }
+.mob-dropdown-row > a { flex: 1; display: block; padding: 13px 24px; font-size: 0.9rem; font-weight: 500; color: var(--text); text-decoration: none; transition: background 0.12s; }
+.mob-dropdown-row > a:hover { background: var(--blue-pale); }
+
+/* Chevron toggle button */
+.mob-chevron-btn { background: none; border: none; border-left: 1px solid var(--border); padding: 0 16px; cursor: pointer; color: var(--mid); display: flex; align-items: center; flex-shrink: 0; transition: background 0.12s; }
+.mob-chevron-btn:hover { background: var(--blue-pale); }
+.mob-chevron-btn svg { transition: transform 0.22s ease; display: block; }
+.mob-chevron-btn[aria-expanded="true"] svg { transform: rotate(180deg); }
+
+/* Collapsible panel */
+.mob-dropdown-panel { max-height: 0; overflow: hidden; transition: max-height 0.3s ease; background: var(--off, #f5f7fa); }
+.mob-dropdown-panel a { display: block; padding: 11px 24px 11px 36px; font-size: 0.85rem; font-weight: 400; color: var(--mid); text-decoration: none; border-bottom: 1px solid var(--border); transition: background 0.12s, color 0.12s; }
+.mob-dropdown-panel a:last-child { border-bottom: none; }
+.mob-dropdown-panel a:hover { background: var(--blue-pale); color: var(--blue); }
+
+/* Section label inside a panel (e.g. "Year Councils") */
+.mob-panel-section { padding: 10px 24px 3px 36px; font-size: 0.65rem; font-weight: 700; letter-spacing: 0.08em; color: var(--muted); text-transform: uppercase; }
+
+/* ─── CTA LINK ─── */
+.mob-cta { margin-top: 8px; }
+.mob-cta a { display: block; padding: 13px 24px; font-size: 0.9rem; font-weight: 600; color: var(--blue); text-decoration: none; border-bottom: 1px solid var(--border); transition: background 0.12s; }
+.mob-cta a:hover { background: var(--blue-pale); }

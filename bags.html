@@ -63,13 +63,13 @@
     .nav-resources a:hover { background: var(--blue); color: var(--white); }
 
     .page-hero { background: var(--blue); position: relative; overflow: hidden; padding: 64px 60px 56px; text-align: center; }
-    .page-hero .sq { position: absolute; border: 3px solid rgba(255,255,255,0.13); border-radius: 6px; animation: floatSq 7s ease-in-out infinite alternate; }
-    .page-hero .sq1 { width: 58px; height: 58px; top: 18px; left: 48px; transform: rotate(14deg); }
-    .page-hero .sq2 { width: 38px; height: 38px; bottom: 16px; right: 90px; transform: rotate(-20deg); animation-delay: 1.5s; }
-    .page-hero .sq3 { width: 26px; height: 26px; top: 30px; right: 200px; transform: rotate(8deg); animation-delay: 3s; }
-    .page-hero .sq4 { width: 44px; height: 44px; bottom: 20px; left: 160px; transform: rotate(-12deg); animation-delay: 0.8s; }
-    .page-hero .sq5 { width: 18px; height: 18px; top: 50%; right: 60px; transform: rotate(30deg); animation-delay: 2s; }
-    @keyframes floatSq { from { transform: rotate(14deg) translateY(0); opacity: 0.7; } to { transform: rotate(14deg) translateY(-14px); opacity: 1; } }
+    .page-hero .decor-img { position: absolute; pointer-events: none; user-select: none; opacity: 1; animation: floatDecor 7s ease-in-out infinite alternate; }
+    @keyframes floatDecor { from { transform: rotate(var(--r, 0deg)) translateY(0); } to { transform: rotate(var(--r, 0deg)) translateY(-12px); } }
+    .page-hero .decor-img1 { width: 90px;  top: 10px;   left: 36px;   --r: -8deg; }
+    .page-hero .decor-img2 { width: 66px;  bottom: 12px; right: 72px;  --r: 18deg; }
+    .page-hero .decor-img3 { width: 50px;  top: 20px;   right: 160px; --r: -4deg; }
+    .page-hero .decor-img4 { width: 78px;  bottom: 14px; left: 130px;  --r: 10deg; }
+    .page-hero .decor-img5 { width: 42px;  top: 44%;    right: 48px;  --r: 24deg; }
     .page-hero h1 { font-family: 'Familjen Grotesk', sans-serif; font-size: clamp(1.8rem, 5vw, 3.2rem); font-weight: 600; color: var(--white); letter-spacing: -0.02em; position: relative; z-index: 1; margin-bottom: 16px; }
     .page-hero p { font-size: clamp(0.85rem, 2vw, 1rem); color: rgba(255,255,255,0.8); max-width: 640px; margin: 0 auto; line-height: 1.7; position: relative; z-index: 1; }
     .page-hero p em { color: var(--white); font-style: italic; font-weight: 500; }
@@ -191,11 +191,11 @@
 </nav>
 
 <div class="page-hero">
-  <div class="sq sq1"></div>
-  <div class="sq sq2"></div>
-  <div class="sq sq3"></div>
-  <div class="sq sq4"></div>
-  <div class="sq sq5"></div>
+  <img class="decor-img decor-img1" src="assets/svg/decor/sqs3.svg" alt="" aria-hidden="true">
+  <img class="decor-img decor-img2" src="assets/svg/decor/sqs1.svg" alt="" aria-hidden="true">
+  <img class="decor-img decor-img3" src="assets/svg/decor/sqs7.svg" alt="" aria-hidden="true">
+  <img class="decor-img decor-img4" src="assets/svg/decor/sqs5.svg" alt="" aria-hidden="true">
+  <img class="decor-img decor-img5" src="assets/svg/decor/sqs8.svg" alt="" aria-hidden="true">
   <h1>BAGs</h1>
   <p>BHSS-Associated Groups — <em>Student-led organizations affiliated with the BHSS, receiving funding and our full support.</em></p>
 </div>
