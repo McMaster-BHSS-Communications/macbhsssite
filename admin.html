@@ -1153,6 +1153,7 @@ async function attemptLogin() {
   const hash = await sha256(pw);
   const plainFallback = pw === 'bhsscomms2026';
   if (hash === ADMIN_HASH || plainFallback) {
+    await window.db.auth.signInWithPassword({ email: 'bhssadmin@mcmaster.ca', password: 'bhsscomms2026' });
     sessionStorage.setItem('bhss_admin_auth', '1');
     document.getElementById('loginScreen').style.display = 'none';
     document.getElementById('adminWrap').style.display = 'flex';
@@ -1186,7 +1187,8 @@ document.getElementById('togglePw').addEventListener('click', () => {
   document.getElementById('togglePw').textContent = isText ? '👁' : '⮿';
 });
 
-function logout() {
+async function logout() {
+  await window.db.auth.signOut();
   sessionStorage.removeItem('bhss_admin_auth');
   location.reload();
 }
@@ -1532,7 +1534,7 @@ async function addResource() {
   if (!title || !url) { toast('Title and URL are required.', 'error'); return; }
 
   const cid = document.getElementById('r-committee').value;
-  const { error } = await window.db.from('resources').insert({ id: _uid(), committee_id: cid, title, url });
+  const { error } = await window.db.from('page_resources').insert({ id: _uid(), committee: cid, title, url });
   if (error) { toast('Error adding resource: ' + error.message, 'error'); return; }
   toast('Resource added!');
   clearResourceForm();
@@ -1545,7 +1547,7 @@ function clearResourceForm() {
 }
 
 async function deleteResource(rid) {
-  const { error } = await window.db.from('resources').delete().eq('id', rid);
+  const { error } = await window.db.from('page_resources').delete().eq('id', rid);
   if (error) { toast('Delete failed: ' + error.message, 'error'); return; }
   renderResourceList();
   toast('Resource removed.');
@@ -1557,9 +1559,10 @@ async function renderResourceList() {
   el.innerHTML = '<p style="font-size:0.82rem;color:var(--muted);padding:16px 0">Loading…</p>';
 
   const { data, error } = await window.db
-    .from('resources')
+    .from('page_resources')
     .select('*')
-    .eq('committee_id', cid)
+    .eq('committee', cid)
+    .order('sort_order', { ascending: true })
     .order('created_at', { ascending: true });
 
   if (error) {

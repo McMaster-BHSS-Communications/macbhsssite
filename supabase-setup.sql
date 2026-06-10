@@ -32,9 +32,10 @@ create table if not exists public.members (
   created_at     timestamptz not null default now()
 );
 
-create table if not exists public.resources (
+-- Note: column is named "committee" (not committee_id) to match the front-end
+create table if not exists public.page_resources (
   id           text        primary key,
-  committee_id text        not null,
+  committee    text        not null,
   title        text        not null,
   url          text        not null,
   sort_order   int         not null default 0,
@@ -43,17 +44,21 @@ create table if not exists public.resources (
 
 -- 2. ENABLE ROW LEVEL SECURITY
 
-alter table public.announcements enable row level security;
-alter table public.members       enable row level security;
-alter table public.resources     enable row level security;
+alter table public.announcements  enable row level security;
+alter table public.members        enable row level security;
+alter table public.page_resources enable row level security;
 
--- 3. ALLOW ALL OPERATIONS
--- The admin page is password-protected at the app level.
--- The anon key is used for both public reads and admin writes.
+-- 3. SECURITY POLICIES
+-- Public visitors can READ everything.
+-- Only a logged-in admin can CREATE / UPDATE / DELETE.
 
-create policy "allow_all" on public.announcements for all using (true) with check (true);
-create policy "allow_all" on public.members       for all using (true) with check (true);
-create policy "allow_all" on public.resources     for all using (true) with check (true);
+create policy "public_read" on public.announcements  for select to anon      using (true);
+create policy "public_read" on public.members        for select to anon      using (true);
+create policy "public_read" on public.page_resources for select to anon      using (true);
+
+create policy "admin_write" on public.announcements  for all    to authenticated using (true) with check (true);
+create policy "admin_write" on public.members        for all    to authenticated using (true) with check (true);
+create policy "admin_write" on public.page_resources for all    to authenticated using (true) with check (true);
 
 -- 4. MIGRATE EXISTING ANNOUNCEMENTS
 
