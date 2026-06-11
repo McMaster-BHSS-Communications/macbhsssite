@@ -1153,7 +1153,7 @@ async function attemptLogin() {
   const hash = await sha256(pw);
   const plainFallback = pw === 'bhsscomms2026';
   if (hash === ADMIN_HASH || plainFallback) {
-    await window.db.auth.signInWithPassword({ email: 'bhssadmin@mcmaster.ca', password: 'bhsscomms2026' });
+    await window.db.auth.signInWithPassword({ email: 'bhsscom@mcmaster.ca', password: 'bhsscomms2026' });
     sessionStorage.setItem('bhss_admin_auth', '1');
     document.getElementById('loginScreen').style.display = 'none';
     document.getElementById('adminWrap').style.display = 'flex';
