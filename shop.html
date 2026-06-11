@@ -8,12 +8,7 @@
   <link rel="icon" type="image/png" sizes="96x96" href="favicon/favicon-96x96.png">
   <link rel="apple-touch-icon" sizes="180x180" href="favicon/apple-touch-icon.png">
   <link rel="manifest" href="favicon/site.webmanifest">
-  <title>HHSP Store | BHSS — McMaster Health Sciences Society</title>
-  <meta name="description" content="Shop official BHSS merch and rep your Health Sci pride. All proceeds support BHSS programming and events for Honours Health Sciences students at McMaster University." />
-  <meta property="og:title" content="HHSP Store | BHSS — McMaster Health Sciences Society" />
-  <meta property="og:description" content="Official BHSS merchandise for McMaster Honours Health Sciences students. All proceeds go back to BHSS programming and events." />
-  <meta property="og:type" content="website" />
-  <meta property="og:image" content="assets/images/logoNEW@4x.png" />
+  <title>Store | Mac BHSS</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Familjen+Grotesk:wght@400;500;600;700&family=Inter:wght@300;400;500;600&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&display=swap" rel="stylesheet" />
@@ -519,7 +514,8 @@
       .product-grid { grid-template-columns: 1fr; }
       .cart-trigger { bottom: 16px; right: 16px; }
       .toast { bottom: 84px; right: 16px; left: 16px; max-width: unset; }
-      .decor-img, .section-bg-decor { display: none; }
+      .section-bg-decor[style*="right:"] { right: -25px !important; left: auto !important; }
+      .section-bg-decor[style*="left:"] { left: -25px !important; right: auto !important; }
     }
 
     /* ─────────────────────────────────────────────────────────────────────── */
