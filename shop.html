@@ -13,8 +13,6 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Familjen+Grotesk:wght@400;500;600;700&family=Inter:wght@300;400;500;600&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="mobile-nav.css" />
-  <!-- EmailJS — loaded before the page script so emailjs.init() is available -->
-  <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
   <!-- Supabase — for products, collections, promo banners -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="supabase-client.js"></script>
@@ -819,7 +817,7 @@
         <div class="form-group">
           <label for="buyerEmail">McMaster Email</label>
           <input type="email" id="buyerEmail" placeholder="smithj@mcmaster.ca" autocomplete="email" />
-          <p class="field-hint">Use your @mcmaster.ca address. Order confirmation will be sent here.</p>
+          <p class="field-hint">Use your @mcmaster.ca address. BHSS will contact you here to arrange payment.</p>
         </div>
         <div class="form-group">
           <label for="buyerMacId">Mac ID (Student Number)</label>
@@ -854,12 +852,6 @@
         <div class="confirm-order-id">
           <div class="label">Your Order Reference</div>
           <div class="id-value" id="confirmOrderId"></div>
-        </div>
-        <div class="confirm-email-notice">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/>
-          </svg>
-          Confirmation sent to your email
         </div>
         <div class="confirm-items-summary" id="confirmItemsSummary"></div>
         <button class="confirm-close-btn" id="confirmCloseBtn">Continue Shopping</button>
@@ -945,13 +937,6 @@
 /* =============================================================================
    BHSS SHOP — JavaScript
    ============================================================================= */
-
-// ── EMAILJS CONFIGURATION ──────────────────────────────────────────────────
-const EMAILJS_PUBLIC_KEY      = 'YOUR_PUBLIC_KEY';
-const EMAILJS_SERVICE_ID      = 'YOUR_SERVICE_ID';
-const EMAILJS_TEMPLATE_BUYER  = 'YOUR_BUYER_TEMPLATE_ID';
-const EMAILJS_TEMPLATE_ADMIN  = 'YOUR_ADMIN_TEMPLATE_ID';
-const ADMIN_EMAIL             = 'bhsscom@mcmaster.ca';
 
 // ── GLOBAL STATE ──────────────────────────────────────────────────────────────
 let _activeFilter  = 'All';
@@ -1387,17 +1372,6 @@ document.getElementById('checkoutSubmitBtn').addEventListener('click', async () 
   const btn = document.getElementById('checkoutSubmitBtn');
   btn.disabled = true;
   btn.classList.add('loading');
-
-  // EmailJS
-  const emailJsConfigured = EMAILJS_PUBLIC_KEY !== 'YOUR_PUBLIC_KEY';
-  if (emailJsConfigured) {
-    try {
-      emailjs.init(EMAILJS_PUBLIC_KEY);
-      const params = { to_name: name, to_email: email, order_id: orderId, items_list: itemsText, order_total: '$' + total, mac_id: macId, buyer_notes: notes || 'None', admin_email: ADMIN_EMAIL };
-      await emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_BUYER, { ...params, to_email: email });
-      await emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ADMIN, { ...params, to_email: ADMIN_EMAIL });
-    } catch (err) { console.warn('EmailJS failed — order still recorded.', err); }
-  }
 
   _saveOrder({ orderId, name, email, macId, notes, items: itemsSnap, total: cart.total, submittedAt: new Date().toISOString(), status: 'pending' });
 
