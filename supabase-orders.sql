@@ -27,12 +27,17 @@ create index if not exists orders_created_at_idx on public.orders (created_at de
 
 alter table public.orders enable row level security;
 
-drop policy if exists "anon_insert"  on public.orders;
-drop policy if exists "admin_select" on public.orders;
-drop policy if exists "admin_update" on public.orders;
-drop policy if exists "admin_delete" on public.orders;
+drop policy if exists "anon_insert"   on public.orders;
+drop policy if exists "public_insert" on public.orders;
+drop policy if exists "admin_select"  on public.orders;
+drop policy if exists "admin_update"  on public.orders;
+drop policy if exists "admin_delete"  on public.orders;
 
-create policy "anon_insert"  on public.orders for insert to anon          with check (true);
-create policy "admin_select" on public.orders for select to authenticated using (true);
-create policy "admin_update" on public.orders for update to authenticated using (true) with check (true);
-create policy "admin_delete" on public.orders for delete to authenticated using (true);
+-- INSERT is open to everyone (placing an order). "public" covers both the
+-- anon role AND a browser that happens to hold an admin session — important
+-- because admin.html and shop.html share one origin, so an admin login also
+-- makes the shopper "authenticated".
+create policy "public_insert" on public.orders for insert to public        with check (true);
+create policy "admin_select"  on public.orders for select to authenticated using (true);
+create policy "admin_update"  on public.orders for update to authenticated using (true) with check (true);
+create policy "admin_delete"  on public.orders for delete to authenticated using (true);

@@ -85,14 +85,17 @@ create policy "admin_all"          on public.promo_banners for all    to authent
 --          delete anyone's messages (privacy: these contain names + emails).
 --    authenticated (admin): full access to read / mark read / delete.
 -- ─────────────────────────────────────────────────────────────────────────────
-drop policy if exists "anon_insert"  on public.contact_submissions;
-drop policy if exists "admin_select" on public.contact_submissions;
-drop policy if exists "admin_update" on public.contact_submissions;
-drop policy if exists "admin_delete" on public.contact_submissions;
-create policy "anon_insert"  on public.contact_submissions for insert to anon          with check (true);
-create policy "admin_select" on public.contact_submissions for select to authenticated using (true);
-create policy "admin_update" on public.contact_submissions for update to authenticated using (true) with check (true);
-create policy "admin_delete" on public.contact_submissions for delete to authenticated using (true);
+drop policy if exists "anon_insert"   on public.contact_submissions;
+drop policy if exists "public_insert" on public.contact_submissions;
+drop policy if exists "admin_select"  on public.contact_submissions;
+drop policy if exists "admin_update"  on public.contact_submissions;
+drop policy if exists "admin_delete"  on public.contact_submissions;
+-- INSERT open to everyone (sending a message). "public" covers anon AND a
+-- browser holding an admin session, since the whole site is one origin.
+create policy "public_insert" on public.contact_submissions for insert to public        with check (true);
+create policy "admin_select"  on public.contact_submissions for select to authenticated using (true);
+create policy "admin_update"  on public.contact_submissions for update to authenticated using (true) with check (true);
+create policy "admin_delete"  on public.contact_submissions for delete to authenticated using (true);
 
 
 -- ─────────────────────────────────────────────────────────────────────────────
