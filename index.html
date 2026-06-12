@@ -319,6 +319,7 @@
     .banner-decor {
       position: absolute; pointer-events: none; user-select: none; opacity: 1;
       animation: floatDecor 7s ease-in-out infinite alternate;
+      animation-fill-mode: both;
     }
     @keyframes floatDecor {
       from { transform: rotate(var(--r, 0deg)) translateY(0); }
