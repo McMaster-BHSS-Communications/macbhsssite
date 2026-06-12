@@ -75,7 +75,7 @@
     <a href="${root}shop.html">Store</a>
     <a href="${root}bags.html">BAGs</a>
     <a href="${root}about.html">About Us</a>
-    <div class="mob-cta"><a href="${root}resources.html">Academic Resources</a></div>
+    <div class="mob-cta"><a href="https://drive.google.com/drive/folders/1YlpnrLa7I39miOYMrV8sf2DoPRnFAx20">Academic Resources</a></div>
   `;
 
   document.body.appendChild(overlay);
