@@ -327,6 +327,44 @@
     .promo-preview-content { position:relative; z-index:1; display:inline-block; padding:4px 10px; border-radius:6px; }
     .promo-preview-content.has-img { background:rgba(0,0,0,0.35); backdrop-filter:blur(4px); -webkit-backdrop-filter:blur(4px); }
     .upload-progress { font-size: 0.78rem; color: var(--muted); margin-top: 6px; text-align: center; }
+
+    /* ── STORE ORDERS ── */
+    .stats-bar { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 28px; }
+    .stat-card { background: var(--white); border: 1px solid var(--border); border-radius: 12px; padding: 20px 22px; }
+    .stat-label { font-size: 0.72rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); margin-bottom: 6px; }
+    .stat-value { font-family: 'Familjen Grotesk', sans-serif; font-size: 1.8rem; font-weight: 600; color: var(--text); line-height: 1; }
+    .stat-card.highlight { background: var(--blue); border-color: var(--blue); }
+    .stat-card.highlight .stat-label { color: rgba(255,255,255,0.6); }
+    .stat-card.highlight .stat-value { color: var(--white); }
+    .orders-toolbar { display: flex; align-items: center; gap: 12px; margin-bottom: 16px; flex-wrap: wrap; }
+    .orders-toolbar h2 { font-family: 'Familjen Grotesk', sans-serif; font-size: 1.1rem; font-weight: 600; color: var(--text); flex: 1; }
+    .toolbar-search { padding: 8px 12px; border: 1px solid var(--border); border-radius: 8px; font-family: 'Inter', sans-serif; font-size: 0.83rem; color: var(--text); outline: none; width: 220px; background: var(--white); transition: border-color 0.15s; }
+    .toolbar-search:focus { border-color: var(--blue); }
+    .status-filter { padding: 8px 12px; border: 1px solid var(--border); border-radius: 8px; font-family: 'Inter', sans-serif; font-size: 0.83rem; color: var(--mid); background: var(--white); cursor: pointer; outline: none; }
+    .table-wrap { background: var(--white); border: 1px solid var(--border); border-radius: 12px; overflow: auto; }
+    .table-wrap table { width: 100%; border-collapse: collapse; }
+    .table-wrap thead tr { background: var(--off); border-bottom: 1px solid var(--border); }
+    .table-wrap thead th { padding: 12px 16px; text-align: left; font-size: 0.7rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); white-space: nowrap; }
+    .table-wrap tbody tr { border-bottom: 1px solid var(--border); transition: background 0.12s; }
+    .table-wrap tbody tr:last-child { border-bottom: none; }
+    .table-wrap tbody tr:hover { background: var(--off); }
+    .table-wrap tbody td { padding: 14px 16px; font-size: 0.83rem; color: var(--text); vertical-align: top; }
+    .td-id { font-family: 'Familjen Grotesk', sans-serif; font-size: 0.85rem; font-weight: 600; color: var(--blue); white-space: nowrap; }
+    .td-name { font-weight: 500; }
+    .td-email { color: var(--mid); font-size: 0.78rem; }
+    .td-items { font-size: 0.78rem; color: var(--mid); line-height: 1.6; max-width: 260px; }
+    .td-total { font-family: 'Familjen Grotesk', sans-serif; font-weight: 600; color: var(--text); white-space: nowrap; }
+    .td-date { font-size: 0.75rem; color: var(--muted); white-space: nowrap; }
+    .status-select { border: 1px solid var(--border); border-radius: 6px; padding: 4px 8px; font-size: 0.75rem; font-family: 'Inter', sans-serif; color: var(--mid); background: var(--white); cursor: pointer; outline: none; }
+    .orders-empty { text-align: center; padding: 60px 20px; color: var(--muted); }
+    .orders-empty svg { opacity: 0.25; margin-bottom: 16px; display: block; margin-left: auto; margin-right: auto; }
+    .orders-empty h3 { font-family: 'Familjen Grotesk', sans-serif; font-size: 1.1rem; color: var(--mid); margin-bottom: 6px; }
+    .orders-empty p { font-size: 0.83rem; }
+    .storage-notice { background: #fffbeb; border: 1px solid #fcd34d; border-radius: 10px; padding: 14px 18px; margin-bottom: 24px; display: flex; gap: 12px; align-items: flex-start; font-size: 0.82rem; }
+    .storage-notice svg { flex-shrink: 0; color: #d97706; margin-top: 1px; }
+    .storage-notice strong { color: #92400e; }
+    .storage-notice p { color: #78350f; line-height: 1.6; }
+    @media (max-width: 860px) { .stats-bar { grid-template-columns: repeat(2, 1fr); } }
   </style>
 </head>
 <body>
@@ -357,12 +395,6 @@
     <p style="text-align:center;margin-top:16px;font-size:0.75rem;color:var(--muted)">
       Contact the BHSS Comms lead if you need access.
     </p>
-    <div style="margin-top:20px;padding-top:20px;border-top:1px solid var(--border);text-align:center">
-      <a href="admin-orders.html" style="display:inline-flex;align-items:center;gap:7px;padding:9px 18px;background:var(--off);border:1px solid var(--border);border-radius:8px;font-size:0.82rem;font-weight:500;color:var(--mid);text-decoration:none;transition:background 0.15s,color 0.15s" onmouseover="this.style.background='var(--border)';this.style.color='var(--text)'" onmouseout="this.style.background='var(--off)';this.style.color='var(--mid)'">
-        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
-        Store Orders Admin
-      </a>
-    </div>
   </div>
 </div>
 
@@ -418,10 +450,10 @@
         <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
         Promo Banners
       </button>
-      <a class="sidebar-link" href="admin-orders.html">
+      <button class="sidebar-link" onclick="showPanel('orders')" id="link-orders">
         <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
         Store Orders
-      </a>
+      </button>
 
       <div class="sidebar-label" style="margin-top:24px">Outreach</div>
       <button class="sidebar-link" onclick="showPanel('contact')" id="link-contact">
@@ -840,10 +872,10 @@
           <p>Add, edit, and track inventory for all store items.</p>
         </div>
         <div style="display:flex;gap:10px;align-items:center">
-          <a href="admin-orders.html" style="display:inline-flex;align-items:center;gap:8px;padding:10px 20px;background:var(--maroon);color:#fff;border-radius:8px;font-size:0.85rem;font-weight:600;text-decoration:none;transition:opacity 0.15s" onmouseover="this.style.opacity='0.85'" onmouseout="this.style.opacity='1'">
+          <button onclick="showPanel('orders')" style="display:inline-flex;align-items:center;gap:8px;padding:10px 20px;background:var(--maroon);color:#fff;border:none;border-radius:8px;font-size:0.85rem;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif;transition:opacity 0.15s" onmouseover="this.style.opacity='0.85'" onmouseout="this.style.opacity='1'">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
             View Store Orders
-          </a>
+          </button>
           <button class="btn-secondary" onclick="clearProductForm()">+ New Product</button>
         </div>
       </div>
@@ -1093,6 +1125,60 @@
       </div>
     </div>
 
+    <!-- STORE ORDERS PANEL -->
+    <div class="panel" id="panel-orders">
+      <div class="topbar">
+        <div>
+          <h1>Store Orders</h1>
+          <p>Orders placed through the store. Update status, search, and export.</p>
+        </div>
+        <div style="display:flex;gap:10px;align-items:center">
+          <button class="btn-secondary" id="exportBtn">⭳ Export CSV</button>
+          <button class="btn-secondary" onclick="loadOrders()">↻ Refresh</button>
+        </div>
+      </div>
+
+      <div class="stats-bar" id="statsBar"></div>
+
+      <div class="orders-toolbar">
+        <h2 id="orderCount">Orders</h2>
+        <input class="toolbar-search" type="text" id="searchInput" placeholder="Search name, email, or order ID…" />
+        <select class="status-filter" id="statusFilter">
+          <option value="all">All Statuses</option>
+          <option value="pending">Pending</option>
+          <option value="paid">Paid</option>
+          <option value="fulfilled">Fulfilled</option>
+          <option value="cancelled">Cancelled</option>
+        </select>
+        <button class="btn-danger" id="clearAllBtn">Clear All</button>
+      </div>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Order ID</th><th>Name</th><th>Email</th><th>Mac ID</th>
+              <th>Items</th><th>Total</th><th>Date</th><th>Status</th><th>Notes</th><th></th>
+            </tr>
+          </thead>
+          <tbody id="ordersBody"></tbody>
+        </table>
+        <div class="orders-empty" id="emptyState" style="display:none">
+          <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+          <h3>No orders yet</h3>
+          <p>Orders placed through the store will appear here.</p>
+        </div>
+      </div>
+
+      <div style="margin-top:36px">
+        <div class="orders-toolbar" style="margin-bottom:14px">
+          <h2>Revenue Breakdown by Item</h2>
+          <span style="font-size:0.8rem;color:var(--muted)">Non-cancelled orders only</span>
+        </div>
+        <div id="itemBreakdown"></div>
+      </div>
+    </div>
+
   </div>
 </div>
 
@@ -1130,18 +1216,14 @@ function onCategoryChange() {
   updatePreview();
 }
 
-// ── CONFIG, CHANGE PASSWORD ──
-// To change the password:
-//   1. Run in browser console: crypto.subtle.digest('SHA-256', new TextEncoder().encode('newpassword')).then(b => console.log([...new Uint8Array(b)].map(x=>x.toString(16).padStart(2,'0')).join('')))
-//   2. Paste the resulting hash below.
-// Current password: bhsscomms2026
-const ADMIN_HASH = 'a5c9f4e2b1d7e3f6a8c2d4b9e1f3a7c5d2e8f4b6a1c3d5e7f9b2a4c6d8e0f2b4';
-
-// ── HASH HELPER ──
-async function sha256(str) {
-  const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(str));
-  return [...new Uint8Array(buf)].map(x => x.toString(16).padStart(2, '0')).join('');
-}
+// ── ADMIN AUTH (Supabase) ──
+// Login is handled entirely by Supabase Auth — the coordinator types the REAL
+// Supabase password, so no password or secret is stored in this file.
+// To change the password or add/remove admins:
+//   Supabase dashboard → Authentication → Users (edit bhsscom@mcmaster.ca)
+// All write access is enforced server-side by Row Level Security, so editing
+// this page in the browser cannot grant access without a valid login.
+const ADMIN_EMAIL = 'bhsscom@mcmaster.ca';
 
 // ── AUTH ──
 async function attemptLogin() {
@@ -1150,23 +1232,10 @@ async function attemptLogin() {
   const btn = document.getElementById('loginBtn');
   btn.textContent = 'Checking…';
   btn.disabled = true;
-  const hash = await sha256(pw);
-  const plainFallback = pw === 'bhsscomms2026';
-  if (hash === ADMIN_HASH || plainFallback) {
-    await window.db.auth.signInWithPassword({ email: 'bhsscom@mcmaster.ca', password: 'bhsscomms2026' });
-    sessionStorage.setItem('bhss_admin_auth', '1');
-    document.getElementById('loginScreen').style.display = 'none';
-    document.getElementById('adminWrap').style.display = 'flex';
-    renderManage();
-    if (window._pendingPanel) {
-      const sel = document.getElementById(window._pendingPanel === 'members' ? 'm-committee' : 'r-committee');
-      if (sel && window._pendingComm) sel.value = window._pendingComm;
-      showPanel(window._pendingPanel);
-      if (window._pendingPanel === 'members') renderMemberList();
-      if (window._pendingPanel === 'resources') renderResourceList();
-      delete window._pendingPanel;
-      delete window._pendingComm;
-    }
+  const { error } = await window.db.auth.signInWithPassword({ email: ADMIN_EMAIL, password: pw });
+  if (!error) {
+    document.getElementById('loginError').style.display = 'none';
+    enterAdmin();
   } else {
     document.getElementById('loginError').style.display = 'block';
     document.getElementById('loginPassword').value = '';
@@ -1174,6 +1243,21 @@ async function attemptLogin() {
   }
   btn.textContent = 'Sign In';
   btn.disabled = false;
+}
+
+function enterAdmin() {
+  document.getElementById('loginScreen').style.display = 'none';
+  document.getElementById('adminWrap').style.display = 'flex';
+  renderManage();
+  if (window._pendingPanel) {
+    const sel = document.getElementById(window._pendingPanel === 'members' ? 'm-committee' : 'r-committee');
+    if (sel && window._pendingComm) sel.value = window._pendingComm;
+    showPanel(window._pendingPanel);
+    if (window._pendingPanel === 'members') renderMemberList();
+    if (window._pendingPanel === 'resources') renderResourceList();
+    delete window._pendingPanel;
+    delete window._pendingComm;
+  }
 }
 
 document.getElementById('loginPassword').addEventListener('keydown', e => {
@@ -1189,15 +1273,14 @@ document.getElementById('togglePw').addEventListener('click', () => {
 
 async function logout() {
   await window.db.auth.signOut();
-  sessionStorage.removeItem('bhss_admin_auth');
   location.reload();
 }
 
-if (sessionStorage.getItem('bhss_admin_auth') === '1') {
-  document.getElementById('loginScreen').style.display = 'none';
-  document.getElementById('adminWrap').style.display = 'flex';
-  setTimeout(renderManage, 0);
-}
+// Restore an existing Supabase session on load (stays logged in across reloads).
+(async function () {
+  const { data: { session } } = await window.db.auth.getSession();
+  if (session) enterAdmin();
+})();
 
 // ── PANELS ──
 function showPanel(name) {
@@ -1211,6 +1294,7 @@ function showPanel(name) {
   if (name === 'promos')          renderPromoList();
   if (name === 'page-resources')  loadPageResourcesPanel();
   if (name === 'contact')         loadContactSubmissions();
+  if (name === 'orders')          loadOrders();
 }
 
 // ── TOAST ──
@@ -2376,27 +2460,197 @@ async function deleteContactSubmission(id) {
   renderContactList();
 }
 
+// ─────────────────────────────────────
+// STORE ORDERS (local-storage based)
+// ─────────────────────────────────────
+let _allOrders = [];
+
+async function loadOrders() {
+  const tbody = document.getElementById('ordersBody');
+  if (tbody) tbody.innerHTML = '<tr><td colspan="10" style="text-align:center;color:var(--muted);padding:30px">Loading…</td></tr>';
+  const { data, error } = await window.db
+    .from('orders')
+    .select('*')
+    .order('created_at', { ascending: false });
+  if (error) {
+    toast('Failed to load orders: ' + error.message, 'error');
+    _allOrders = [];
+  } else {
+    _allOrders = (data || []).map(r => ({
+      id: r.id, orderId: r.order_ref, name: r.name, email: r.email, macId: r.mac_id,
+      notes: r.notes, items: r.items || [], total: Number(r.total) || 0,
+      submittedAt: r.created_at, status: r.status
+    }));
+  }
+  applyOrderFilters();
+  renderItemBreakdown();
+}
+
+async function updateOrderStatus(id, status) {
+  const { error } = await window.db.from('orders').update({ status }).eq('id', id);
+  return !error;
+}
+
+async function deleteOrder(id) {
+  if (!confirm('Delete this order? This cannot be undone.')) return;
+  const { error } = await window.db.from('orders').delete().eq('id', id);
+  if (error) { toast('Delete failed: ' + error.message, 'error'); return; }
+  toast('Order deleted.');
+  loadOrders();
+}
+
+function applyOrderFilters() {
+  const q      = document.getElementById('searchInput').value.toLowerCase().trim();
+  const status = document.getElementById('statusFilter').value;
+  let filtered = _allOrders;
+  if (status !== 'all') filtered = filtered.filter(o => o.status === status);
+  if (q) filtered = filtered.filter(o =>
+    (o.name || '').toLowerCase().includes(q) ||
+    (o.email || '').toLowerCase().includes(q) ||
+    (o.orderId || '').toLowerCase().includes(q)
+  );
+  renderOrderStats(_allOrders);
+  renderOrderTable(filtered);
+}
+
+function renderOrderStats(orders) {
+  const total   = orders.length;
+  const pending = orders.filter(o => o.status === 'pending').length;
+  const paid    = orders.filter(o => o.status === 'paid').length;
+  const revenue = orders.filter(o => o.status !== 'cancelled').reduce((s, o) => s + (o.total || 0), 0);
+  document.getElementById('statsBar').innerHTML = `
+    <div class="stat-card"><div class="stat-label">Total Orders</div><div class="stat-value">${total}</div></div>
+    <div class="stat-card"><div class="stat-label">Pending</div><div class="stat-value">${pending}</div></div>
+    <div class="stat-card"><div class="stat-label">Paid</div><div class="stat-value">${paid}</div></div>
+    <div class="stat-card highlight"><div class="stat-label">Total Revenue</div><div class="stat-value">$${revenue.toFixed(2)}</div></div>`;
+}
+
+function renderOrderTable(orders) {
+  document.getElementById('orderCount').textContent = orders.length + ' Order' + (orders.length !== 1 ? 's' : '');
+  const tbody = document.getElementById('ordersBody');
+  const empty = document.getElementById('emptyState');
+  if (!orders.length) { tbody.innerHTML = ''; empty.style.display = 'block'; return; }
+  empty.style.display = 'none';
+  tbody.innerHTML = orders.map(o => {
+    const itemsHtml = (o.items || []).map(i => `${_esc(i.name)}${i.size ? ' (' + _esc(i.size) + ')' : ''} ×${i.qty}`).join('<br>');
+    const date   = o.submittedAt ? new Date(o.submittedAt).toLocaleDateString('en-CA', { year:'numeric', month:'short', day:'numeric', hour:'2-digit', minute:'2-digit' }) : '—';
+    const status = o.status || 'pending';
+    return `<tr>
+      <td class="td-id">${_esc(o.orderId || '—')}</td>
+      <td class="td-name">${_esc(o.name || '')}</td>
+      <td><div class="td-email">${_esc(o.email || '')}</div></td>
+      <td style="font-family:monospace;font-size:0.8rem">${_esc(o.macId || '')}</td>
+      <td class="td-items">${itemsHtml}</td>
+      <td class="td-total">$${(o.total || 0).toFixed(2)}</td>
+      <td class="td-date">${date}</td>
+      <td>
+        <select class="status-select" data-order-id="${_esc(o.id)}" onchange="handleOrderStatusChange(this)">
+          ${['pending','paid','fulfilled','cancelled'].map(s =>
+            `<option value="${s}"${s === status ? ' selected' : ''}>${s.charAt(0).toUpperCase() + s.slice(1)}</option>`
+          ).join('')}
+        </select>
+      </td>
+      <td style="font-size:0.75rem;color:var(--muted);max-width:160px">${_esc(o.notes || '')}</td>
+      <td><button class="btn-danger" onclick="deleteOrder('${_esc(o.id)}')">Delete</button></td>
+    </tr>`;
+  }).join('');
+}
+
+function renderItemBreakdown() {
+  const el = document.getElementById('itemBreakdown');
+  if (!el) return;
+  const orders = _allOrders.filter(o => o.status !== 'cancelled');
+  const map = {};
+  orders.forEach(o => {
+    (o.items || []).forEach(item => {
+      const key = item.name + (item.size ? ` (${item.size})` : '');
+      if (!map[key]) map[key] = { name: key, units: 0, revenue: 0 };
+      map[key].units   += (item.qty || 1);
+      map[key].revenue += (item.price || 0) * (item.qty || 1);
+    });
+  });
+  const rows = Object.values(map).sort((a, b) => b.revenue - a.revenue);
+  if (!rows.length) {
+    el.innerHTML = '<p style="font-size:0.82rem;color:var(--muted);padding:16px 0">No item data yet — orders will appear here once placed.</p>';
+    return;
+  }
+  const totalRev   = rows.reduce((s, r) => s + r.revenue, 0);
+  const totalUnits = rows.reduce((s, r) => s + r.units, 0);
+  el.innerHTML = `
+    <div class="table-wrap">
+      <table>
+        <thead><tr>
+          <th>Item</th>
+          <th style="text-align:right">Units Sold</th>
+          <th style="text-align:right">Revenue</th>
+          <th style="text-align:right">% of Total</th>
+        </tr></thead>
+        <tbody>
+          ${rows.map(r => `<tr>
+            <td class="td-name">${_esc(r.name)}</td>
+            <td style="text-align:right">${r.units}</td>
+            <td class="td-total" style="text-align:right">$${r.revenue.toFixed(2)}</td>
+            <td class="td-date" style="text-align:right">${totalRev > 0 ? Math.round(r.revenue / totalRev * 100) : 0}%</td>
+          </tr>`).join('')}
+          <tr style="background:var(--off);font-weight:700">
+            <td>Total</td>
+            <td style="text-align:right">${totalUnits}</td>
+            <td class="td-total" style="text-align:right;color:var(--blue)">$${totalRev.toFixed(2)}</td>
+            <td></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>`;
+}
+
+async function handleOrderStatusChange(sel) {
+  const ok = await updateOrderStatus(sel.dataset.orderId, sel.value);
+  toast(ok ? 'Status updated to ' + sel.value : 'Update failed', ok ? 'success' : 'error');
+  loadOrders();
+}
+
+function _esc(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+
+document.getElementById('exportBtn').addEventListener('click', () => {
+  const orders = _allOrders;
+  if (!orders.length) { toast('No orders to export.', 'error'); return; }
+  const header = ['Order ID','Name','Email','Mac ID','Items','Total','Date','Notes','Status'];
+  const rows   = orders.map(o => [
+    o.orderId, o.name, o.email, o.macId,
+    (o.items || []).map(i => `${i.name}${i.size ? '(' + i.size + ')' : ''} x${i.qty}`).join(' | '),
+    '$' + (o.total || 0).toFixed(2),
+    o.submittedAt ? new Date(o.submittedAt).toLocaleDateString('en-CA') : '',
+    o.notes || '', o.status || 'pending'
+  ]);
+  const csv  = [header, ...rows].map(r => r.map(v => '"' + String(v).replace(/"/g, '""') + '"').join(',')).join('\n');
+  const blob = new Blob([csv], { type: 'text/csv' });
+  const url  = URL.createObjectURL(blob);
+  const a    = Object.assign(document.createElement('a'), { href: url, download: 'bhss-orders-' + new Date().toISOString().slice(0,10) + '.csv' });
+  document.body.appendChild(a); a.click(); document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+  toast('CSV downloaded ✓');
+});
+
+document.getElementById('clearAllBtn').addEventListener('click', async () => {
+  if (!confirm('Delete ALL orders from the database? This affects every device and cannot be undone.')) return;
+  const { error } = await window.db.from('orders').delete().gte('created_at', '1900-01-01T00:00:00Z');
+  if (error) { toast('Clear failed: ' + error.message, 'error'); return; }
+  toast('All orders cleared.');
+  loadOrders();
+});
+
+document.getElementById('searchInput').addEventListener('input', applyOrderFilters);
+document.getElementById('statusFilter').addEventListener('change', applyOrderFilters);
+
 // ── URL PARAM AUTO-OPEN ──
 (function() {
   const params = new URLSearchParams(location.search);
   const panel  = params.get('panel');
   const comm   = params.get('committee');
   if (panel === 'members' || panel === 'resources') {
-    const tryOpen = () => {
-      if (sessionStorage.getItem('bhss_admin_auth') === '1') {
-        if (comm) {
-          const sel = document.getElementById(panel === 'members' ? 'm-committee' : 'r-committee');
-          if (sel) sel.value = comm;
-        }
-        showPanel(panel);
-        if (panel === 'members') renderMemberList();
-        if (panel === 'resources') renderResourceList();
-      } else {
-        window._pendingPanel = panel;
-        window._pendingComm  = comm;
-      }
-    };
-    setTimeout(tryOpen, 100);
+    // Stash the deep-link target; enterAdmin() consumes it once the session loads.
+    window._pendingPanel = panel;
+    window._pendingComm  = comm;
   }
 })();
 </script>

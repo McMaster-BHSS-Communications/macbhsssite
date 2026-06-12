@@ -1210,15 +1210,36 @@ const cart = {
 
 
 // ── ORDER STORAGE ─────────────────────────────────────────────────────────────
+// Order references are generated client-side and must be unique across all
+// devices (no shared counter), so we use a short random base-36 suffix.
 function _generateOrderId() {
   const year = new Date().getFullYear();
-  const key  = 'bhss_order_counter_' + year;
-  const n    = (parseInt(localStorage.getItem(key) || '0', 10)) + 1;
-  localStorage.setItem(key, n);
-  return 'BHSS-' + year + '-' + String(n).padStart(4, '0');
+  const rand = (Date.now().toString(36) + Math.random().toString(36).slice(2)).toUpperCase().slice(-6);
+  return 'BHSS-' + year + '-' + rand;
 }
 
-function _saveOrder(order) {
+// Primary: save the order to Supabase so it's visible to admins on any device.
+// Returns true on success.
+async function _saveOrderRemote(order) {
+  try {
+    const { error } = await window.db.from('orders').insert({
+      order_ref: order.orderId,
+      name:      order.name,
+      email:     order.email,
+      mac_id:    order.macId,
+      notes:     order.notes || null,
+      items:     order.items,
+      total:     order.total,
+      status:    'pending'
+    });
+    if (error) { console.warn('Order save to Supabase failed:', error.message); return false; }
+    return true;
+  } catch (e) { console.warn('Order save threw:', e); return false; }
+}
+
+// Fallback only: if the database write fails, keep a local copy so the order
+// isn't lost. (Not the authoritative record once Supabase is set up.)
+function _saveOrderLocal(order) {
   let orders = [];
   try { orders = JSON.parse(localStorage.getItem('bhss_orders') || '[]'); } catch (e) {}
   orders.unshift(order);
@@ -1373,7 +1394,9 @@ document.getElementById('checkoutSubmitBtn').addEventListener('click', async () 
   btn.disabled = true;
   btn.classList.add('loading');
 
-  _saveOrder({ orderId, name, email, macId, notes, items: itemsSnap, total: cart.total, submittedAt: new Date().toISOString(), status: 'pending' });
+  const order = { orderId, name, email, macId, notes, items: itemsSnap, total: cart.total, submittedAt: new Date().toISOString(), status: 'pending' };
+  const savedRemotely = await _saveOrderRemote(order);
+  if (!savedRemotely) _saveOrderLocal(order);   // keep a local copy if the DB write failed
 
   btn.disabled = false;
   btn.classList.remove('loading');
