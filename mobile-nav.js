@@ -2,15 +2,12 @@
    mobile-nav.js — Universal mobile navigation drawer
    Injects the nav overlay + drawer HTML into the page and wires
    up open/close behaviour. Works for both root-level pages and
-   pages inside committeepages/.
+   pages inside committees/.
 
    To update nav links for every page at once, edit this file only.
 ═══════════════════════════════════════════════════════════════ */
 (function () {
-  // Detect subfolder depth so links resolve correctly
-  const root = location.pathname.includes('/committeepages/') ? '../' : '';
-  const cp   = root + 'committeepages/';
-
+  // All links are root-relative + extensionless, so they resolve from any page.
   const chevron = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>`;
 
   // ── INJECT HTML ──
@@ -28,53 +25,53 @@
       <button id="mobileNavClose" aria-label="Close menu">&#10005;</button>
     </div>
 
-    <a href="${root}index.html">Home</a>
+    <a href="/">Home</a>
 
     <div class="mob-dropdown">
       <div class="mob-dropdown-row">
-        <a href="${root}announcements.html">Announcements</a>
+        <a href="/announcements">Announcements</a>
         <button class="mob-chevron-btn" aria-expanded="false" aria-label="Toggle Announcements menu">${chevron}</button>
       </div>
       <div class="mob-dropdown-panel">
-        <a href="${root}announcements.html?filter=General">General</a>
-        <a href="${root}announcements.html?filter=Academics">Academics</a>
-        <a href="${root}announcements.html?filter=External">External</a>
-        <a href="${root}announcements.html?filter=Finance">Finance</a>
-        <a href="${root}announcements.html?filter=Internal">Internal</a>
-        <a href="${root}announcements.html?filter=Social">Social</a>
-        <a href="${root}announcements.html?filter=Elections">Elections</a>
+        <a href="/announcements?filter=General">General</a>
+        <a href="/announcements?filter=Academics">Academics</a>
+        <a href="/announcements?filter=External">External</a>
+        <a href="/announcements?filter=Finance">Finance</a>
+        <a href="/announcements?filter=Internal">Internal</a>
+        <a href="/announcements?filter=Social">Social</a>
+        <a href="/announcements?filter=Elections">Elections</a>
       </div>
     </div>
 
     <div class="mob-dropdown">
       <div class="mob-dropdown-row">
-        <a href="${root}committees.html">Committees</a>
+        <a href="/committees">Committees</a>
         <button class="mob-chevron-btn" aria-expanded="false" aria-label="Toggle Committees menu">${chevron}</button>
       </div>
       <div class="mob-dropdown-panel">
-        <a href="${cp}chr_committee.html">Chair</a>
-        <a href="${cp}aca_committee.html">Academics</a>
-        <a href="${cp}com_committee.html">Communications</a>
-        <a href="${cp}edi_committee.html">Equity, Diversity &amp; Inclusion</a>
-        <a href="${cp}ext_committee.html">External</a>
-        <a href="${cp}fin_committee.html">Financial</a>
-        <a href="${cp}int_committee.html">Internal</a>
-        <a href="${cp}log_committee.html">Logistics &amp; Elections</a>
-        <a href="${cp}soc_committee.html">Social</a>
-        <a href="${cp}wwc_committee.html">Welcome Week</a>
-        <a href="${cp}sra_committee.html">SRA</a>
+        <a href="/committees/chair">Chair</a>
+        <a href="/committees/academics">Academics</a>
+        <a href="/committees/communications">Communications</a>
+        <a href="/committees/edi">Equity, Diversity &amp; Inclusion</a>
+        <a href="/committees/external">External</a>
+        <a href="/committees/financial">Financial</a>
+        <a href="/committees/internal">Internal</a>
+        <a href="/committees/logistics">Logistics &amp; Elections</a>
+        <a href="/committees/social">Social</a>
+        <a href="/committees/welcome-week">Welcome Week</a>
+        <a href="/committees/sra">SRA</a>
         <div class="mob-panel-section">Year Councils</div>
-        <a href="${cp}fyc_committee.html">First Year Council</a>
-        <a href="${cp}syc_committee.html">Second Year Council</a>
-        <a href="${cp}tyc_committee.html">Third Year Council</a>
-        <a href="${cp}4yc_committee.html">Fourth Year Council</a>
+        <a href="/committees/first-year-council">First Year Council</a>
+        <a href="/committees/second-year-council">Second Year Council</a>
+        <a href="/committees/third-year-council">Third Year Council</a>
+        <a href="/committees/fourth-year-council">Fourth Year Council</a>
       </div>
     </div>
 
-    <a href="${root}resources.html">Resources</a>
-    <a href="${root}shop.html">Store</a>
-    <a href="${root}bags.html">BAGs</a>
-    <a href="${root}about.html">About Us</a>
+    <a href="/resources">Resources</a>
+    <a href="/shop">Store</a>
+    <a href="/bags">BAGs</a>
+    <a href="/about">About Us</a>
     <div class="mob-cta"><a href="https://drive.google.com/drive/folders/1YlpnrLa7I39miOYMrV8sf2DoPRnFAx20">Academic Resources</a></div>
   `;
 
