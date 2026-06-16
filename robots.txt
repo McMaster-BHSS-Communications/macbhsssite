@@ -1,0 +1,6 @@
+User-agent: *
+Allow: /
+Disallow: /admin
+Disallow: /admin-orders
+
+Sitemap: https://bhssmcmaster.com/sitemap.xml
