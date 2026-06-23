@@ -106,9 +106,10 @@ function _cardHTML(m, large) {
 
 // ── AUTO-HIGHLIGHT ACTIVE SUB-NAV TAB ──
 (function () {
-  const current = location.pathname.replace(/\/$/, '');
+  const current = location.pathname.replace(/\.html$/, '').split('/').pop();
   document.querySelectorAll('.comm-tab').forEach(t => {
-    if ((t.getAttribute('href') || '').replace(/\/$/, '') === current) t.classList.add('active');
+    const slug = (t.getAttribute('href') || '').split('/').pop();
+    if (slug && slug === current) t.classList.add('active');
   });
 })();
 
