@@ -2185,11 +2185,19 @@ function updatePageResourcePreview() {
   const ckey  = document.getElementById('pr-committee').value || 'fin';
   const comm  = PR_COMMITTEES[ckey] || PR_COMMITTEES.fin;
 
+  const isBag = ckey === 'bag';
+  const footerEl = document.getElementById('pr-preview-footer');
+  const logoEl   = document.getElementById('pr-preview-logo');
+  const commEl   = document.getElementById('pr-preview-comm');
+
   document.getElementById('pr-preview-title').textContent = title || 'Resource title';
   document.getElementById('pr-preview-desc').textContent  = desc;
-  document.getElementById('pr-preview-footer').style.background = `linear-gradient(to bottom,#fff 0%,${comm.color} 100%)`;
-  document.getElementById('pr-preview-logo').src   = comm.logo;
-  document.getElementById('pr-preview-comm').textContent = comm.name;
+  footerEl.style.background = isBag ? '#fff' : `linear-gradient(to bottom,#fff 0%,${comm.color} 100%)`;
+  footerEl.style.borderTop  = isBag ? '1px solid var(--border)' : 'none';
+  logoEl.src = comm.logo;
+  logoEl.style.filter = isBag ? 'brightness(0) invert(20%)' : 'brightness(0) invert(1)';
+  commEl.textContent  = comm.name;
+  commEl.style.color  = isBag ? comm.color : '#fff';
 }
 
 async function savePageResource() {

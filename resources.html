@@ -710,15 +710,20 @@ function renderGrid(section) {
 
 function buildCard(item) {
   const comm = COMMITTEES[item.committee] || COMMITTEES.com;
+  const isBag = item.committee === 'bag';
+  const footerBg = isBag ? 'var(--white)' : `linear-gradient(to bottom,#fff 0%,${comm.color} 100%)`;
+  const footerBorder = isBag ? 'border-top:1px solid var(--border);' : '';
+  const logoFilter = isBag ? 'brightness(0) invert(20%)' : 'brightness(0) invert(1)';
+  const textColor = isBag ? comm.color : '#fff';
   return `
     <div class="res-card" onclick="openModal('${esc(item.id)}')">
       <div class="res-card-body">
         <div class="res-card-title">${esc(item.title)}</div>
         <div class="res-card-desc">${esc(item.description || '')}</div>
       </div>
-      <div class="res-card-footer" style="background:linear-gradient(to bottom,#fff 0%,${comm.color} 100%)">
-        <img class="res-card-logo" src="${comm.logo}" alt="${esc(comm.name)}" />
-        <span class="res-card-comm">${esc(comm.name)}</span>
+      <div class="res-card-footer" style="background:${footerBg};${footerBorder}">
+        <img class="res-card-logo" style="filter:${logoFilter}" src="${comm.logo}" alt="${esc(comm.name)}" />
+        <span class="res-card-comm" style="color:${textColor}">${esc(comm.name)}</span>
       </div>
     </div>`;
 }
