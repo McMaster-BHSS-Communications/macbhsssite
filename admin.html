@@ -2727,6 +2727,10 @@ async function renderBagCodesList() {
 }
 
 async function saveBagCodeAssignment(id, groupName, groupType) {
+  const pw = prompt("Enter the admin password to change this code's assignment:");
+  if (pw === null) { renderBagCodesList(); return; }
+  if (pw !== 'LilRedSchoolHaus2000') { toast('Incorrect password.', 'error'); renderBagCodesList(); return; }
+
   const c = window._bagCodeMap[id];
   const name = (groupName !== undefined ? groupName : c.group_name || '').trim() || null;
   const type = groupType || null;
