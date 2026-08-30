@@ -30,13 +30,6 @@
       --off:       #f5f7fa;
       --border:    #dde5f0;
       --nav-h:     64px;
-      --cat-General:   #13A89E;
-      --cat-Academics: #293593;
-      --cat-Social:    #DD1084;
-      --cat-Internal:  #F58120;
-      --cat-External:  #EE2824;
-      --cat-Elections: #181718;
-      --cat-Finance:   #46B749;
     }
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     html { scroll-behavior: smooth; overflow-x: hidden; }
@@ -166,10 +159,10 @@
     }
     .nav-resources a:hover { background: var(--blue); color: var(--white); }
 
-    /* ─── ABOVE FOLD: hero + announcements ─── */
+    /* ─── ABOVE FOLD: hero ─── */
     .above-fold {
       display: grid;
-      grid-template-columns: 1fr 400px;
+      grid-template-columns: 1fr;
       min-height: 520px;
       background: var(--white);
     }
@@ -234,82 +227,6 @@
     .hero-arrow:hover { background: rgba(255,255,255,0.32); }
     .hero-arrow.prev { left: 14px; }
     .hero-arrow.next { right: 14px; }
-
-    /* Right announcements panel */
-    .ann-panel {
-      background: var(--dark); display: flex; flex-direction: column;
-      padding: 36px 28px; border-left: 1px solid rgba(255,255,255,0.06);
-    }
-    .ann-panel h2 {
-      font-family: 'Familjen Grotesk', serif;
-      font-size: 2rem; font-weight: 600; color: var(--white);
-      margin-bottom: 32px; letter-spacing: -0.01em;
-    }
-    .ann-card {
-      position: relative; border-radius: 10px; overflow: hidden;
-      margin-bottom: 14px; text-decoration: none; display: block;
-      background: #1a2a44; transition: transform 0.2s, box-shadow 0.2s; flex: 1;
-    }
-    .ann-card:hover { transform: translateY(-3px); box-shadow: 0 8px 24px rgba(0,0,0,0.3); }
-    .ann-card img { width: 100%; height: 130px; object-fit: cover; display: block; opacity: 0.6; transition: opacity 0.3s; }
-    .ann-card:hover img { opacity: 0.8; }
-    .ann-card-body { padding: 14px 16px; }
-    .ann-card-meta { font-size: 0.71rem; color: rgba(255,255,255,0.45); font-weight: 500; letter-spacing: 0.04em; margin-bottom: 4px; }
-    .ann-card-title { font-size: 0.9rem; font-weight: 500; color: var(--white); line-height: 1.4; }
-    .ann-viewall {
-      display: flex; align-items: center; gap: 6px;
-      font-size: 0.8rem; font-weight: 600; color: rgba(255,255,255,0.55);
-      text-decoration: none; margin-top: 10px; letter-spacing: 0.03em;
-      transition: color 0.15s;
-    }
-    .ann-viewall:hover { color: var(--white); }
-    .ann-viewall::before { content: '→'; }
-    .ann-card { cursor: pointer; }
-
-    /* ─── MODAL ─── */
-    .modal-backdrop {
-      display: none; position: fixed; inset: 0; z-index: 900;
-      background: rgba(15,27,45,0.72); backdrop-filter: blur(6px);
-      align-items: center; justify-content: center; padding: 24px;
-    }
-    .modal-backdrop.open { display: flex; }
-    .modal {
-      background: var(--white); border-radius: 18px;
-      width: 100%; max-width: 720px; max-height: 88vh;
-      overflow-y: auto; box-shadow: 0 32px 80px rgba(0,0,0,0.25);
-      animation: modalIn 0.28s cubic-bezier(0.34,1.56,0.64,1);
-    }
-    @keyframes modalIn { from { opacity: 0; transform: scale(0.94) translateY(12px); } to { opacity: 1; transform: none; } }
-    .modal-hero { position: relative; height: 260px; overflow: hidden; background: var(--blue-pale); }
-    .modal-hero img { width: 100%; height: 100%; object-fit: cover; object-position: left center; }
-    .modal-hero-placeholder { width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; }
-    .modal-close {
-      position: absolute; top: 14px; right: 14px;
-      background: rgba(255,255,255,0.9); border: none; border-radius: 50%;
-      width: 36px; height: 36px; cursor: pointer; font-size: 1.1rem;
-      display: flex; align-items: center; justify-content: center;
-      transition: background 0.15s; color: var(--text); z-index: 10;
-    }
-    .modal-close:hover { background: var(--white); }
-    .modal-body { padding: 32px 36px 40px; }
-    .modal-cat-pill {
-      display: inline-block; padding: 4px 12px; border-radius: 100px;
-      font-size: 0.7rem; font-weight: 700; letter-spacing: 0.07em;
-      text-transform: uppercase; color: var(--white); margin-bottom: 16px;
-    }
-    .modal-cat-pill.General   { background: var(--cat-General); }
-    .modal-cat-pill.Academics { background: var(--cat-Academics); }
-    .modal-cat-pill.Social    { background: var(--cat-Social); }
-    .modal-cat-pill.Internal  { background: var(--cat-Internal); }
-    .modal-cat-pill.External  { background: var(--cat-External); }
-    .modal-cat-pill.Elections { background: var(--cat-Elections); }
-    .modal-cat-pill.Finance   { background: var(--cat-Finance); }
-    .modal-body h2 { font-family: 'Familjen Grotesk', serif; font-size: 2rem; font-weight: 600; color: var(--text); line-height: 1.2; letter-spacing: -0.02em; margin-bottom: 12px; }
-    .modal-meta { font-size: 0.78rem; color: var(--muted); font-weight: 500; margin-bottom: 24px; display: flex; gap: 10px; flex-wrap: wrap; }
-    .modal-content { font-size: 0.92rem; color: var(--mid); line-height: 1.8; }
-    .modal-content p { margin-bottom: 14px; }
-    .modal-content a { color: var(--blue); }
-    .modal-content strong { color: var(--text); font-weight: 600; }
 
     /* ─── DISCOVER BANNER ─── */
     .discover-banner {
@@ -450,7 +367,6 @@
     /* ─── RESPONSIVE ─── */
     @media (max-width: 960px) {
       .above-fold { grid-template-columns: 1fr; }
-      .ann-panel { min-height: unset; }
       .hero-slides-wrap { min-height: 380px; }
       .footer-top { grid-template-columns: 1fr 1fr; gap: 28px; }
     }
@@ -468,7 +384,7 @@
     }
   </style>
   <link rel="canonical" href="https://bhssmcmaster.com/" />
-  <meta name="description" content="The official website of the McMaster Bachelor of Health Sciences Society (BHSS) — announcements, committees, resources, the HHSP store, and more for Honours Health Sciences students." />
+  <meta name="description" content="The official website of the McMaster Bachelor of Health Sciences Society (BHSS) — committees, resources, the HHSP store, and more for Honours Health Sciences students." />
 </head>
 <body>
 
@@ -483,19 +399,6 @@
   </a>
   <ul class="nav-links">
     <li><a href="/" class="active">Home</a></li>
-    <li class="has-drop">
-      <a href="/announcements">Announcements</a>
-      <div class="drop">
-        <a href="/announcements">All Announcements</a>
-        <a href="/announcements?filter=General">General</a>
-        <a href="/announcements?filter=Academics">Academics</a>
-        <a href="/announcements?filter=External">External</a>
-        <a href="/announcements?filter=Finance">Finance</a>
-        <a href="/announcements?filter=Internal">Internal</a>
-        <a href="/announcements?filter=Elections">Elections</a>
-        <a href="/announcements?filter=Social">Social</a>
-      </div>
-    </li>
     <li class="has-drop">
       <a href="/committees">Committees</a>
       <div class="drop">
@@ -525,7 +428,9 @@
     <li><a href="/resources">Resources</a></li>
     <li><a href="/shop">Store</a></li>
     <li><a href="/bags">BAGs</a></li>
+    <li><a href="/student-events">Student Events</a></li>
     <li><a href="/about">About Us</a></li>
+    <li><a href="/contact">Contact</a></li>
   </ul>
   <div class="nav-resources">
     <a href="https://drive.google.com/drive/folders/1YlpnrLa7I39miOYMrV8sf2DoPRnFAx20"
@@ -559,28 +464,6 @@
       <button class="hero-arrow prev" id="heroPrev">&#8592;</button>
       <button class="hero-arrow next" id="heroNext">&#8594;</button>
       <div class="hero-dots" id="heroDots"></div>
-    </div>
-  </div>
-
-  <!-- Announcements panel -->
-  <div class="ann-panel">
-    <h2>Announcements</h2>
-    <div id="annPanelCards"></div>
-    <a class="ann-viewall" href="/announcements">View All Announcements</a>
-  </div>
-</div>
-
-<!-- Post modal popup -->
-<div class="modal-backdrop" id="modalBackdrop" role="dialog" aria-modal="true">
-  <div class="modal" id="modal">
-    <div class="modal-hero" id="modalHero">
-      <button class="modal-close" id="modalClose" aria-label="Close">✕</button>
-    </div>
-    <div class="modal-body">
-      <div class="modal-cat-pill" id="modalCat"></div>
-      <h2 id="modalTitle"></h2>
-      <div class="modal-meta" id="modalMeta"></div>
-      <div class="modal-content" id="modalContent"></div>
     </div>
   </div>
 </div>
@@ -721,100 +604,6 @@ document.getElementById('igNextBtn').addEventListener('click', () => {
 </script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="supabase-client.js"></script>
-<script src="announcements-data.js"></script>
-<script>
-// ── Home page announcements panel ──
-(async function () {
-  async function loadAnnouncements() {
-    try {
-      const { data, error } = await window.db
-        .from('announcements')
-        .select('*')
-        .order('pinned', { ascending: false })
-        .order('date', { ascending: false });
-      if (error || !data) throw error;
-      return data.map(row => ({
-        id: row.id, title: row.title, category: row.category,
-        author: row.author, date: row.date, readTime: row.read_time,
-        excerpt: row.excerpt, body: row.body, image: row.image,
-        views: row.views, pinned: row.pinned
-      }));
-    } catch (err) {
-      console.warn('Supabase unavailable, using static fallback:', err);
-      return (window.BHSS_ANNOUNCEMENTS || []).sort((a, b) => new Date(b.date) - new Date(a.date));
-    }
-  }
-
-  function formatDate(str) {
-    const d = new Date(str);
-    return d.toLocaleDateString('en-CA', { year: 'numeric', month: 'long', day: 'numeric' });
-  }
-
-  function openModal(ann) {
-    const backdrop = document.getElementById('modalBackdrop');
-    const hero = document.getElementById('modalHero');
-    document.getElementById('modalCat').textContent = ann.category;
-    document.getElementById('modalCat').className = `modal-cat-pill ${ann.category}`;
-    document.getElementById('modalTitle').textContent = ann.title;
-    document.getElementById('modalMeta').innerHTML = `
-      <span>${ann.author}</span>
-      <span>·</span>
-      <span>${formatDate(ann.date)}</span>
-      <span>·</span>
-      <span>${ann.readTime} min read</span>
-      <span>·</span>
-      <span>${ann.views || 0} views</span>
-    `;
-    document.getElementById('modalContent').innerHTML = ann.body;
-
-    const closeBtn = hero.querySelector('.modal-close');
-    hero.innerHTML = '';
-    hero.appendChild(closeBtn);
-    if (ann.image) {
-      const img = document.createElement('img');
-      img.src = ann.image;
-      img.alt = ann.title;
-      hero.insertBefore(img, closeBtn);
-    } else {
-      const ph = document.createElement('div');
-      ph.className = `modal-hero-placeholder ${ann.category}`;
-      ph.innerHTML = `<svg width="56" height="56" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>`;
-      hero.insertBefore(ph, closeBtn);
-    }
-    backdrop.classList.add('open');
-    document.body.style.overflow = 'hidden';
-    document.getElementById('modal').scrollTop = 0;
-  }
-
-  function closeModal() {
-    document.getElementById('modalBackdrop').classList.remove('open');
-    document.body.style.overflow = '';
-  }
-
-  document.getElementById('modalClose').addEventListener('click', closeModal);
-  document.getElementById('modalBackdrop').addEventListener('click', e => {
-    if (e.target === e.currentTarget) closeModal();
-  });
-  document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
-
-  // Render the top 2 announcements into the panel
-  const announcements = await loadAnnouncements();
-  const container = document.getElementById('annPanelCards');
-  announcements.slice(0, 2).forEach(ann => {
-    const card = document.createElement('div');
-    card.className = 'ann-card';
-    card.innerHTML = ann.image
-      ? `<img src="${ann.image}" alt="${ann.title}" />`
-      : `<div style="height:130px;background:rgba(255,255,255,0.06);display:flex;align-items:center;justify-content:center;opacity:0.4"><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></div>`;
-    card.innerHTML += `<div class="ann-card-body">
-      <div class="ann-card-meta">${formatDate(ann.date)}</div>
-      <div class="ann-card-title">${ann.title}</div>
-    </div>`;
-    card.addEventListener('click', () => openModal(ann));
-    container.appendChild(card);
-  });
-})();
-</script>
 <script src="mobile-nav.js"></script>
 </body>
 </html>

@@ -18,10 +18,9 @@
 
 -- ─────────────────────────────────────────────────────────────────────────────
 -- 1. ENABLE RLS ON EVERY TABLE
--- (announcements / members / page_resources were enabled in supabase-setup.sql;
+-- (members / page_resources were enabled in supabase-setup.sql;
 --  re-enabling is a no-op and keeps this file self-contained.)
 -- ─────────────────────────────────────────────────────────────────────────────
-alter table public.announcements       enable row level security;
 alter table public.members             enable row level security;
 alter table public.page_resources      enable row level security;
 alter table public.products            enable row level security;
@@ -31,15 +30,9 @@ alter table public.contact_submissions enable row level security;
 
 
 -- ─────────────────────────────────────────────────────────────────────────────
--- 2. PUBLIC-READ CONTENT  (announcements, members, page_resources, collections)
+-- 2. PUBLIC-READ CONTENT  (members, page_resources, collections)
 --    anon: SELECT only.  authenticated: full write.
 -- ─────────────────────────────────────────────────────────────────────────────
-
--- announcements
-drop policy if exists "public_read"  on public.announcements;
-drop policy if exists "admin_write"  on public.announcements;
-create policy "public_read" on public.announcements for select to anon          using (true);
-create policy "admin_write" on public.announcements for all    to authenticated using (true) with check (true);
 
 -- members
 drop policy if exists "public_read"  on public.members;

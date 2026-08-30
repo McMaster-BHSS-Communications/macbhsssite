@@ -8,7 +8,7 @@
   <link rel="icon" type="image/png" sizes="96x96" href="favicon/favicon-96x96.png">
   <link rel="apple-touch-icon" sizes="180x180" href="favicon/apple-touch-icon.png">
   <link rel="manifest" href="favicon/site.webmanifest">
-  <title>Admin — BHSS Announcements</title>
+  <title>Admin — BHSS</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Familjen+Grotesk:wght@400;500;600;700&family=Inter:wght@300;400;500;600&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&display=swap" rel="stylesheet" />
@@ -368,7 +368,7 @@
 
 <!-- ── LOGIN ── -->
 <div class="login-screen" id="loginScreen">
-  <a href="/announcements" class="btn-backtosite" style="display:inline-flex;align-items:center;gap:7px;text-decoration:none;">
+  <a href="/" class="btn-backtosite" style="display:inline-flex;align-items:center;gap:7px;text-decoration:none;">
     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
     Back to Site
   </a>
@@ -376,7 +376,7 @@
     <div class="login-logo">
       <div class="login-logo-mark"><img src="assets/images/pfp/com_pfp@4x.png" alt="BHSS Comms Logo" height="52px" width="52px"></div>
       <h2>BHSS Admin</h2>
-      <p>Announcements Dashboard</p>
+      <p>Admin Dashboard</p>
     </div>
     <div class="form-group">
       <label>Password</label>
@@ -409,22 +409,8 @@
       </div>
     </div>
     <div class="sidebar-nav">
-      <div class="sidebar-label">Announcements</div>
-      <button class="sidebar-link active" onclick="showPanel('compose')" id="link-compose">
-        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
-        New Announcement
-      </button>
-      <button class="sidebar-link" onclick="showPanel('manage')" id="link-manage">
-        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
-        Manage Posts
-      </button>
-      <button class="sidebar-link" onclick="showPanel('export')" id="link-export">
-        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/><path d="M9 18H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4"/></svg>
-        Export Announcements
-      </button>
-
-      <div class="sidebar-label" style="margin-top:24px">Committees</div>
-      <button class="sidebar-link" onclick="showPanel('members')" id="link-members">
+      <div class="sidebar-label">Committees</div>
+      <button class="sidebar-link active" onclick="showPanel('members')" id="link-members">
         <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
         Manage Members
       </button>
@@ -452,6 +438,25 @@
         Store Orders
       </button>
 
+      <div class="sidebar-label" style="margin-top:24px">BHSS-Affiliated Groups</div>
+      <button class="sidebar-link" onclick="showPanel('bags')" id="link-bags">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+        Manage BAGs
+      </button>
+      <button class="sidebar-link" onclick="showPanel('bag-codes')" id="link-bag-codes">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+        Authorization Codes
+      </button>
+      <button class="sidebar-link" onclick="showPanel('bag-forms')" id="link-bag-forms">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="8" y1="13" x2="16" y2="13"/><line x1="8" y1="17" x2="16" y2="17"/></svg>
+        Form Builder
+      </button>
+      <button class="sidebar-link" onclick="showPanel('bag-submissions')" id="link-bag-submissions">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
+        Form Submissions
+        <span id="bag-submissions-badge" style="display:none;margin-left:auto;background:#ef4444;color:#fff;font-size:0.6rem;font-weight:700;padding:1px 6px;border-radius:100px"></span>
+      </button>
+
       <div class="sidebar-label" style="margin-top:24px">Outreach</div>
       <button class="sidebar-link" onclick="showPanel('contact')" id="link-contact">
         <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
@@ -476,124 +481,6 @@
   <!-- Main -->
   <div class="main">
 
-    <!-- COMPOSE PANEL -->
-    <div class="panel active" id="panel-compose">
-      <div class="topbar">
-        <div>
-          <h1>New Announcement</h1>
-          <p>Draft and publish an announcement to the BHSS website.</p>
-        </div>
-      </div>
-
-      <div class="composer-outer">
-        <div class="composer-card">
-          <div class="composer-grid">
-
-            <div class="form-group full">
-              <label>Title *</label>
-              <input type="text" id="f-title" placeholder="e.g. BHSS Spring Elections Now Open" oninput="updatePreview()" />
-            </div>
-
-            <div class="form-group">
-              <label>Category *</label>
-              <select id="f-category" onchange="onCategoryChange()">
-                <option value="">— Select category —</option>
-                <option>General</option>
-                <option>Academics</option>
-                <option>Social</option>
-                <option>Internal</option>
-                <option>External</option>
-                <option>Logistics &amp; Elections</option>
-                <option>Finance</option>
-              </select>
-              <div class="banner-auto-preview" id="bannerAutoPreview">
-                <img id="bannerAutoImg" src="" alt="" />
-              </div>
-            </div>
-
-            <div class="form-group">
-              <label>Read Time (minutes)</label>
-              <input type="number" id="f-readtime" value="1" min="1" max="30" />
-            </div>
-
-            <input type="hidden" id="f-image" value="" />
-
-            <div class="form-group full">
-              <label>Excerpt * <span style="color:var(--muted);font-weight:400">— short summary shown on cards (1–2 sentences)</span></label>
-              <textarea id="f-excerpt" rows="3" placeholder="A brief 1-2 sentence summary of the announcement..." oninput="updatePreview()"></textarea>
-            </div>
-
-            <div class="form-group full">
-              <label>Full Body * <span style="color:var(--muted);font-weight:400">— supports HTML</span></label>
-              <textarea id="f-body" class="tall" placeholder="Write the full announcement here. You can use HTML: &lt;p&gt;, &lt;strong&gt;, &lt;ul&gt;, &lt;li&gt;, &lt;a href=&quot;...&quot;&gt; etc."></textarea>
-              <div class="richtext-hint">
-                Supported tags: <code>&lt;p&gt;</code> <code>&lt;strong&gt;</code> <code>&lt;em&gt;</code> <code>&lt;ul&gt;</code><code>&lt;li&gt;</code> <code>&lt;a href="..."&gt;</code>
-              </div>
-            </div>
-
-          </div>
-
-          <div class="composer-actions">
-            <button class="btn-primary" style="width:auto;padding:10px 28px" onclick="publishAnnouncement()">
-              Publish Announcement
-            </button>
-            <button class="btn-secondary" onclick="clearForm()">Clear</button>
-            <label class="pin-toggle">
-              <input type="checkbox" id="f-pinned" />
-              Pin to top
-            </label>
-          </div>
-        </div>
-
-        <!-- Live preview -->
-        <div class="live-preview-panel">
-          <div class="live-preview-label">Card Preview</div>
-          <div class="live-preview-card">
-            <div class="live-preview-img" id="lpImg">
-              <div class="live-preview-placeholder" id="lpPlaceholder">
-                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#c8d6e8" stroke-width="1.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
-              </div>
-            </div>
-            <div class="live-preview-body">
-              <div class="live-preview-title empty" id="lpTitle">Your title will appear here</div>
-              <div class="live-preview-excerpt empty" id="lpExcerpt">Your excerpt will appear here…</div>
-              <div class="live-preview-meta" id="lpMeta">Category · 1 min read</div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- MANAGE PANEL -->
-    <div class="panel" id="panel-manage">
-      <div class="topbar">
-        <div>
-          <h1>Manage Posts</h1>
-          <p>Review and delete locally-published announcements. Base data posts cannot be deleted here.</p>
-        </div>
-        <button class="btn-secondary" onclick="renderManage()">↻ Refresh</button>
-      </div>
-      <div class="posts-list" id="manageList"></div>
-    </div>
-
-    <!-- EXPORT PANEL -->
-    <div class="panel" id="panel-export">
-      <div class="topbar">
-        <div>
-          <h1>Export Data</h1>
-          <p>Copy the generated JS below and paste it into <strong>announcements-data.js</strong> to permanently save new announcements.</p>
-        </div>
-      </div>
-      <div class="export-card">
-        <h3>Data is live in Supabase</h3>
-        <p>
-          Announcements published through this admin panel are saved directly to the <strong>Supabase database</strong> and are immediately visible to all visitors on every device — no export needed.<br><br>
-          To view, edit, or delete data directly in the database, visit the
-          <a href="https://supabase.com/dashboard/project/lnqbcatlepeagnjmktpk/editor" target="_blank" style="color:var(--blue);font-weight:600">Supabase Table Editor ↗</a>
-        </p>
-      </div>
-    </div>
-
     <!-- EXPORT MEMBERS PANEL -->
     <div class="panel" id="panel-export-members">
       <div class="topbar">
@@ -613,7 +500,7 @@
     </div>
 
     <!-- MEMBERS PANEL -->
-    <div class="panel" id="panel-members">
+    <div class="panel active" id="panel-members">
       <div class="topbar">
         <div>
           <h1>Manage Members</h1>
@@ -1177,6 +1064,145 @@
       </div>
     </div>
 
+    <!-- MANAGE BAGS PANEL -->
+    <div class="panel" id="panel-bags">
+      <div class="topbar">
+        <div>
+          <h1>Manage BAGs</h1>
+          <p>Add, edit, and remove BHSS-Affiliated Groups shown on the public /bags directory.</p>
+        </div>
+        <button class="btn-secondary" onclick="renderBagList()">↻ Refresh</button>
+      </div>
+
+      <div class="composer-outer" style="align-items:flex-start;gap:28px">
+        <!-- Add/edit form -->
+        <div class="composer-card" style="flex:1">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;padding-bottom:14px;border-bottom:1px solid var(--border)">
+            <h3 id="bg-form-title" style="font-family:'Familjen Grotesk',serif;font-size:1.1rem;font-weight:600">Add BAG</h3>
+            <button class="btn-secondary" id="bg-cancel-btn" style="display:none;font-size:0.78rem;padding:6px 14px" onclick="clearBagForm()">Cancel Edit</button>
+          </div>
+          <input type="hidden" id="bg-editing-id" value="" />
+
+          <div class="form-group">
+            <label>Logo <span style="color:var(--muted);font-weight:400">— square image recommended</span></label>
+            <div class="product-img-upload-area" onclick="document.getElementById('bg-logo-input').click()">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+              <p style="font-size:0.82rem;color:var(--muted);margin-top:8px;font-weight:500">Click to upload a logo</p>
+              <input type="file" id="bg-logo-input" accept="image/*" onchange="handleBagLogo(this)" style="display:none" />
+            </div>
+            <div class="product-img-preview-list" id="bg-logo-preview-list"></div>
+            <div class="upload-progress" id="bg-upload-progress"></div>
+          </div>
+
+          <div class="composer-grid">
+            <div class="form-group full">
+              <label>Name *</label>
+              <input type="text" id="bg-name" placeholder="e.g. HealthNet" />
+            </div>
+            <div class="form-group full">
+              <label>Description</label>
+              <textarea id="bg-desc" rows="3" placeholder="Short description shown on the BAG's card…"></textarea>
+            </div>
+            <div class="form-group">
+              <label>Instagram URL</label>
+              <input type="text" id="bg-instagram" placeholder="https://instagram.com/…" />
+            </div>
+            <div class="form-group">
+              <label>Sort Order</label>
+              <input type="number" id="bg-sort" value="0" />
+            </div>
+            <div class="form-group" style="display:flex;align-items:center;gap:10px;padding-top:24px">
+              <label class="toggle-switch"><input type="checkbox" id="bg-active" checked /><span class="toggle-slider"></span></label>
+              <span style="font-size:0.83rem;color:var(--mid)">Active (visible on site)</span>
+            </div>
+          </div>
+
+          <div class="composer-actions">
+            <button class="btn-primary" id="bg-submit-btn" style="width:auto;padding:10px 24px" onclick="saveBag()">Add BAG</button>
+            <button class="btn-secondary" onclick="clearBagForm()">Clear</button>
+          </div>
+        </div>
+
+        <!-- BAG list -->
+        <div style="width:320px;flex-shrink:0">
+          <div style="font-size:0.68rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted);margin-bottom:10px">Current BAGs</div>
+          <div id="bagList" class="posts-list"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- AUTHORIZATION CODES PANEL -->
+    <div class="panel" id="panel-bag-codes">
+      <div class="topbar">
+        <div>
+          <h1>Authorization Codes</h1>
+          <p>Issue and manage the yearly codes BAGs and committees use to sign into the Student Events portal.</p>
+        </div>
+        <button class="btn-secondary" onclick="renderBagCodesList()">↻ Refresh</button>
+      </div>
+
+      <div class="composer-card" style="margin-bottom:28px;display:flex;align-items:center;justify-content:space-between;gap:20px;flex-wrap:wrap">
+        <div>
+          <h3 style="font-family:'Familjen Grotesk',serif;font-size:1rem;font-weight:600;margin-bottom:6px">Regenerate Codes</h3>
+          <p style="font-size:0.82rem;color:var(--mid)">Generates 30 fresh, unnamed codes for the current year and deactivates every currently active code. This cannot be undone — requires the admin password.</p>
+        </div>
+        <button class="btn-danger" onclick="regenerateBagCodes()">Regenerate 30 Codes</button>
+      </div>
+
+      <div id="bagCodesList" class="posts-list"></div>
+    </div>
+
+    <!-- FORM BUILDER PANEL -->
+    <div class="panel" id="panel-bag-forms">
+      <div class="topbar">
+        <div>
+          <h1>Form Builder</h1>
+          <p>Edit the questions asked on the EOHSS, Room Booking, and Reimbursement forms — no code changes needed.</p>
+        </div>
+        <button class="btn-secondary" onclick="loadBagForms()">↻ Refresh</button>
+      </div>
+      <div id="bagFormsEditor"></div>
+    </div>
+
+    <!-- FORM SUBMISSIONS PANEL -->
+    <div class="panel" id="panel-bag-submissions">
+      <div class="topbar">
+        <div>
+          <h1>Form Submissions</h1>
+          <p>All EOHSS, Room Booking, and Reimbursement submissions from the Student Events portal.</p>
+        </div>
+        <button class="btn-secondary" onclick="loadBagSubmissions()">↻ Refresh</button>
+      </div>
+
+      <div style="display:flex;gap:24px;margin-bottom:24px;flex-wrap:wrap">
+        <div style="display:flex;gap:8px;align-items:center">
+          <span style="font-size:0.72rem;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--muted)">Form:</span>
+          <button class="btn-secondary bag-sub-filter-form" data-val="all" onclick="setBagSubmissionFormFilter('all')" style="font-size:0.78rem;padding:7px 14px;background:var(--blue);color:#fff;border-color:var(--blue)">All</button>
+          <button class="btn-secondary bag-sub-filter-form" data-val="eohss" onclick="setBagSubmissionFormFilter('eohss')" style="font-size:0.78rem;padding:7px 14px">EOHSS</button>
+          <button class="btn-secondary bag-sub-filter-form" data-val="room_booking" onclick="setBagSubmissionFormFilter('room_booking')" style="font-size:0.78rem;padding:7px 14px">Room Booking</button>
+          <button class="btn-secondary bag-sub-filter-form" data-val="reimbursement" onclick="setBagSubmissionFormFilter('reimbursement')" style="font-size:0.78rem;padding:7px 14px">Reimbursement</button>
+        </div>
+        <div style="display:flex;gap:8px;align-items:center">
+          <span style="font-size:0.72rem;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--muted)">Submitted by:</span>
+          <button class="btn-secondary bag-sub-filter-type" data-val="all" onclick="setBagSubmissionTypeFilter('all')" style="font-size:0.78rem;padding:7px 14px;background:var(--blue);color:#fff;border-color:var(--blue)">All</button>
+          <button class="btn-secondary bag-sub-filter-type" data-val="committee" onclick="setBagSubmissionTypeFilter('committee')" style="font-size:0.78rem;padding:7px 14px">Committee</button>
+          <button class="btn-secondary bag-sub-filter-type" data-val="bag" onclick="setBagSubmissionTypeFilter('bag')" style="font-size:0.78rem;padding:7px 14px">BAG</button>
+          <button class="btn-secondary bag-sub-filter-type" data-val="none" onclick="setBagSubmissionTypeFilter('none')" style="font-size:0.78rem;padding:7px 14px">Unauthorized</button>
+        </div>
+      </div>
+
+      <div id="bagSubmissionsList" class="posts-list"></div>
+
+      <!-- Detail modal -->
+      <div id="bagSubmissionModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.45);z-index:999;align-items:center;justify-content:center;padding:24px">
+        <div style="background:#fff;border-radius:16px;padding:36px;max-width:600px;width:100%;max-height:80vh;overflow-y:auto;position:relative">
+          <button onclick="closeBagSubmissionModal()" style="position:absolute;top:16px;right:16px;background:none;border:none;cursor:pointer;color:var(--muted);font-size:1.2rem;line-height:1">✕</button>
+          <div id="bagSubmissionModalBody"></div>
+          <div style="display:flex;gap:10px;margin-top:24px;padding-top:20px;border-top:1px solid var(--border)" id="bagSubmissionModalActions"></div>
+        </div>
+      </div>
+    </div>
+
   </div>
 </div>
 
@@ -1187,33 +1213,6 @@
 <script src="supabase-client.js"></script>
 <script>
 // ── BANNER OPTIONS ──
-const BANNER_OPTIONS = [
-  { label: "General", url: "assets/images/banners/com_banner@4x.png", category: "General" },
-  { label: "Academics", url: "assets/images/banners/aca_banner@4x.png", category: "Academics" },
-  { label: "Social", url: "assets/images/banners/soc_banner@4x.png", category: "Social" },
-  { label: "Internal", url: "assets/images/banners/int_banner@4x.png", category: "Internal" },
-  { label: "External", url: "assets/images/banners/ext_banner@4x.png", category: "External" },
-  { label: "Logistics & Elections", url: "assets/images/banners/log_banner@4x.png", category: "Logistics & Elections" },
-  { label: "Finance", url: "assets/images/banners/fin_banner@4x.png", category: "Finance" },
-];
-
-function onCategoryChange() {
-  const cat = document.getElementById('f-category').value;
-  const match = BANNER_OPTIONS.find(b => b.category === cat);
-  const url = match ? match.url : '';
-  document.getElementById('f-image').value = url;
-
-  const preview = document.getElementById('bannerAutoPreview');
-  const img = document.getElementById('bannerAutoImg');
-  if (url) {
-    img.src = url;
-    preview.style.display = 'block';
-  } else {
-    preview.style.display = 'none';
-  }
-  updatePreview();
-}
-
 // ── ADMIN AUTH (Supabase) ──
 // Login is handled entirely by Supabase Auth — the coordinator types the REAL
 // Supabase password, so no password or secret is stored in this file.
@@ -1246,7 +1245,7 @@ async function attemptLogin() {
 function enterAdmin() {
   document.getElementById('loginScreen').style.display = 'none';
   document.getElementById('adminWrap').style.display = 'flex';
-  renderManage();
+  renderMemberList();
   if (window._pendingPanel) {
     const sel = document.getElementById(window._pendingPanel === 'members' ? 'm-committee' : 'r-committee');
     if (sel && window._pendingComm) sel.value = window._pendingComm;
@@ -1287,12 +1286,15 @@ function showPanel(name) {
   document.getElementById('panel-' + name).classList.add('active');
   const linkEl = document.getElementById('link-' + name);
   if (linkEl) linkEl.classList.add('active');
-  if (name === 'manage')          renderManage();
   if (name === 'products')        loadProductPanel();
   if (name === 'promos')          renderPromoList();
   if (name === 'page-resources')  loadPageResourcesPanel();
   if (name === 'contact')         loadContactSubmissions();
   if (name === 'orders')          loadOrders();
+  if (name === 'bags')            renderBagList();
+  if (name === 'bag-codes')       renderBagCodesList();
+  if (name === 'bag-forms')       loadBagForms();
+  if (name === 'bag-submissions') loadBagSubmissions();
 }
 
 // ── TOAST ──
@@ -1301,141 +1303,6 @@ function toast(msg, type = 'success') {
   el.textContent = msg;
   el.className = `toast ${type} show`;
   setTimeout(() => el.classList.remove('show'), 3200);
-}
-
-// ── SLUG ──
-function slugify(str) {
-  return str.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '') + '-' + Date.now();
-}
-
-// ── PREVIEW ──
-function updatePreview() {
-  const title    = document.getElementById('f-title').value.trim();
-  const cat      = document.getElementById('f-category').value;
-  const exc      = document.getElementById('f-excerpt').value.trim();
-  const readTime = document.getElementById('f-readtime').value || '1';
-  const imgUrl   = document.getElementById('f-image').value;
-
-  const lpTitle = document.getElementById('lpTitle');
-  if (title) { lpTitle.textContent = title; lpTitle.classList.remove('empty'); }
-  else       { lpTitle.textContent = 'Your title will appear here'; lpTitle.classList.add('empty'); }
-
-  const lpExcerpt = document.getElementById('lpExcerpt');
-  if (exc) { lpExcerpt.textContent = exc; lpExcerpt.classList.remove('empty'); }
-  else     { lpExcerpt.textContent = 'Your excerpt will appear here…'; lpExcerpt.classList.add('empty'); }
-
-  document.getElementById('lpMeta').textContent = (cat || 'Category') + ' · ' + readTime + ' min read';
-
-  const lpImg = document.getElementById('lpImg');
-  const lpPh  = document.getElementById('lpPlaceholder');
-  const existingImg = lpImg.querySelector('img.lp-banner');
-  if (imgUrl) {
-    if (!existingImg) {
-      const img = document.createElement('img');
-      img.className = 'lp-banner';
-      img.style.cssText = 'width:100%;height:100%;object-fit:cover;object-position:left center;display:block;';
-      lpImg.insertBefore(img, lpPh);
-    }
-    lpImg.querySelector('img.lp-banner').src = imgUrl;
-    lpPh.style.display = 'none';
-  } else {
-    if (existingImg) existingImg.remove();
-    lpPh.style.display = '';
-  }
-}
-
-// ── PUBLISH ──
-async function publishAnnouncement() {
-  const title    = document.getElementById('f-title').value.trim();
-  const cat      = document.getElementById('f-category').value;
-  const author   = cat ? 'BHSS ' + cat : 'BHSS McMaster';
-  const readTime = parseInt(document.getElementById('f-readtime').value) || 1;
-  const image    = document.getElementById('f-image').value;
-  const excerpt  = document.getElementById('f-excerpt').value.trim();
-  const body     = document.getElementById('f-body').value.trim();
-  const pinned   = document.getElementById('f-pinned').checked;
-
-  if (!title)   { toast('Please enter a title.', 'error'); return; }
-  if (!cat)     { toast('Please select a category.', 'error'); return; }
-  if (!excerpt) { toast('Please enter an excerpt.', 'error'); return; }
-  if (!body)    { toast('Please enter the post body.', 'error'); return; }
-
-  const { error } = await window.db.from('announcements').insert({
-    id: slugify(title),
-    title,
-    category: cat,
-    author,
-    read_time: readTime,
-    image,
-    excerpt,
-    body,
-    date: new Date().toISOString(),
-    views: 0,
-    pinned
-  });
-
-  if (error) { toast('Error publishing: ' + error.message, 'error'); return; }
-  toast('✓ Announcement published! It\'s now live for all visitors.');
-  clearForm();
-  renderManage();
-}
-
-function clearForm() {
-  ['f-title','f-excerpt','f-body'].forEach(id => document.getElementById(id).value = '');
-  document.getElementById('f-category').value = '';
-  document.getElementById('f-readtime').value = '1';
-  document.getElementById('f-pinned').checked = false;
-  document.getElementById('f-image').value = '';
-  document.getElementById('bannerAutoPreview').style.display = 'none';
-  updatePreview();
-}
-
-// ── MANAGE ──
-async function renderManage() {
-  const list = document.getElementById('manageList');
-  list.innerHTML = '<p style="color:var(--muted);text-align:center;padding:40px">Loading…</p>';
-
-  const { data, error } = await window.db
-    .from('announcements')
-    .select('*')
-    .order('pinned', { ascending: false })
-    .order('date', { ascending: false });
-
-  if (error) {
-    list.innerHTML = `<p style="color:var(--red);text-align:center;padding:40px">Failed to load: ${error.message}</p>`;
-    return;
-  }
-  if (!data || !data.length) {
-    list.innerHTML = '<p style="color:var(--muted);text-align:center;padding:40px">No announcements yet.</p>';
-    return;
-  }
-
-  list.innerHTML = data.map(ann => {
-    const thumbHtml = ann.image
-      ? `<img src="${ann.image}" alt="" onerror="this.style.display='none'" />`
-      : `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#8899bb" stroke-width="1.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/></svg>`;
-    const d = new Date(ann.date);
-    const dateStr = d.toLocaleDateString('en-CA', { month: 'short', day: 'numeric', year: 'numeric' });
-    return `
-      <div class="post-row">
-        <div class="post-row-thumb">${thumbHtml}</div>
-        <div class="post-row-body">
-          <div class="post-row-title">${ann.title}${ann.pinned ? ' 📌' : ''}</div>
-          <div class="post-row-meta">${dateStr} · ${ann.read_time} min read · ${ann.views} views</div>
-        </div>
-        <span class="post-row-pill ${ann.category}">${ann.category}</span>
-        <span class="post-row-source local">● Live</span>
-        <button class="btn-danger" onclick="deleteAnnouncement('${ann.id}')">Delete</button>
-      </div>`;
-  }).join('');
-}
-
-async function deleteAnnouncement(id) {
-  if (!confirm('Delete this announcement? This cannot be undone.')) return;
-  const { error } = await window.db.from('announcements').delete().eq('id', id);
-  if (error) { toast('Delete failed: ' + error.message, 'error'); return; }
-  toast('Announcement deleted.');
-  renderManage();
 }
 
 // ─────────────────────────────────────
@@ -2660,6 +2527,427 @@ document.getElementById('statusFilter').addEventListener('change', applyOrderFil
     window._pendingComm  = comm;
   }
 })();
+
+// ─────────────────────────────────────
+// BHSS-AFFILIATED GROUPS (BAGs)
+// ─────────────────────────────────────
+
+// ── Manage BAGs ──
+let _editingBagId = null;
+let _bagLogoUrl = '';
+
+async function handleBagLogo(input) {
+  const file = input.files[0];
+  if (!file) return;
+  const prog = document.getElementById('bg-upload-progress');
+  prog.textContent = 'Uploading…';
+  try {
+    const ext = (file.name.split('.').pop() || 'jpg').toLowerCase();
+    const filename = Date.now() + '-' + Math.random().toString(36).slice(2) + '.' + ext;
+    const { error } = await window.db.storage.from('bag-logos').upload(filename, file, { cacheControl: '3600', upsert: false });
+    if (error) throw new Error(error.message);
+    const { data: { publicUrl } } = window.db.storage.from('bag-logos').getPublicUrl(filename);
+    _bagLogoUrl = publicUrl;
+    _renderBagLogoPreview();
+    toast('Logo uploaded!');
+  } catch (e) {
+    toast('Upload failed: ' + (e.message || e), 'error');
+  }
+  input.value = '';
+  prog.textContent = '';
+}
+
+function _renderBagLogoPreview() {
+  const list = document.getElementById('bg-logo-preview-list');
+  if (!list) return;
+  list.innerHTML = _bagLogoUrl
+    ? `<div class="product-img-preview-item"><img src="${_bagLogoUrl}" alt="" /><button class="product-img-remove-btn" onclick="_bagLogoUrl='';_renderBagLogoPreview()" title="Remove">✕</button></div>`
+    : '';
+}
+
+async function saveBag() {
+  const name       = document.getElementById('bg-name').value.trim();
+  const desc       = document.getElementById('bg-desc').value.trim();
+  const instagram  = document.getElementById('bg-instagram').value.trim();
+  const sortOrder  = parseInt(document.getElementById('bg-sort').value) || 0;
+  const active     = document.getElementById('bg-active').checked;
+
+  if (!name) { toast('Name is required.', 'error'); return; }
+
+  const payload = {
+    name, description: desc, instagram_url: instagram,
+    sort_order: sortOrder, active, logo_url: _bagLogoUrl
+  };
+
+  if (_editingBagId) {
+    const { error } = await window.db.from('bags').update(payload).eq('id', _editingBagId);
+    if (error) { toast('Error updating BAG: ' + error.message, 'error'); return; }
+    toast('BAG updated!');
+  } else {
+    const { error } = await window.db.from('bags').insert({ id: _uid(), ...payload });
+    if (error) { toast('Error adding BAG: ' + error.message, 'error'); return; }
+    toast('BAG added!');
+  }
+
+  clearBagForm();
+  renderBagList();
+}
+
+function clearBagForm() {
+  document.getElementById('bg-name').value = '';
+  document.getElementById('bg-desc').value = '';
+  document.getElementById('bg-instagram').value = '';
+  document.getElementById('bg-sort').value = '0';
+  document.getElementById('bg-active').checked = true;
+  _bagLogoUrl = '';
+  _renderBagLogoPreview();
+  _editingBagId = null;
+  document.getElementById('bg-form-title').textContent = 'Add BAG';
+  document.getElementById('bg-submit-btn').textContent = 'Add BAG';
+  document.getElementById('bg-cancel-btn').style.display = 'none';
+}
+
+function editBag(b) {
+  _editingBagId = b.id;
+  document.getElementById('bg-name').value = b.name || '';
+  document.getElementById('bg-desc').value = b.description || '';
+  document.getElementById('bg-instagram').value = b.instagram_url || '';
+  document.getElementById('bg-sort').value = b.sort_order || 0;
+  document.getElementById('bg-active').checked = !!b.active;
+  _bagLogoUrl = b.logo_url || '';
+  _renderBagLogoPreview();
+  document.getElementById('bg-form-title').textContent = 'Edit BAG';
+  document.getElementById('bg-submit-btn').textContent = 'Save Changes';
+  document.getElementById('bg-cancel-btn').style.display = '';
+  document.getElementById('bg-form-title').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+}
+
+async function deleteBag(id) {
+  if (!confirm('Delete this BAG? This cannot be undone.')) return;
+  const { error } = await window.db.from('bags').delete().eq('id', id);
+  if (error) { toast('Delete failed: ' + error.message, 'error'); return; }
+  toast('BAG removed.');
+  renderBagList();
+}
+
+async function renderBagList() {
+  const el = document.getElementById('bagList');
+  el.innerHTML = '<p style="font-size:0.82rem;color:var(--muted);padding:16px 0">Loading…</p>';
+
+  const { data, error } = await window.db.from('bags').select('*').order('sort_order');
+
+  if (error) {
+    el.innerHTML = `<p style="font-size:0.82rem;color:var(--red);padding:16px 0">Load failed: ${error.message}</p>`;
+    return;
+  }
+  if (!data || !data.length) {
+    el.innerHTML = '<p style="font-size:0.82rem;color:var(--muted);padding:16px 0">No BAGs yet.</p>';
+    return;
+  }
+  window._bagMap = Object.fromEntries(data.map(b => [b.id, b]));
+  el.innerHTML = data.map(b => `
+    <div class="post-row">
+      <div class="post-row-thumb" style="background:var(--blue-pale)">
+        ${b.logo_url ? `<img src="${b.logo_url}" style="width:100%;height:100%;object-fit:cover" />` : '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#9bb8d8" stroke-width="1.5"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>'}
+      </div>
+      <div class="post-row-body">
+        <div class="post-row-title">${b.name}${!b.active ? ' <span style="font-size:0.65rem;background:var(--muted);color:#fff;padding:1px 6px;border-radius:100px;vertical-align:middle">INACTIVE</span>' : ''}</div>
+        <div class="post-row-meta">${(b.description || '—').slice(0, 60)}</div>
+      </div>
+      <button class="btn-secondary" style="margin-right:6px" onclick="editBag(window._bagMap['${b.id}'])">Edit</button>
+      <button class="btn-danger" onclick="deleteBag('${b.id}')">Delete</button>
+    </div>`).join('');
+}
+
+// ── Authorization Codes ──
+function _genBagCode() {
+  const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz23456789';
+  let s = '';
+  for (let i = 0; i < 9; i++) s += chars[Math.floor(Math.random() * chars.length)];
+  return s;
+}
+
+async function regenerateBagCodes() {
+  const pw = prompt('Enter the admin password to regenerate all authorization codes:');
+  if (pw === null) return;
+  if (pw !== 'LilRedSchoolHaus2000') { toast('Incorrect password.', 'error'); return; }
+
+  const year = new Date().getFullYear();
+  if (!confirm(`This will deactivate every currently active code and generate 30 new codes for ${year}. Continue?`)) return;
+
+  const { error: deactivateError } = await window.db.from('bag_auth_codes').update({ active: false }).eq('active', true);
+  if (deactivateError) { toast('Error deactivating old codes: ' + deactivateError.message, 'error'); return; }
+
+  const rows = Array.from({ length: 30 }, () => ({
+    id: _uid(), code: _genBagCode(), group_name: null, group_type: null,
+    batch_year: year, active: true
+  }));
+  const { error: insertError } = await window.db.from('bag_auth_codes').insert(rows);
+  if (insertError) { toast('Error generating codes: ' + insertError.message, 'error'); return; }
+
+  toast(`Generated 30 new codes for ${year}!`);
+  renderBagCodesList();
+}
+
+async function renderBagCodesList() {
+  const el = document.getElementById('bagCodesList');
+  el.innerHTML = '<p style="color:var(--muted);text-align:center;padding:40px">Loading…</p>';
+
+  const { data, error } = await window.db
+    .from('bag_auth_codes')
+    .select('*')
+    .order('batch_year', { ascending: false })
+    .order('active', { ascending: false })
+    .order('created_at');
+
+  if (error) {
+    el.innerHTML = `<p style="color:var(--red);text-align:center;padding:40px">Failed to load: ${error.message}</p>`;
+    return;
+  }
+  if (!data || !data.length) {
+    el.innerHTML = '<p style="color:var(--muted);text-align:center;padding:40px">No codes yet — click "Regenerate 30 Codes" to create the first batch.</p>';
+    return;
+  }
+
+  window._bagCodeMap = Object.fromEntries(data.map(c => [c.id, c]));
+  el.innerHTML = data.map(c => `
+    <div class="post-row" style="${!c.active ? 'opacity:0.5' : ''}">
+      <div class="post-row-body" style="display:flex;align-items:center;gap:16px;flex:1">
+        <code style="font-family:monospace;font-size:0.9rem;font-weight:700;background:var(--off);padding:4px 10px;border-radius:6px;flex-shrink:0">${c.code}</code>
+        <input type="text" placeholder="Assign a group name…" value="${c.group_name || ''}" style="flex:1;padding:7px 10px;border:1px solid var(--border);border-radius:6px;font-size:0.83rem;outline:none;font-family:'Inter',sans-serif" onchange="saveBagCodeAssignment('${c.id}', this.value, document.getElementById('type-${c.id}').value)" />
+        <select id="type-${c.id}" style="padding:7px 10px;border:1px solid var(--border);border-radius:6px;font-size:0.82rem;background:var(--white)" onchange="saveBagCodeAssignment('${c.id}', undefined, this.value)">
+          <option value="" ${!c.group_type ? 'selected' : ''}>— Type —</option>
+          <option value="committee" ${c.group_type==='committee' ? 'selected' : ''}>Committee</option>
+          <option value="bag" ${c.group_type==='bag' ? 'selected' : ''}>BAG</option>
+        </select>
+        <span style="font-size:0.72rem;color:var(--muted);flex-shrink:0">${c.batch_year}</span>
+      </div>
+      <button class="btn-secondary" onclick="toggleBagCodeActive('${c.id}', ${!c.active})">${c.active ? 'Deactivate' : 'Reactivate'}</button>
+    </div>`).join('');
+}
+
+async function saveBagCodeAssignment(id, groupName, groupType) {
+  const c = window._bagCodeMap[id];
+  const name = (groupName !== undefined ? groupName : c.group_name || '').trim() || null;
+  const type = groupType || null;
+  const { error } = await window.db.from('bag_auth_codes').update({ group_name: name, group_type: type }).eq('id', id);
+  if (error) { toast('Save failed: ' + error.message, 'error'); return; }
+  c.group_name = name; c.group_type = type;
+  toast('Saved.');
+}
+
+async function toggleBagCodeActive(id, active) {
+  const { error } = await window.db.from('bag_auth_codes').update({ active }).eq('id', id);
+  if (error) { toast('Update failed: ' + error.message, 'error'); return; }
+  renderBagCodesList();
+}
+
+// ── Form Builder ──
+let _bagForms = {};
+const BAG_FORM_IDS = ['eohss', 'room_booking', 'reimbursement'];
+const BAG_FIELD_TYPES = ['text', 'textarea', 'select', 'date', 'number', 'checkbox'];
+
+async function loadBagForms() {
+  const el = document.getElementById('bagFormsEditor');
+  el.innerHTML = '<p style="color:var(--muted);text-align:center;padding:40px">Loading…</p>';
+
+  const { data, error } = await window.db.from('bhss_forms').select('*');
+  if (error) {
+    el.innerHTML = `<p style="color:var(--red);text-align:center;padding:40px">Failed to load: ${error.message}</p>`;
+    return;
+  }
+  _bagForms = Object.fromEntries((data || []).map(f => [f.id, { ...f, fields: f.fields || [] }]));
+  el.innerHTML = BAG_FORM_IDS.map(id => `<div class="composer-card" style="margin-bottom:20px" id="bagform-${id}"></div>`).join('');
+  BAG_FORM_IDS.forEach(renderBagFormEditor);
+}
+
+function renderBagFormEditor(formId) {
+  const form = _bagForms[formId];
+  const container = document.getElementById('bagform-' + formId);
+  if (!form || !container) return;
+
+  container.innerHTML = `
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;padding-bottom:14px;border-bottom:1px solid var(--border)">
+      <h3 style="font-family:'Familjen Grotesk',serif;font-size:1.1rem;font-weight:600">${form.title}</h3>
+      <button class="btn-primary" style="width:auto;padding:8px 20px;font-size:0.83rem" onclick="saveBagForm('${formId}')">Save Form</button>
+    </div>
+    <div class="form-group full">
+      <label>Form Description</label>
+      <input type="text" value="${(form.description || '').replace(/"/g, '&quot;')}" oninput="_bagForms['${formId}'].description = this.value" />
+    </div>
+    <div id="bagform-fields-${formId}"></div>
+    <button class="btn-secondary" style="margin-top:10px" onclick="addBagFormField('${formId}')">+ Add Field</button>
+  `;
+  renderBagFormFields(formId);
+}
+
+function renderBagFormFields(formId) {
+  const form = _bagForms[formId];
+  const el = document.getElementById('bagform-fields-' + formId);
+  if (!el) return;
+  el.innerHTML = form.fields.map((f, i) => `
+    <div style="display:flex;gap:8px;align-items:center;margin-bottom:8px;padding:10px;background:var(--off);border-radius:8px">
+      <input type="text" placeholder="Question label" value="${(f.label || '').replace(/"/g, '&quot;')}" style="flex:2;padding:7px 10px;border:1px solid var(--border);border-radius:6px;font-size:0.83rem;outline:none;font-family:'Inter',sans-serif" oninput="updateBagFormField('${formId}',${i},'label',this.value)" />
+      <select style="flex:1;padding:7px 10px;border:1px solid var(--border);border-radius:6px;font-size:0.82rem;background:var(--white)" onchange="updateBagFormField('${formId}',${i},'type',this.value)">
+        ${BAG_FIELD_TYPES.map(t => `<option value="${t}" ${f.type === t ? 'selected' : ''}>${t}</option>`).join('')}
+      </select>
+      ${f.type === 'select' ? `<input type="text" placeholder="Options, comma separated" value="${(f.options || []).join(', ')}" style="flex:2;padding:7px 10px;border:1px solid var(--border);border-radius:6px;font-size:0.83rem;outline:none;font-family:'Inter',sans-serif" oninput="updateBagFormField('${formId}',${i},'options',this.value.split(',').map(s=>s.trim()).filter(Boolean))" />` : ''}
+      <label style="display:flex;align-items:center;gap:5px;font-size:0.78rem;color:var(--mid);white-space:nowrap">
+        <input type="checkbox" ${f.required ? 'checked' : ''} onchange="updateBagFormField('${formId}',${i},'required',this.checked)" /> Required
+      </label>
+      <button title="Move up" onclick="moveBagFormField('${formId}',${i},-1)" style="background:none;border:none;cursor:pointer;color:var(--muted);font-size:0.9rem">↑</button>
+      <button title="Move down" onclick="moveBagFormField('${formId}',${i},1)" style="background:none;border:none;cursor:pointer;color:var(--muted);font-size:0.9rem">↓</button>
+      <button title="Remove" onclick="removeBagFormField('${formId}',${i})" style="background:none;border:none;cursor:pointer;color:var(--red);font-size:0.9rem">✕</button>
+    </div>`).join('') || '<p style="font-size:0.82rem;color:var(--muted);padding:8px 0">No fields yet — add one below.</p>';
+}
+
+function updateBagFormField(formId, i, prop, value) {
+  _bagForms[formId].fields[i][prop] = value;
+  if (prop === 'type') renderBagFormFields(formId);
+}
+
+function addBagFormField(formId) {
+  _bagForms[formId].fields.push({ id: _uid(), label: '', type: 'text', required: false });
+  renderBagFormFields(formId);
+}
+
+function removeBagFormField(formId, i) {
+  _bagForms[formId].fields.splice(i, 1);
+  renderBagFormFields(formId);
+}
+
+function moveBagFormField(formId, i, dir) {
+  const fields = _bagForms[formId].fields;
+  const j = i + dir;
+  if (j < 0 || j >= fields.length) return;
+  [fields[i], fields[j]] = [fields[j], fields[i]];
+  renderBagFormFields(formId);
+}
+
+async function saveBagForm(formId) {
+  const form = _bagForms[formId];
+  const { error } = await window.db.from('bhss_forms').update({
+    description: form.description, fields: form.fields, updated_at: new Date().toISOString()
+  }).eq('id', formId);
+  if (error) { toast('Save failed: ' + error.message, 'error'); return; }
+  toast('Form saved!');
+}
+
+// ── Form Submissions ──
+let _bagSubmissions = [];
+let _bagSubFormFilter = 'all';
+let _bagSubTypeFilter = 'all';
+
+async function loadBagSubmissions() {
+  const el = document.getElementById('bagSubmissionsList');
+  el.innerHTML = '<p style="color:var(--muted);text-align:center;padding:40px">Loading…</p>';
+
+  const { data, error } = await window.db
+    .from('bhss_form_submissions')
+    .select('*')
+    .order('submitted_at', { ascending: false });
+
+  if (error) {
+    el.innerHTML = `<p style="color:var(--red);text-align:center;padding:40px">Failed to load: ${error.message}</p>`;
+    return;
+  }
+  _bagSubmissions = data || [];
+  renderBagSubmissionsList();
+}
+
+function setBagSubmissionFormFilter(val) {
+  _bagSubFormFilter = val;
+  document.querySelectorAll('.bag-sub-filter-form').forEach(b => {
+    const active = b.dataset.val === val;
+    b.style.background = active ? 'var(--blue)' : '';
+    b.style.color = active ? '#fff' : '';
+    b.style.borderColor = active ? 'var(--blue)' : '';
+  });
+  renderBagSubmissionsList();
+}
+
+function setBagSubmissionTypeFilter(val) {
+  _bagSubTypeFilter = val;
+  document.querySelectorAll('.bag-sub-filter-type').forEach(b => {
+    const active = b.dataset.val === val;
+    b.style.background = active ? 'var(--blue)' : '';
+    b.style.color = active ? '#fff' : '';
+    b.style.borderColor = active ? 'var(--blue)' : '';
+  });
+  renderBagSubmissionsList();
+}
+
+const BAG_FORM_LABELS = { eohss: 'EOHSS', room_booking: 'Room Booking', reimbursement: 'Reimbursement' };
+
+function renderBagSubmissionsList() {
+  const el = document.getElementById('bagSubmissionsList');
+  let filtered = _bagSubmissions;
+  if (_bagSubFormFilter !== 'all') filtered = filtered.filter(s => s.form_id === _bagSubFormFilter);
+  if (_bagSubTypeFilter !== 'all') {
+    filtered = _bagSubTypeFilter === 'none'
+      ? filtered.filter(s => !s.group_type)
+      : filtered.filter(s => s.group_type === _bagSubTypeFilter);
+  }
+
+  if (!filtered.length) {
+    el.innerHTML = '<p style="color:var(--muted);text-align:center;padding:40px">No matching submissions.</p>';
+    return;
+  }
+
+  window._bagSubMap = Object.fromEntries(filtered.map(s => [s.id, s]));
+  el.innerHTML = filtered.map(s => {
+    const d = new Date(s.submitted_at);
+    const dateStr = d.toLocaleDateString('en-CA', { month: 'short', day: 'numeric', year: 'numeric', hour: '2-digit', minute: '2-digit' });
+    const who = s.group_name ? `${s.group_name} (${s.group_type === 'bag' ? 'BAG' : 'Committee'})` : 'Unauthorized';
+    return `
+      <div class="post-row" style="cursor:pointer" onclick="openBagSubmissionModal('${s.id}')">
+        <div class="post-row-body">
+          <div class="post-row-title">${BAG_FORM_LABELS[s.form_id] || s.form_id}</div>
+          <div class="post-row-meta">${who} · ${dateStr}</div>
+        </div>
+        <button class="btn-danger" onclick="event.stopPropagation();deleteBagSubmission('${s.id}')">Delete</button>
+      </div>`;
+  }).join('');
+}
+
+function openBagSubmissionModal(id) {
+  const s = window._bagSubMap[id];
+  if (!s) return;
+  const d = new Date(s.submitted_at);
+  const dateStr = d.toLocaleDateString('en-CA', { month: 'long', day: 'numeric', year: 'numeric', hour: '2-digit', minute: '2-digit' });
+  const who = s.group_name ? `${s.group_name} (${s.group_type === 'bag' ? 'BAG' : 'Committee'})` : 'Unauthorized submission';
+
+  document.getElementById('bagSubmissionModalBody').innerHTML = `
+    <div style="margin-bottom:24px;padding-bottom:16px;border-bottom:1px solid var(--border)">
+      <div style="font-family:'Familjen Grotesk',serif;font-size:1.3rem;font-weight:600;color:var(--text)">${BAG_FORM_LABELS[s.form_id] || s.form_id}</div>
+      <div style="font-size:0.78rem;color:var(--muted);margin-top:2px">${who} · ${dateStr}</div>
+    </div>
+    ${(s.answers || []).map(a => `
+      <div style="margin-bottom:16px">
+        <div style="font-size:0.68rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted);margin-bottom:5px">${a.label}</div>
+        <div style="font-size:0.88rem;color:var(--text);line-height:1.6;white-space:pre-wrap">${a.value || '—'}</div>
+      </div>`).join('')}`;
+
+  document.getElementById('bagSubmissionModalActions').innerHTML = `
+    <button class="btn-danger" onclick="deleteBagSubmission('${s.id}');closeBagSubmissionModal()">Delete</button>`;
+
+  const modal = document.getElementById('bagSubmissionModal');
+  modal.style.display = 'flex';
+}
+
+function closeBagSubmissionModal() {
+  document.getElementById('bagSubmissionModal').style.display = 'none';
+}
+document.getElementById('bagSubmissionModal')?.addEventListener('click', e => { if (e.target === document.getElementById('bagSubmissionModal')) closeBagSubmissionModal(); });
+
+async function deleteBagSubmission(id) {
+  if (!confirm('Delete this submission? This cannot be undone.')) return;
+  const { error } = await window.db.from('bhss_form_submissions').delete().eq('id', id);
+  if (error) { toast('Delete failed: ' + error.message, 'error'); return; }
+  _bagSubmissions = _bagSubmissions.filter(x => x.id !== id);
+  toast('Submission deleted.');
+  renderBagSubmissionsList();
+}
 </script>
 </body>
 </html>

@@ -29,22 +29,6 @@
 
     <div class="mob-dropdown">
       <div class="mob-dropdown-row">
-        <a href="/announcements">Announcements</a>
-        <button class="mob-chevron-btn" aria-expanded="false" aria-label="Toggle Announcements menu">${chevron}</button>
-      </div>
-      <div class="mob-dropdown-panel">
-        <a href="/announcements?filter=General">General</a>
-        <a href="/announcements?filter=Academics">Academics</a>
-        <a href="/announcements?filter=External">External</a>
-        <a href="/announcements?filter=Finance">Finance</a>
-        <a href="/announcements?filter=Internal">Internal</a>
-        <a href="/announcements?filter=Social">Social</a>
-        <a href="/announcements?filter=Elections">Elections</a>
-      </div>
-    </div>
-
-    <div class="mob-dropdown">
-      <div class="mob-dropdown-row">
         <a href="/committees">Committees</a>
         <button class="mob-chevron-btn" aria-expanded="false" aria-label="Toggle Committees menu">${chevron}</button>
       </div>
@@ -71,7 +55,9 @@
     <a href="/resources">Resources</a>
     <a href="/shop">Store</a>
     <a href="/bags">BAGs</a>
+    <a href="/student-events">Student Events</a>
     <a href="/about">About Us</a>
+    <a href="/contact">Contact</a>
     <div class="mob-cta"><a href="https://drive.google.com/drive/folders/1YlpnrLa7I39miOYMrV8sf2DoPRnFAx20">Academic Resources</a></div>
   `;
 

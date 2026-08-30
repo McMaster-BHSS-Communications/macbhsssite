@@ -1,0 +1,528 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="icon" type="image/x-icon" href="favicon/favicon.ico">
+  <link rel="icon" type="image/svg+xml" href="favicon/favicon.svg">
+  <link rel="icon" type="image/png" sizes="96x96" href="favicon/favicon-96x96.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="favicon/apple-touch-icon.png">
+  <link rel="manifest" href="favicon/site.webmanifest">
+  <title>Contact Us | Mac BHSS</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Familjen+Grotesk:wght@400;500;600;700&family=Inter:wght@300;400;500;600&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="mobile-nav.css" />
+  <style>
+    :root {
+      --maroon:    #7a003c;
+      --maroon-dk: #5a002c;
+      --blue:      #1d4fa1;
+      --blue-mid:  #2e69c9;
+      --blue-lt:   #5b9bd5;
+      --blue-pale: #ddeaf7;
+      --dark:      #0f1b2d;
+      --text:      #1a2640;
+      --mid:       #4a5a7a;
+      --muted:     #8899bb;
+      --white:     #ffffff;
+      --off:       #f5f7fa;
+      --border:    #dde5f0;
+      --nav-h:     64px;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; overflow-x: hidden; }
+    body { font-family: 'Inter', sans-serif; background: var(--off); color: var(--text); overflow-x: hidden; }
+
+    /* ─── MAINTENANCE BANNER ─── */
+    .banner {
+      background: var(--dark); color: var(--blue-lt);
+      text-align: center; font-family: 'Inter', sans-serif;
+      font-size: 0.75rem; font-style: italic; font-weight: 600;
+      letter-spacing: 0.03em; padding: 16px 16px;
+    }
+
+    /* ─── NAV ─── */
+    nav.sitenav {
+      position: sticky; top: 0; z-index: 500; height: var(--nav-h);
+      background: var(--white); border-bottom: 1px solid var(--border);
+      display: flex; align-items: center; padding: 0 32px; gap: 0;
+    }
+    .nav-logo { display: flex; align-items: center; gap: 10px; text-decoration: none; margin-right: 28px; flex-shrink: 0; }
+    .nav-logo-mark { width: 38px; height: 38px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-family: 'Familjen Grotesk', serif; font-size: 1rem; font-weight: 600; color: var(--blue); }
+    .nav-logo-text { font-family: 'Familjen Grotesk', serif; font-size: clamp(0.05rem, 3.5vw, 1.05rem); font-weight: 600; color: var(--text); line-height: 1.2; }
+    .nav-logo-text span { display: block; font-size: clamp(0.2rem, 3.5vw, 0.7rem); font-weight: 400; color: var(--muted); font-family: 'Inter', sans-serif; letter-spacing: 0.04em; }
+    .nav-links { display: flex; align-items: center; gap: 2px; list-style: none; }
+    .nav-links a { display: block; padding: 7px 13px; font-size: 0.83rem; font-weight: 500; color: var(--mid); text-decoration: none; border-radius: 6px; transition: background 0.15s, color 0.15s; white-space: nowrap; }
+    .nav-links a:hover, .nav-links a.active { background: var(--blue); color: var(--white); }
+    .has-drop { position: relative; }
+    .has-drop > a::after { content: ' ▾'; font-size: 0.6rem; opacity: 0.7; }
+    .drop { display: none; position: absolute; top: calc(100% + 6px); left: 0; background: var(--white); border: 1px solid var(--border); border-radius: 10px; box-shadow: 0 10px 32px rgba(0,0,0,0.1); min-width: 176px; padding: 6px; z-index: 300; }
+    .drop::before { content: ""; position: absolute; top: -20px; left: 0; width: 100%; height: 20px; background: transparent; }
+    .has-drop:hover .drop { display: block; }
+    .drop a { border-radius: 6px; font-size: 0.8rem; padding: 7px 12px; color: var(--mid); }
+    .drop a:hover { background: var(--blue-pale); color: var(--blue); }
+    .has-sidedrop { position: relative; }
+    .has-sidedrop > a::after { content: ' ▸'; font-size: 0.6rem; opacity: 0.7; }
+    .sidedrop { display: none; position: absolute; top: -200%; left: calc(100% + 8px); background: var(--white); border: 1px solid var(--border); border-radius: 10px; box-shadow: 0 10px 32px rgba(0,0,0,0.1); min-width: 220px; padding: 10px; z-index: 500; white-space: normal; }
+    .has-sidedrop::after { content: ""; position: absolute; top: 0; left: 100%; width: 12px; height: 100%; background: transparent; pointer-events: auto; }
+    .has-sidedrop:hover .sidedrop { display: block; }
+    .sidedrop a { display: block; border-radius: 6px; font-size: 0.8rem; padding: 8px 12px; color: var(--mid); }
+    .sidedrop a:hover { background: var(--blue-pale); color: var(--blue); }
+    .nav-resources { margin-left: auto; display: flex; align-items: center; }
+    .nav-resources a { display: flex; align-items: center; gap: 6px; padding: 8px 16px; background: var(--blue-pale); color: var(--blue); font-size: 0.8rem; font-weight: 600; text-decoration: none; border-radius: 8px; border: 1px solid rgba(45,105,201,0.2); transition: background 0.15s, color 0.15s; white-space: nowrap; }
+    .nav-resources a:hover { background: var(--blue); color: var(--white); }
+
+    /* ─── PAGE HERO ─── */
+    .page-hero { background: var(--blue); position: relative; overflow: hidden; padding: 64px 60px 56px; text-align: center; }
+    .page-hero .decor-img { position: absolute; pointer-events: none; user-select: none; opacity: 1; animation: floatDecor 7s ease-in-out infinite alternate; }
+    @keyframes floatDecor { from { transform: rotate(var(--r, 0deg)) translateY(0); } to { transform: rotate(var(--r, 0deg)) translateY(-12px); } }
+    .page-hero .decor-img1 { width: 90px;  top: 10px;   left: 36px;   --r: -8deg; }
+    .page-hero .decor-img2 { width: 66px;  bottom: 12px; right: 72px;  --r: 18deg; }
+    .page-hero .decor-img3 { width: 50px;  top: 20px;   right: 160px; --r: -4deg; }
+    .page-hero .decor-img4 { width: 78px;  bottom: 14px; left: 130px;  --r: 10deg; }
+    .page-hero .decor-img5 { width: 42px;  top: 44%;    right: 48px;  --r: 24deg; }
+    .page-hero h1 { font-family: 'Familjen Grotesk', sans-serif; font-size: clamp(1.8rem, 5vw, 3.2rem); font-weight: 600; color: var(--white); letter-spacing: -0.02em; position: relative; z-index: 1; margin-bottom: 16px; }
+    .page-hero p { font-size: clamp(0.85rem, 2vw, 1rem); color: rgba(255,255,255,0.8); max-width: 640px; margin: 0 auto; line-height: 1.7; position: relative; z-index: 1; }
+
+    /* ─── CONTENT AREA ─── */
+    .contact-content { max-width: 900px; margin: 0 auto; padding: 56px 40px 80px; }
+    .section-block { margin-bottom: 64px; }
+    .section-header { margin-bottom: 32px; }
+    .section-header h2 { font-family: 'Familjen Grotesk', sans-serif; font-size: clamp(1.3rem, 3.5vw, 1.7rem); font-weight: 600; color: var(--text); letter-spacing: -0.02em; margin-bottom: 10px; }
+    .section-header p { font-size: 0.9rem; color: var(--mid); line-height: 1.7; max-width: 620px; }
+
+    /* ─── WHO TO CONTACT ─── */
+    .who-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 16px; }
+    .who-card { background: var(--white); border: 1px solid var(--border); border-radius: 14px; padding: 22px 22px; display: flex; gap: 16px; align-items: flex-start; transition: box-shadow 0.15s, transform 0.15s; }
+    .who-card:hover { box-shadow: 0 8px 24px rgba(0,0,0,0.06); transform: translateY(-2px); }
+    .who-icon { width: 42px; height: 42px; background: var(--blue-pale); border-radius: 10px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; color: var(--blue); }
+    .who-body h4 { font-family: 'Familjen Grotesk', sans-serif; font-size: 0.95rem; font-weight: 600; color: var(--text); margin-bottom: 4px; }
+    .who-body p { font-size: 0.82rem; color: var(--mid); line-height: 1.6; margin-bottom: 8px; }
+    .who-body a { font-size: 0.8rem; font-weight: 600; color: var(--blue); text-decoration: none; }
+    .who-body a:hover { text-decoration: underline; }
+
+    /* ─── CONTACT FORM ─── */
+    .contact-layout { display: grid; grid-template-columns: 1fr 300px; gap: 40px; align-items: start; }
+    .contact-form-card { background: var(--white); border: 1px solid var(--border); border-radius: 16px; padding: 36px; }
+    .contact-form-card h3 { font-family: 'Familjen Grotesk', sans-serif; font-size: 1.15rem; font-weight: 600; color: var(--text); margin-bottom: 24px; padding-bottom: 16px; border-bottom: 1px solid var(--border); }
+    .contact-info-card { background: var(--dark); color: var(--white); border-radius: 16px; padding: 28px; }
+    .contact-info-card h3 { font-family: 'Familjen Grotesk', sans-serif; font-size: 1rem; font-weight: 600; color: var(--white); margin-bottom: 20px; }
+    .contact-info-item { display: flex; gap: 12px; align-items: flex-start; margin-bottom: 20px; }
+    .contact-info-item:last-child { margin-bottom: 0; }
+    .ci-icon { width: 32px; height: 32px; background: rgba(255,255,255,0.08); border-radius: 8px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; margin-top: 2px; }
+    .ci-text strong { display: block; font-size: 0.72rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: rgba(255,255,255,0.45); margin-bottom: 3px; }
+    .ci-text span, .ci-text a { font-size: 0.83rem; color: rgba(255,255,255,0.75); line-height: 1.55; text-decoration: none; }
+    .ci-text a:hover { color: var(--white); text-decoration: underline; }
+    .form-group { margin-bottom: 20px; }
+    .form-group label { display: block; font-size: 0.78rem; font-weight: 600; color: var(--mid); margin-bottom: 6px; letter-spacing: 0.03em; }
+    .form-group input, .form-group select, .form-group textarea {
+      width: 100%; padding: 11px 14px; border: 1px solid var(--border); border-radius: 8px;
+      font-family: 'Inter', sans-serif; font-size: 0.88rem; color: var(--text);
+      background: var(--white); outline: none; transition: border-color 0.15s, box-shadow 0.15s;
+    }
+    .form-group input:focus, .form-group select:focus, .form-group textarea:focus { border-color: var(--blue); box-shadow: 0 0 0 3px rgba(29,79,161,0.1); }
+    .form-group textarea { resize: vertical; min-height: 140px; font-family: 'Inter', sans-serif; }
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    .submit-btn { padding: 12px 28px; background: var(--blue); color: var(--white); border: none; border-radius: 8px; font-size: 0.88rem; font-weight: 600; cursor: pointer; font-family: 'Inter', sans-serif; transition: background 0.15s; letter-spacing: 0.02em; }
+    .submit-btn:hover { background: var(--blue-mid); }
+    .submit-btn:disabled { opacity: 0.6; cursor: not-allowed; }
+    .form-success { display: none; text-align: center; padding: 40px 20px; }
+    .form-success .check { width: 56px; height: 56px; background: rgba(21,128,61,0.1); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 16px; color: #15803d; }
+    .form-success h3 { font-family: 'Familjen Grotesk', sans-serif; font-size: 1.3rem; font-weight: 600; color: var(--text); margin-bottom: 8px; }
+    .form-success p { font-size: 0.88rem; color: var(--mid); }
+    .form-error-msg { font-size: 0.78rem; color: #b91c1c; margin-top: 8px; display: none; }
+
+    /* ─── FAQ ─── */
+    .faq-list { display: flex; flex-direction: column; gap: 10px; }
+    .faq-item { background: var(--white); border: 1px solid var(--border); border-radius: 12px; overflow: hidden; }
+    .faq-item summary {
+      list-style: none; cursor: pointer; padding: 18px 22px;
+      font-family: 'Familjen Grotesk', sans-serif; font-size: 0.92rem; font-weight: 600; color: var(--text);
+      display: flex; align-items: center; justify-content: space-between; gap: 16px;
+    }
+    .faq-item summary::-webkit-details-marker { display: none; }
+    .faq-chevron { flex-shrink: 0; color: var(--blue); transition: transform 0.2s; }
+    .faq-item[open] .faq-chevron { transform: rotate(180deg); }
+    .faq-item summary:hover { background: var(--blue-pale); }
+    .faq-answer { padding: 0 22px 20px; font-size: 0.86rem; color: var(--mid); line-height: 1.7; }
+    .faq-answer a { color: var(--blue); text-decoration: underline; text-underline-offset: 2px; }
+
+    /* ─── FOOTER ─── */
+    footer { background: var(--dark); color: rgba(255,255,255,0.55); padding: 48px 60px 40px; }
+    .footer-top { display: grid; grid-template-columns: 1.5fr 1fr 1fr 1.5fr 0.6fr; gap: 40px; margin-bottom: 40px; }
+    .footer-brand p.pre { font-size: 0.6rem; font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase; color: rgba(255,255,255,0.35); margin-bottom: 4px; }
+    .footer-brand h3 { font-family: 'Familjen Grotesk', serif; font-size: 1.25rem; font-weight: 600; color: var(--white); line-height: 1.25; margin-bottom: 14px; }
+    .footer-brand .desc { font-size: 0.76rem; line-height: 1.65; color: rgba(255,255,255,0.4); }
+    .footer-brand .desc a { color: rgba(255,255,255,0.55); text-decoration: underline; }
+    .footer-col h4 { font-size: 0.7rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: rgba(255,255,255,0.5); margin-bottom: 12px; }
+    .footer-col p, .footer-col address { font-size: 0.78rem; font-style: normal; color: rgba(255,255,255,0.4); line-height: 1.65; padding-right: 100px;}
+    .footer-col a { display: inline-flex; color: rgba(255,255,255,0.45); text-decoration: none; font-size: 0.78rem; margin-bottom: 5px; transition: color 0.15s; }
+    .footer-col a:hover { color: var(--white); }
+    .footer-bottom { border-top: 1px solid rgba(255,255,255,0.07); padding-top: 20px; font-size: 0.72rem; color: rgba(255,255,255,0.25); display: flex; align-items: center; justify-content: space-between; }
+
+    /* ─── RESPONSIVE ─── */
+    @media (max-width: 960px) {
+      .contact-content { padding: 40px 24px 64px; }
+      .contact-layout { grid-template-columns: 1fr; }
+      .footer-top { grid-template-columns: 1fr 1fr; gap: 28px; }
+      .page-hero { padding: 48px 32px 44px; }
+    }
+    @media (max-width: 640px) {
+      nav.sitenav { padding: 0 16px; }
+      .nav-links, .nav-resources { display: none; }
+      .page-hero { padding: 36px 20px 36px; }
+      .form-row { grid-template-columns: 1fr; }
+      .who-grid { grid-template-columns: 1fr; }
+      footer { padding: 36px 24px 28px; }
+      .footer-top { grid-template-columns: 1fr; gap: 24px; }
+      .footer-bottom { flex-direction: column; gap: 6px; text-align: center; }
+    }
+  </style>
+  <link rel="canonical" href="https://bhssmcmaster.com/contact" />
+  <meta name="description" content="Get in touch with the BHSS. Find out who to contact for specific issues, send us a message, or check our frequently asked questions." />
+</head>
+<body>
+
+<!-- Banner -->
+<div class="banner">Website is currently under maintenance. Some features may be non-functional.</div>
+
+<!-- Nav -->
+<nav class="sitenav">
+  <a href="/" class="nav-logo">
+    <img class="nav-logo-mark" src="assets/images/logoNEW@4x.png" alt="BHSS Logo">
+    <div class="nav-logo-text">Bachelor of Health Sciences Society<span>McMaster University</span></div>
+  </a>
+  <ul class="nav-links">
+    <li><a href="/">Home</a></li>
+    <li class="has-drop">
+      <a href="/committees">Committees</a>
+      <div class="drop">
+        <a href="/committees">All Committees</a>
+        <a href="/committees/chair">Chair</a>
+        <a href="/committees/academics">Academics</a>
+        <a href="/committees/communications">Communications</a>
+        <a href="/committees/edi">Equity, Diversity &amp; Inclusion</a>
+        <a href="/committees/external">External</a>
+        <a href="/committees/financial">Financial</a>
+        <a href="/committees/internal">Internal</a>
+        <a href="/committees/logistics">Logistics &amp; Elections</a>
+        <a href="/committees/social">Social</a>
+        <a href="/committees/welcome-week">Welcome Week</a>
+        <a href="/committees/sra">SRA</a>
+        <div class="has-sidedrop">
+          <a href="#">Year Councils</a>
+          <div class="sidedrop">
+            <a href="/committees/first-year-council">First Year Council</a>
+            <a href="/committees/second-year-council">Second Year Council</a>
+            <a href="/committees/third-year-council">Third Year Council</a>
+            <a href="/committees/fourth-year-council">Fourth Year Council</a>
+          </div>
+        </div>
+      </div>
+    </li>
+    <li><a href="/resources">Resources</a></li>
+    <li><a href="/shop">Store</a></li>
+    <li><a href="/bags">BAGs</a></li>
+    <li><a href="/student-events">Student Events</a></li>
+    <li><a href="/about">About Us</a></li>
+    <li><a href="/contact" class="active">Contact</a></li>
+  </ul>
+  <div class="nav-resources">
+    <a href="https://drive.google.com/drive/folders/1YlpnrLa7I39miOYMrV8sf2DoPRnFAx20"
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
+      Academic Resources
+    </a>
+  </div>
+  <button class="hamburger" aria-label="Open menu"><span></span><span></span><span></span></button>
+</nav>
+
+<!-- Page Hero -->
+<div class="page-hero">
+  <img class="decor-img decor-img1" src="assets/svg/decor/sqs4.svg" alt="" aria-hidden="true">
+  <img class="decor-img decor-img2" src="assets/svg/decor/sqs6.svg" alt="" aria-hidden="true">
+  <img class="decor-img decor-img3" src="assets/svg/decor/sqs8.svg" alt="" aria-hidden="true">
+  <img class="decor-img decor-img4" src="assets/svg/decor/sqs2.svg" alt="" aria-hidden="true">
+  <img class="decor-img decor-img5" src="assets/svg/decor/sqs5.svg" alt="" aria-hidden="true">
+  <h1>Contact Us</h1>
+  <p>Have a question, concern, or just want to get in touch? Find the right person below, or send us a message directly.</p>
+</div>
+
+<!-- Content -->
+<div class="contact-content">
+
+  <!-- WHO TO CONTACT -->
+  <div class="section-block">
+    <div class="section-header">
+      <h2>Who to Contact</h2>
+      <p>Not sure who can help? Here's a quick guide to reaching the right committee for your question.</p>
+    </div>
+    <div class="who-grid">
+      <div class="who-card">
+        <div class="who-icon">
+          <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+        </div>
+        <div class="who-body">
+          <h4>General Inquiries</h4>
+          <p>Anything else, or not sure where to start — the Communications Committee will point you in the right direction.</p>
+          <a href="mailto:bhsscom@mcmaster.ca">bhsscom@mcmaster.ca</a>
+        </div>
+      </div>
+      <div class="who-card">
+        <div class="who-icon">
+          <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+        </div>
+        <div class="who-body">
+          <h4>Committee Information</h4>
+          <p>Questions about a specific committee, its members, or getting involved.</p>
+          <a href="/committees">Browse Committees →</a>
+        </div>
+      </div>
+      <div class="who-card">
+        <div class="who-icon">
+          <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+        </div>
+        <div class="who-body">
+          <h4>Elections</h4>
+          <p>Nominations, voting, campaign rules, or anything related to BHSS elections.</p>
+          <a href="mailto:bhssele@mcmaster.ca">bhssele@mcmaster.ca</a>
+        </div>
+      </div>
+      <div class="who-card">
+        <div class="who-icon">
+          <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+        </div>
+        <div class="who-body">
+          <h4>Events &amp; Activities</h4>
+          <p>Socials, formals, and other events — questions or feedback for the Social Committee.</p>
+          <a href="mailto:bhsssoc@mcmaster.ca">bhsssoc@mcmaster.ca</a>
+        </div>
+      </div>
+      <div class="who-card">
+        <div class="who-icon">
+          <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+        </div>
+        <div class="who-body">
+          <h4>Academic Resources</h4>
+          <p>Study resources, tutoring, and academic support from the Academics Committee.</p>
+          <a href="mailto:bhssaca@mcmaster.ca">bhssaca@mcmaster.ca</a>
+        </div>
+      </div>
+      <div class="who-card">
+        <div class="who-icon">
+          <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
+        </div>
+        <div class="who-body">
+          <h4>Technical Issues</h4>
+          <p>Something broken on the website? Let the Communications Committee know.</p>
+          <a href="mailto:bhsscom@mcmaster.ca">bhsscom@mcmaster.ca</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CONTACT FORM -->
+  <div class="section-block">
+    <div class="section-header">
+      <h2>Send a Message</h2>
+      <p>Prefer to write it out? Fill out the form below and someone from the BHSS will get back to you.</p>
+    </div>
+
+    <div class="contact-layout">
+      <!-- Form -->
+      <div class="contact-form-card">
+        <h3>Send a Message</h3>
+        <div id="contactFormWrap">
+          <div class="form-row">
+            <div class="form-group">
+              <label>First Name *</label>
+              <input type="text" id="cf-firstname" placeholder="Your first name" />
+            </div>
+            <div class="form-group">
+              <label>Last Name *</label>
+              <input type="text" id="cf-lastname" placeholder="Your last name" />
+            </div>
+          </div>
+          <div class="form-group">
+            <label>Email Address *</label>
+            <input type="email" id="cf-email" placeholder="you@example.com" />
+          </div>
+          <div class="form-group">
+            <label>Subject *</label>
+            <select id="cf-subject">
+              <option value="">— Select a subject —</option>
+              <option>General Inquiry</option>
+              <option>Committee Information</option>
+              <option>Elections</option>
+              <option>Events &amp; Activities</option>
+              <option>Academic Resources</option>
+              <option>Technical Issue</option>
+              <option>Other</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Message *</label>
+            <textarea id="cf-message" placeholder="Write your message here…"></textarea>
+          </div>
+          <div class="form-error-msg" id="cf-error"></div>
+          <button class="submit-btn" id="cf-submit" onclick="submitContactForm()">Send Message</button>
+        </div>
+        <div class="form-success" id="contactSuccess">
+          <div class="check">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+          </div>
+          <h3>Message sent!</h3>
+          <p>Thanks for reaching out. A member of the BHSS will get back to you as soon as possible.</p>
+        </div>
+      </div>
+
+      <!-- Info -->
+      <div class="contact-info-card">
+        <h3>Get in Touch</h3>
+        <div class="contact-info-item">
+          <div class="ci-icon">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.6)" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+          </div>
+          <div class="ci-text">
+            <strong>Email</strong>
+            <a href="mailto:bhsscom@mcmaster.ca">bhsscom@mcmaster.ca</a>
+          </div>
+        </div>
+        <div class="contact-info-item">
+          <div class="ci-icon">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.6)" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
+          </div>
+          <div class="ci-text">
+            <strong>Instagram</strong>
+            <a href="https://instagram.com/macbhss" target="_blank">@macbhss</a>
+          </div>
+        </div>
+        <div class="contact-info-item">
+          <div class="ci-icon">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.6)" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+          </div>
+          <div class="ci-text">
+            <strong>Office</strong>
+            <span>MDCL 3308<br>McMaster University<br>1280 Main Street West<br>Hamilton, ON  L8S 4K1</span>
+          </div>
+        </div>
+        <div style="margin-top:24px;padding-top:20px;border-top:1px solid rgba(255,255,255,0.08)">
+          <p style="font-size:0.78rem;color:rgba(255,255,255,0.35);line-height:1.6">For committee-specific questions, please reach out to the relevant coordinator through their committee page.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- FAQ -->
+  <div class="section-block" style="margin-bottom:0">
+    <div class="section-header">
+      <h2>Frequently Asked Questions</h2>
+      <p>Quick answers to some of the questions we hear most often.</p>
+    </div>
+    <div class="faq-list">
+      <details class="faq-item">
+        <summary>How do I join a BHSS committee?<svg class="faq-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg></summary>
+        <div class="faq-answer">Committee member applications typically open at the start of the academic year. Visit the <a href="/committees">Committees page</a> to see which teams are recruiting and how to apply.</div>
+      </details>
+      <details class="faq-item">
+        <summary>How do BHSS elections work?<svg class="faq-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg></summary>
+        <div class="faq-answer">Most coordinator and representative positions are filled through student elections run by the Logistics &amp; Elections Committee, including nominations, campaigning, and voting. Reach out to <a href="mailto:bhssele@mcmaster.ca">bhssele@mcmaster.ca</a> with questions about an upcoming election.</div>
+      </details>
+      <details class="faq-item">
+        <summary>Where can I find academic resources?<svg class="faq-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg></summary>
+        <div class="faq-answer">Check the <a href="/resources">Resources page</a> for study guides and program resources, or the "Academic Resources" link in the site navigation for the shared drive maintained by the Academics Committee.</div>
+      </details>
+      <details class="faq-item">
+        <summary>What are BAGs (BHSS-Affiliated Groups)?<svg class="faq-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg></summary>
+        <div class="faq-answer">BAGs are BHSS-supported, student-run initiatives that offer additional ways to get involved. See the <a href="/bags">BAGs page</a> for the current list of groups.</div>
+      </details>
+      <details class="faq-item">
+        <summary>How do I reach a specific committee?<svg class="faq-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg></summary>
+        <div class="faq-answer">Every committee page lists its coordinators and a dedicated contact email. Find the right one on the <a href="/committees">Committees page</a>, or use the "Who to Contact" section above.</div>
+      </details>
+      <details class="faq-item">
+        <summary>I'm having a technical issue with the website — who do I tell?<svg class="faq-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg></summary>
+        <div class="faq-answer">Email the Communications Committee at <a href="mailto:bhsscom@mcmaster.ca">bhsscom@mcmaster.ca</a>, or use the form above with "Technical Issue" as the subject.</div>
+      </details>
+    </div>
+  </div>
+
+</div><!-- /contact-content -->
+
+<!-- Footer -->
+<footer>
+  <div class="footer-top">
+    <div class="footer-brand">
+      <p class="pre">McMaster</p>
+      <h3>BACHELOR OF HEALTH<br>SCIENCES SOCIETY</h3>
+      <p class="desc">The McMaster Bachelor of Health Sciences Society recognizes that McMaster University sits on the traditional territories of the Haudenosaunee Confederacy and the Anishinaabe Nations, which is recognized by the "Dish With One Spoon" wampum agreement. <a href="#">Click here to learn more.</a></p>
+    </div>
+    <div class="footer-col">
+      <h4>Legal</h4>
+      <a href="#">Terms of Use</a><br>
+      <a href="#">Privacy Policy</a>
+    </div>
+    <div class="footer-col">
+      <h4>Office</h4>
+      <address>MDCL 3308, McMaster University<br>1280 Main Street West<br>Hamilton, ON  L8S 4K1</address>
+    </div>
+    <div class="footer-col">
+      <h4>Contact</h4>
+      <p>The Bachelors of Health Science Society's Website is designed and developed by the BHSS Communications Committee. If you have any questions, please reach out to <a href="mailto:bhsscom@mcmaster.ca" style="color:rgba(255,255,255,0.55);text-decoration:underline">bhsscom@mcmaster.ca</a> or <a href="https://instagram.com/macbhss" style="color:rgba(255,255,255,0.55);text-decoration:underline">@macbhss</a>.</p>
+    </div>
+    <div class="footer-col">
+      <h4>Other</h4>
+      <a href="/admin">Admin</a>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span>© 2026 McMaster Bachelor of Health Sciences Society</span>
+    <span>Built by BHSS Communications Committee</span>
+  </div>
+</footer>
+
+<script src="mobile-nav.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="supabase-client.js"></script>
+<script>
+async function submitContactForm() {
+  const firstName = document.getElementById('cf-firstname').value.trim();
+  const lastName  = document.getElementById('cf-lastname').value.trim();
+  const email     = document.getElementById('cf-email').value.trim();
+  const subject   = document.getElementById('cf-subject').value;
+  const message   = document.getElementById('cf-message').value.trim();
+  const errEl     = document.getElementById('cf-error');
+  const btn       = document.getElementById('cf-submit');
+
+  errEl.style.display = 'none';
+
+  if (!firstName || !lastName) { errEl.textContent = 'Please enter your name.'; errEl.style.display = 'block'; return; }
+  if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { errEl.textContent = 'Please enter a valid email address.'; errEl.style.display = 'block'; return; }
+  if (!subject) { errEl.textContent = 'Please select a subject.'; errEl.style.display = 'block'; return; }
+  if (!message) { errEl.textContent = 'Please write a message.'; errEl.style.display = 'block'; return; }
+
+  btn.textContent = 'Sending…';
+  btn.disabled = true;
+
+  const { error } = await window.db.from('contact_submissions').insert({
+    name: firstName + ' ' + lastName,
+    email,
+    subject,
+    message,
+    status: 'unread'
+  });
+
+  if (error) {
+    errEl.textContent = 'Something went wrong. Please try emailing us directly at bhsscom@mcmaster.ca.';
+    errEl.style.display = 'block';
+    btn.textContent = 'Send Message';
+    btn.disabled = false;
+    return;
+  }
+
+  document.getElementById('contactFormWrap').style.display = 'none';
+  document.getElementById('contactSuccess').style.display = 'block';
+}
+</script>
+</body>
+</html>
