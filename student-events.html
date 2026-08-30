@@ -120,7 +120,7 @@
     .se-status { display: flex; align-items: center; gap: 12px; font-size: 0.83rem; color: var(--mid); }
     .se-status-pill { display: inline-flex; align-items: center; gap: 6px; padding: 5px 12px; border-radius: 100px; font-size: 0.78rem; font-weight: 600; }
     .se-status-pill.signed-in { background: rgba(21,128,61,0.1); color: var(--green); }
-    .se-status-pill.individual { background: var(--blue-pale); color: var(--blue); }
+    .se-status-pill.individual { background: var(--red); color: var(--white); }
     .se-status-pill svg { display: block; }
     .se-switch-link { font-size: 0.78rem; color: var(--mid); text-decoration: underline; cursor: pointer; background: none; border: none; font-family: 'Inter', sans-serif; }
     .se-switch-link:hover { color: var(--text); }
@@ -139,12 +139,12 @@
     .se-link-rows { display: flex; flex-direction: column; gap: 20px; }
     .se-link-row {
       background: var(--white); border: 1px solid var(--border); border-left: 6px solid var(--dark);
-      border-radius: 4px; display: flex; align-items: center; gap: 24px; padding: 24px 28px;
+      display: flex; align-items: center; gap: 24px; padding: 24px 28px;
       transition: box-shadow 0.15s, transform 0.15s;
     }
     .se-link-row:hover { box-shadow: 0 10px 28px rgba(0,0,0,0.06); transform: translateY(-2px); }
     .se-link-row.c-eohss  { border-left-color: #181718; }
-    .se-link-row.c-room   { border-left-color: #1d4fa1; }
+    .se-link-row.c-room   { border-left-color: #181718; }
     .se-link-row.c-reimb  { border-left-color: #46B749; }
     .se-link-row.c-guide  { border-left-color: #6A2C8F; }
     .se-link-icon {
@@ -341,7 +341,7 @@
     <div class="se-view active" id="view-home">
       <div class="se-hero">
         <h2>Plan Your Event</h2>
-        <p>Everything you need to plan an event with the BHSS — risk management, room bookings, reimbursements, and accessibility guidelines.</p>
+        <p>Want to plan an event for your group? Here's everything you need to plan an event with the BHSS — risk management, room bookings, reimbursements, and accessibility guidelines. Please ensure that all information you provide is accurate and complete. Incomplete submissions may be delayed or rejected.</p>
       </div>
       <div class="se-link-rows">
         <div class="se-link-row c-eohss">
@@ -350,7 +350,7 @@
           </div>
           <div class="se-link-body">
             <h3>EOHSS Forms</h3>
-            <p>Risk assessment and safety review for your event.</p>
+            <p>In order to run any event affiliated with McMaster University, you must first submit your event for approval by Environmental & Occupational Health Support Services (EOHSS). As a BHSS-Affiliated Group, the BHSS will submit this form on your behalf. You should fill in this form for ANY event you are hosting, including low-risk events (e.g., official club meetings) and events off-campus.</p>
           </div>
           <button class="se-go-btn" onclick="showView('eohss')">Go there</button>
         </div>
@@ -360,7 +360,7 @@
           </div>
           <div class="se-link-body">
             <h3>Request a Room Booking</h3>
-            <p>Request a space on campus for your event.</p>
+            <p>Request a space on campus for your event. You may be responsible for booking your own space for events. In order to ensure that you receive approval and have enough time to book a room on campus, we recommend starting this process at least 10 business days in advance of your planned date. </p>
           </div>
           <button class="se-go-btn" onclick="showView('room_booking')">Go there</button>
         </div>
@@ -370,7 +370,7 @@
           </div>
           <div class="se-link-body">
             <h3>Request a Reimbursement</h3>
-            <p>Submit a reimbursement request for approved expenses.</p>
+            <p>Submit a reimbursement request for approved expenses. </p>
           </div>
           <button class="se-go-btn" onclick="showView('reimbursement')">Go there</button>
         </div>
