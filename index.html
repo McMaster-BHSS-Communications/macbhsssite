@@ -289,13 +289,16 @@
       background: var(--blue); position: relative;
       overflow: hidden; padding: 52px 60px 56px;
     }
-    .ig-sq {
-      position: absolute; border: 3px solid rgba(255,255,255,0.1);
-      border-radius: 6px;
+    .ig-section .ig-decor {
+      position: absolute; pointer-events: none; user-select: none; opacity: 1;
+      animation: floatDecor 7s ease-in-out infinite alternate;
+      animation-fill-mode: both;
     }
-    .ig-sq1 { width: 50px; height: 50px; top: 22px; left: 28px; transform: rotate(12deg); }
-    .ig-sq2 { width: 32px; height: 32px; bottom: 28px; right: 64px; transform: rotate(-18deg); }
-    .ig-sq3 { width: 20px; height: 20px; top: 36px; right: 200px; transform: rotate(6deg); }
+    .ig-decor1 { width: 90px;  top: 10px;   left: 36px;   --r: -8deg; }
+    .ig-decor2 { width: 66px;  bottom: 12px; right: 72px;  --r: 18deg; }
+    .ig-decor3 { width: 50px;  top: 20px;   right: 160px; --r: -4deg; }
+    .ig-decor4 { width: 78px;  bottom: 14px; left: 130px;  --r: 10deg; }
+    .ig-decor5 { width: 42px;  top: 44%;    right: 48px;  --r: 24deg; }
     .ig-header { text-align: center; margin-bottom: 32px; position: relative; z-index: 1; }
     .ig-header p {
       font-size: 0.78rem; font-weight: 500; letter-spacing: 0.1em;
@@ -306,41 +309,8 @@
       font-size: 2.2rem; font-weight: 100; color: var(--blue-pale);
     }
     .ig-header h2 span { color: var(--white); font-weight: 900; }
-    .ig-carousel-wrap { position: relative; max-width: 960px; margin: 0 auto; z-index: 1; }
-    .ig-carousel {
-      display: flex; gap: 16px;
-      overflow-x: auto; scroll-snap-type: x mandatory;
-      scrollbar-width: none; padding-bottom: 4px;
-    }
-    .ig-carousel::-webkit-scrollbar { display: none; }
-    .ig-post {
-      flex: 0 0 calc(50% - 8px); scroll-snap-align: start;
-      border-radius: 12px; overflow: hidden;
-      background: rgba(255,255,255,0.08); position: relative; aspect-ratio: 4/3;
-    }
-    .ig-post img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform 0.35s; }
-    .ig-post:hover img { transform: scale(1.04); }
-    .ig-post-overlay {
-      position: absolute; inset: 0;
-      background: linear-gradient(to top, rgba(0,0,0,0.55) 0%, transparent 50%);
-      display: flex; align-items: flex-end; padding: 14px;
-    }
-    .ig-post-cap {
-      font-size: 0.75rem; color: rgba(255,255,255,0.85);
-      line-height: 1.4; font-weight: 400;
-      display: -webkit-box; -webkit-line-clamp: 2;
-      -webkit-box-orient: vertical; overflow: hidden;
-    }
-    .ig-next-btn {
-      position: absolute; right: -20px; top: 50%; transform: translateY(-50%);
-      width: 42px; height: 42px; border-radius: 50%;
-      background: var(--white); color: var(--blue);
-      border: none; cursor: pointer; font-size: 1rem;
-      display: flex; align-items: center; justify-content: center;
-      box-shadow: 0 4px 14px rgba(0,0,0,0.2);
-      transition: transform 0.2s, box-shadow 0.2s; z-index: 10;
-    }
-    .ig-next-btn:hover { transform: translateY(-50%) scale(1.08); box-shadow: 0 6px 20px rgba(0,0,0,0.3); }
+    .ig-widget-wrap { position: relative; max-width: 960px; margin: 0 auto; z-index: 1; border-radius: 12px; overflow: hidden; }
+    .ig-widget-wrap iframe { display: block; width: 100%; max-width: 960px; }
     .ig-footer { text-align: center; margin-top: 28px; position: relative; z-index: 1; }
     .ig-footer a {
       display: inline-flex; align-items: center; gap: 8px;
@@ -375,7 +345,7 @@
       .nav-links, .nav-resources { display: none; }
       .discover-grid { grid-template-columns: 1fr; padding: 28px 20px 0; }
       .discover-banner, .ig-section { padding: 36px 24px 44px; }
-      .ig-post { flex: 0 0 85%; }
+      .ig-decor3, .ig-decor5 { display: none; }
       footer { padding: 36px 24px 28px; }
       .footer-top { grid-template-columns: 1fr; gap: 24px; }
       .footer-bottom { flex-direction: column; gap: 6px; text-align: center; }
@@ -507,14 +477,18 @@
 
 <!-- Instagram -->
 <div class="ig-section">
-  <div class="ig-sq ig-sq1"></div><div class="ig-sq ig-sq2"></div><div class="ig-sq ig-sq3"></div>
+  <img class="ig-decor ig-decor1" src="assets/svg/decor/sqs1.svg" alt="" aria-hidden="true">
+  <img class="ig-decor ig-decor2" src="assets/svg/decor/sqs3.svg" alt="" aria-hidden="true">
+  <img class="ig-decor ig-decor3" src="assets/svg/decor/sqs5.svg" alt="" aria-hidden="true">
+  <img class="ig-decor ig-decor4" src="assets/svg/decor/sqs7.svg" alt="" aria-hidden="true">
+  <img class="ig-decor ig-decor5" src="assets/svg/decor/sqs2.svg" alt="" aria-hidden="true">
   <div class="ig-header">
     <p>Social</p>
     <h2>Follow us on Instagram <span>@macbhss</span></h2>
   </div>
-  <div class="ig-carousel-wrap">
-    <div class="ig-carousel" id="igCarousel"></div>
-    <button class="ig-next-btn" id="igNextBtn">&#8594;</button>
+  <div class="ig-widget-wrap">
+    <!-- SnapWidget -->
+    <iframe src="https://snapwidget.com/embed/1129745" class="snapwidget-widget" allowtransparency="true" frameborder="0" scrolling="no" style="border:none; overflow:hidden; width:100%; height:240px" title="Posts from Instagram"></iframe>
   </div>
   <div class="ig-footer">
     <a href="https://www.instagram.com/macbhss/" target="_blank">
@@ -580,26 +554,9 @@ document.getElementById('heroPrev').addEventListener('click', () => { go(cur - 1
 document.getElementById('heroNext').addEventListener('click', () => { go(cur + 1); resetAuto(); });
 startAuto();
 
-// ── INSTAGRAM ──
-const igPosts = [
-  { src: "https://scontent-den2-1.cdninstagram.com/v/t51.82787-15/657151728_18194967691359211_936133105952920312_n.jpg?stp=dst-jpg_e35_tt6&_nc_cat=105&ccb=7-5&_nc_sid=18de74&_nc_ohc=j69fV3QN01IQ7kNvwHBqMe8&_nc_ht=scontent-den2-1.cdninstagram.com&oh=00_Afz1NlOqbx5nDIHcG70oEVs7SqIkqU1aFAjx_IbB01FI_g&oe=69CCEF1D", cap: "Biannual Formal Bylaw Vote — Voting closes March 31, 2026" },
-  { src: "https://scontent-den2-1.cdninstagram.com/v/t51.82787-15/658804541_18194933614359211_7794779238763253729_n.heic?stp=dst-jpg_e35_tt6&_nc_cat=107&ccb=7-5&_nc_sid=18de74&_nc_ohc=ozKO6WQJfDgQ7kNvwFS6Pyq&_nc_ht=scontent-den2-1.cdninstagram.com&oh=00_Afw5j7JDFMkW4emMVcHs1pthVa37gvb1jCxSM54t2MNd8g&oe=69CD25A2", cap: "Meet the new BHSS website, redesigned and refined." },
-  { src: "https://scontent-den2-1.cdninstagram.com/v/t51.82787-15/656908108_18194899936359211_9034560994697151529_n.jpg?stp=dst-jpg_e35_tt6&_nc_cat=100&ccb=7-5&_nc_sid=18de74&_nc_ohc=UTE-TjfJZKoQ7kNvwHf2c1k&_nc_ht=scontent-den2-1.cdninstagram.com&oh=00_AfwDIZ4dRjKS0DE5FssH20JRzSqAje9LTA3U7iNzwdn80g&oe=69CCEFA5", cap: "Voting is now open for the BHSS Spring 2026 Elections." },
-  { src: "https://scontent-den2-1.cdninstagram.com/v/t51.82787-15/656294606_18194516002359211_1813873877978743512_n.jpg?stp=dst-jpg_e35_tt6&_nc_cat=107&ccb=7-5&_nc_sid=18de74&_nc_ohc=bh5XBwZkYfAQ7kNvwGb_YUB&_nc_ht=scontent-den2-1.cdninstagram.com&oh=00_AfwBTLSs_4hOSnFTcFVaQZJDj9E9bGZXx6-yjgMAjDJzCw&oe=69CD043C", cap: "Hot Breakfast Alert! Pancakes & turkey bacon — Wednesday, March 25th." },
-  { src: "https://scontent-den2-1.cdninstagram.com/v/t51.82787-15/655229276_18194409295359211_8720412492131484524_n.jpg?stp=dst-jpg_e35_tt6&_nc_cat=102&ccb=7-5&_nc_sid=18de74&_nc_ohc=NXEuUP2YWCYQ7kNvwGZjQp1&_nc_ht=scontent-den2-1.cdninstagram.com&oh=00_Afz5jZdgkMsyPOa96TyX11SGVJLI72u810PKKttRsDo4XQ&oe=69CCFB15", cap: "BHSS EDI is hosting our first ever culture day!" },
-  { src: "https://scontent-den2-1.cdninstagram.com/v/t51.82787-15/652369985_18193250293359211_2181868621593300273_n.jpg?stp=dst-jpg_e35_tt6&_nc_cat=108&ccb=7-5&_nc_sid=18de74&_nc_ohc=QV8GbNV67Z4Q7kNvwFHLrSK&_nc_ht=scontent-den2-1.cdninstagram.com&oh=00_AfygJlsxlqU6Oow7aYfy9ndkbXuae_h5Vpzyg1pTcQGvyw&oe=69CCFE18", cap: "BHSS Finance presents Casino Night!" },
-];
-const igCarousel = document.getElementById('igCarousel');
-igPosts.forEach(({ src, cap }) => {
-  const el = document.createElement('div');
-  el.className = 'ig-post';
-  el.innerHTML = `<img src="${src}" alt="${cap}" loading="lazy" onerror="this.closest('.ig-post').style.display='none'" /><div class="ig-post-overlay"><p class="ig-post-cap">${cap}</p></div>`;
-  igCarousel.appendChild(el);
-});
-document.getElementById('igNextBtn').addEventListener('click', () => {
-  const w = (igCarousel.querySelector('.ig-post')?.offsetWidth || 400) + 16;
-  igCarousel.scrollBy({ left: w * 2, behavior: 'smooth' });
-});
+// Instagram feed is now powered by the SnapWidget embed in the HTML above —
+// no JS needed here. (Previously this hardcoded a set of Instagram CDN image
+// URLs, which always expire after a few months — see CLAUDE.md.)
 
 </script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
