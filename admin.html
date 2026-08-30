@@ -1181,6 +1181,7 @@
           <button class="btn-secondary bag-sub-filter-form" data-val="eohss" onclick="setBagSubmissionFormFilter('eohss')" style="font-size:0.78rem;padding:7px 14px">EOHSS</button>
           <button class="btn-secondary bag-sub-filter-form" data-val="room_booking" onclick="setBagSubmissionFormFilter('room_booking')" style="font-size:0.78rem;padding:7px 14px">Room Booking</button>
           <button class="btn-secondary bag-sub-filter-form" data-val="reimbursement" onclick="setBagSubmissionFormFilter('reimbursement')" style="font-size:0.78rem;padding:7px 14px">Reimbursement</button>
+          <button class="btn-secondary bag-sub-filter-form" data-val="storage_request" onclick="setBagSubmissionFormFilter('storage_request')" style="font-size:0.78rem;padding:7px 14px">Storage Request</button>
         </div>
         <div style="display:flex;gap:8px;align-items:center">
           <span style="font-size:0.72rem;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--muted)">Submitted by:</span>
@@ -2748,7 +2749,7 @@ async function toggleBagCodeActive(id, active) {
 
 // ── Form Builder ──
 let _bagForms = {};
-const BAG_FORM_IDS = ['eohss', 'room_booking', 'reimbursement'];
+const BAG_FORM_IDS = ['eohss', 'room_booking', 'reimbursement', 'storage_request'];
 const BAG_FIELD_TYPES = ['text', 'textarea', 'select', 'date', 'number', 'checkbox'];
 
 async function loadBagForms() {
@@ -2881,7 +2882,7 @@ function setBagSubmissionTypeFilter(val) {
   renderBagSubmissionsList();
 }
 
-const BAG_FORM_LABELS = { eohss: 'EOHSS', room_booking: 'Room Booking', reimbursement: 'Reimbursement' };
+const BAG_FORM_LABELS = { eohss: 'EOHSS', room_booking: 'Room Booking', reimbursement: 'Reimbursement', storage_request: 'Storage Request' };
 
 function renderBagSubmissionsList() {
   const el = document.getElementById('bagSubmissionsList');

@@ -143,10 +143,13 @@
       transition: box-shadow 0.15s, transform 0.15s;
     }
     .se-link-row:hover { box-shadow: 0 10px 28px rgba(0,0,0,0.06); transform: translateY(-2px); }
-    .se-link-row.c-eohss  { border-left-color: #181718; }
-    .se-link-row.c-room   { border-left-color: #181718; }
-    .se-link-row.c-reimb  { border-left-color: #46B749; }
-    .se-link-row.c-guide  { border-left-color: #6A2C8F; }
+    .se-link-row.c-eohss   { border-left-color: #181718; }
+    .se-link-row.c-room    { border-left-color: #181718; }
+    .se-link-row.c-reimb   { border-left-color: #46B749; }
+    .se-link-row.c-storage { border-left-color: #1d4fa1; }
+    .se-link-row.c-mysubs  { border-left-color: #13A89E; }
+    .se-link-row.c-guide   { border-left-color: #6A2C8F; }
+    .se-link-row.c-brand   { border-left-color: #7a003c; }
     .se-link-icon {
       width: 56px; height: 56px; background: var(--off); border-radius: 12px; flex-shrink: 0;
       display: flex; align-items: center; justify-content: center; color: var(--mid);
@@ -189,6 +192,41 @@
     .se-unavailable h3 { font-family: 'Familjen Grotesk', sans-serif; font-size: 1.05rem; font-weight: 600; color: var(--text); margin-bottom: 8px; }
     .se-unavailable p { font-size: 0.86rem; color: var(--mid); line-height: 1.65; }
     .se-unavailable a { color: var(--blue); }
+
+    /* ─── INFO BLOCK (neutral, e.g. "no submission history for individuals") ─── */
+    .se-info-block {
+      background: var(--white); border: 1px solid var(--border); border-radius: 16px; padding: 30px 36px; max-width: 640px;
+      display: flex; gap: 18px; align-items: flex-start;
+    }
+    .se-info-icon { width: 40px; height: 40px; background: var(--off); border-radius: 10px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; color: var(--mid); }
+    .se-info-block h3 { font-family: 'Familjen Grotesk', sans-serif; font-size: 1.05rem; font-weight: 600; color: var(--text); margin-bottom: 8px; }
+    .se-info-block p { font-size: 0.86rem; color: var(--mid); line-height: 1.65; }
+
+    /* ─── MY SUBMISSIONS ─── */
+    .sub-card { background: var(--white); border: 1px solid var(--border); border-radius: 12px; padding: 20px 24px; margin-bottom: 14px; }
+    .sub-card-header { display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
+    .sub-card-title { font-family: 'Familjen Grotesk', sans-serif; font-size: 1rem; font-weight: 600; color: var(--text); }
+    .sub-card-meta { font-size: 0.78rem; color: var(--muted); margin-top: 3px; }
+    .sub-card-actions { display: flex; gap: 8px; }
+    .sub-btn {
+      padding: 7px 16px; border-radius: 6px; font-size: 0.78rem; font-weight: 600; cursor: pointer;
+      font-family: 'Inter', sans-serif; border: 1px solid var(--border); background: var(--white); color: var(--text);
+      transition: background 0.15s;
+    }
+    .sub-btn:hover { background: var(--off); }
+    .sub-btn.primary { background: var(--blue); color: var(--white); border-color: var(--blue); }
+    .sub-btn.primary:hover { background: var(--blue-mid); }
+    .sub-edit-area { margin-top: 18px; padding-top: 18px; border-top: 1px solid var(--border); display: none; }
+    .sub-edit-area.open { display: block; }
+    .sub-edit-field { margin-bottom: 14px; }
+    .sub-edit-field label { display: block; font-size: 0.78rem; font-weight: 600; color: var(--mid); margin-bottom: 5px; }
+    .sub-edit-field input {
+      width: 100%; padding: 9px 12px; border: 1px solid var(--border); border-radius: 6px;
+      font-family: 'Inter', sans-serif; font-size: 0.86rem; color: var(--text); outline: none;
+    }
+    .sub-edit-field input:focus { border-color: var(--blue); box-shadow: 0 0 0 3px rgba(29,79,161,0.1); }
+    .sub-edit-error { font-size: 0.78rem; color: var(--red); margin-top: 10px; display: none; }
+    .sub-status-pill { display: inline-block; padding: 2px 10px; border-radius: 100px; font-size: 0.68rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; background: var(--blue-pale); color: var(--blue); }
 
     /* ─── GUIDELINES (static info) ─── */
     .se-article { margin-bottom: 36px; }
@@ -374,6 +412,26 @@
           </div>
           <button class="se-go-btn" onclick="showView('reimbursement')">Go there</button>
         </div>
+        <div class="se-link-row c-storage">
+          <div class="se-link-icon">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 8V21H3V8"/><path d="M1 3h22v5H1z"/><line x1="10" y1="12" x2="14" y2="12"/></svg>
+          </div>
+          <div class="se-link-body">
+            <h3>Request Storage Space</h3>
+            <p>Request storage space for BAG or committee materials. Only available to signed-in BAGs and committees.</p>
+          </div>
+          <button class="se-go-btn" onclick="showView('storage_request')">Go there</button>
+        </div>
+        <div class="se-link-row c-mysubs">
+          <div class="se-link-icon">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+          </div>
+          <div class="se-link-body">
+            <h3>My Submissions</h3>
+            <p>View and edit the forms you've submitted this year.</p>
+          </div>
+          <button class="se-go-btn" onclick="showView('my-submissions')">Go there</button>
+        </div>
         <div class="se-link-row c-guide">
           <div class="se-link-icon">
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
@@ -383,6 +441,16 @@
             <p>Check EDI's guidelines to make your event accessible and safe for all attendees.</p>
           </div>
           <button class="se-go-btn" onclick="showView('guidelines')">Go there</button>
+        </div>
+        <div class="se-link-row c-brand">
+          <div class="se-link-icon">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 2l2.09 6.26L20 9l-5 4.14L16.18 20 12 16.5 7.82 20 9 13.14 4 9l5.91-.74L12 2z"/></svg>
+          </div>
+          <div class="se-link-body">
+            <h3>Brand and Name Use Guidelines</h3>
+            <p>How to properly use the BHSS name, logo, and brand assets for your event or materials.</p>
+          </div>
+          <button class="se-go-btn" onclick="showView('brand-guidelines')">Go there</button>
         </div>
       </div>
     </div>
@@ -412,6 +480,28 @@
         Back to Student Events
       </a>
       <div id="formHost-reimbursement"></div>
+    </div>
+
+    <!-- STORAGE REQUEST FORM -->
+    <div class="se-view" id="view-storage_request">
+      <a class="se-back-link" onclick="showView('home')" href="#home">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+        Back to Student Events
+      </a>
+      <div id="formHost-storage_request"></div>
+    </div>
+
+    <!-- MY SUBMISSIONS -->
+    <div class="se-view" id="view-my-submissions">
+      <a class="se-back-link" onclick="showView('home')" href="#home">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+        Back to Student Events
+      </a>
+      <div class="se-hero">
+        <h2>My Submissions</h2>
+        <p>Review and edit the forms you've submitted this year.</p>
+      </div>
+      <div id="mySubmissionsHost"></div>
     </div>
 
     <!-- GUIDELINES -->
@@ -445,6 +535,34 @@
       <div class="se-article">
         <h3>Questions?</h3>
         <p>Reach out through the <a href="/contact" style="color:var(--blue)">Contact page</a> if you're unsure whether your event needs additional approval.</p>
+      </div>
+    </div>
+
+    <!-- BRAND AND NAME USE GUIDELINES -->
+    <div class="se-view" id="view-brand-guidelines">
+      <a class="se-back-link" onclick="showView('home')" href="#home">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+        Back to Student Events
+      </a>
+      <div class="se-hero">
+        <h2>Brand and Name Use Guidelines</h2>
+        <p>How to properly represent the BHSS name, logo, and brand when planning an event or making materials.</p>
+      </div>
+      <div class="se-article">
+        <h3>Using the BHSS Name</h3>
+        <p>[Placeholder] Always refer to the society by its full name ("Bachelor of Health Sciences Society" or "BHSS") on official materials. Only BAGs and committees in good standing may describe an event as "BHSS-affiliated" or "in partnership with the BHSS."</p>
+      </div>
+      <div class="se-article">
+        <h3>Logo Use</h3>
+        <p>[Placeholder] Use only the official BHSS logo files provided by the Communications Committee — don't recreate, recolour, or distort the logo. Maintain clear space around it and avoid placing it on busy backgrounds.</p>
+      </div>
+      <div class="se-article">
+        <h3>Approval for External Materials</h3>
+        <p>[Placeholder] Any posters, merchandise, or social media posts that use the BHSS name or logo and are intended for distribution outside your group should be reviewed by the Communications Committee before publishing.</p>
+      </div>
+      <div class="se-article">
+        <h3>Questions?</h3>
+        <p>Reach out to the Communications Committee through the <a href="/contact" style="color:var(--blue)">Contact page</a> for logo files or brand approval.</p>
       </div>
     </div>
 
@@ -578,11 +696,14 @@ function enterDashboard() {
   showView('home');
 }
 
+const GATED_FORM_IDS = ['reimbursement', 'storage_request'];
+
 function showView(name) {
   document.querySelectorAll('.se-view').forEach(v => v.classList.remove('active'));
   document.getElementById('view-' + name).classList.add('active');
   history.replaceState(null, '', name === 'home' ? location.pathname : '#' + name);
-  if (['eohss', 'room_booking', 'reimbursement'].includes(name)) renderForm(name);
+  if (['eohss', 'room_booking', 'reimbursement', 'storage_request'].includes(name)) renderForm(name);
+  if (name === 'my-submissions') loadMySubmissions();
 }
 
 // ── Dynamic form rendering ──
@@ -608,15 +729,16 @@ function renderForm(formId) {
   const host = document.getElementById('formHost-' + formId);
   const session = getSeSession();
 
-  // Reimbursement is blocked unless signed in with a valid group code.
-  if (formId === 'reimbursement' && (!session || session.mode !== 'bag')) {
+  // Reimbursement and Storage Request are locked to signed-in BAGs/committees.
+  if (GATED_FORM_IDS.includes(formId) && (!session || session.mode !== 'bag')) {
+    const label = formId === 'storage_request' ? 'Storage requests' : 'Reimbursement submissions';
     host.innerHTML = `
       <div class="se-unavailable">
         <div class="se-unavailable-icon">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
         </div>
         <div>
-          <h3>Reimbursement submissions are unavailable</h3>
+          <h3>${label} are unavailable</h3>
           <p>This service is only available to signed-in BAGs and committees. Use the "Switch / Sign out" link above to sign in with an authorization code, or <a href="/contact">contact us</a> if you believe this is an error.</p>
         </div>
       </div>`;
@@ -694,6 +816,114 @@ async function submitSeForm(formId) {
 
   document.getElementById('sf-card-' + formId).style.display = 'none';
   document.getElementById('sf-success-' + formId).style.display = 'block';
+}
+
+// ── My Submissions ──
+let mySubmissionsCache = [];
+
+async function loadMySubmissions() {
+  const host = document.getElementById('mySubmissionsHost');
+  const session = getSeSession();
+
+  if (!session || session.mode !== 'bag') {
+    host.innerHTML = `
+      <div class="se-info-block">
+        <div class="se-info-icon">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+        </div>
+        <div>
+          <h3>No submission history available</h3>
+          <p>Previous submissions can only be reviewed or edited when you're signed in with a BAG or committee authorization code. Submissions made without a code can't be reviewed or recalled.</p>
+        </div>
+      </div>`;
+    return;
+  }
+
+  host.innerHTML = '<p style="color:var(--muted)">Loading…</p>';
+
+  const { data, error } = await window.db.rpc('get_my_bag_submissions', { p_code: session.code });
+
+  if (error) {
+    host.innerHTML = '<p style="color:var(--red)">Couldn\'t load your submissions. Please try again.</p>';
+    return;
+  }
+
+  mySubmissionsCache = data || [];
+
+  if (!mySubmissionsCache.length) {
+    host.innerHTML = '<p style="color:var(--muted)">You haven\'t submitted any forms yet.</p>';
+    return;
+  }
+
+  host.innerHTML = mySubmissionsCache.map(renderSubCard).join('');
+}
+
+function renderSubCard(s) {
+  const d = new Date(s.submitted_at);
+  const dateStr = d.toLocaleDateString('en-CA', { month: 'short', day: 'numeric', year: 'numeric' });
+  const label = (seForms[s.form_id] && seForms[s.form_id].title) || s.form_id;
+  return `
+    <div class="sub-card" id="sub-${s.id}">
+      <div class="sub-card-header">
+        <div>
+          <div class="sub-card-title">${label}</div>
+          <div class="sub-card-meta">Submitted ${dateStr} · <span class="sub-status-pill">${s.status}</span></div>
+        </div>
+        <div class="sub-card-actions">
+          <button class="sub-btn" onclick="toggleSubEdit('${s.id}')">Edit</button>
+        </div>
+      </div>
+      <div class="sub-edit-area" id="sub-edit-${s.id}">
+        ${(s.answers || []).map((a, i) => `
+          <div class="sub-edit-field">
+            <label>${a.label}</label>
+            <input type="text" id="sub-field-${s.id}-${i}" value="${(a.value ?? '').toString().replace(/"/g, '&quot;')}" />
+          </div>`).join('')}
+        <div class="sub-edit-error" id="sub-error-${s.id}"></div>
+        <div style="display:flex;gap:8px">
+          <button class="sub-btn primary" onclick="saveSubEdit('${s.id}')">Save Changes</button>
+          <button class="sub-btn" onclick="toggleSubEdit('${s.id}')">Cancel</button>
+        </div>
+      </div>
+    </div>`;
+}
+
+function toggleSubEdit(id) {
+  document.getElementById('sub-edit-' + id).classList.toggle('open');
+}
+
+async function saveSubEdit(id) {
+  const session = getSeSession();
+  const sub = mySubmissionsCache.find(s => s.id === id);
+  if (!sub || !session) return;
+
+  const errEl = document.getElementById('sub-error-' + id);
+  errEl.style.color = '';
+  errEl.style.display = 'none';
+
+  const updatedAnswers = (sub.answers || []).map((a, i) => ({
+    label: a.label,
+    value: document.getElementById(`sub-field-${id}-${i}`).value.trim()
+  }));
+
+  const { error } = await window.db.rpc('update_my_bag_submission', {
+    p_code: session.code, p_submission_id: id, p_answers: updatedAnswers
+  });
+
+  if (error) {
+    errEl.textContent = 'Something went wrong saving your changes. Please try again.';
+    errEl.style.display = 'block';
+    return;
+  }
+
+  sub.answers = updatedAnswers;
+  errEl.style.color = 'var(--green)';
+  errEl.textContent = 'Saved!';
+  errEl.style.display = 'block';
+  setTimeout(() => {
+    toggleSubEdit(id);
+    errEl.style.display = 'none';
+  }, 900);
 }
 
 // ── Init ──

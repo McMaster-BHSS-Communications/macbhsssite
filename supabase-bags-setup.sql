@@ -7,14 +7,22 @@
 --   • public.bag_auth_codes        — yearly authorization codes (admin-only table)
 --   • public.validate_bag_auth_code(text) — RPC anon calls to check a code
 --     without ever exposing the codes table itself
---   • public.bhss_forms            — editable field definitions for the 3 forms
+--   • public.bhss_forms            — editable field definitions for the 4 forms
 --   • public.bhss_form_submissions — student submissions for those forms
+--   • public.get_my_bag_submissions(text) / update_my_bag_submission(...) — RPCs
+--     that let a student with a valid code view/edit only their own submissions,
+--     without ever granting anon direct SELECT/UPDATE on the submissions table
 --   • Storage bucket policies for "bag-logos"
 --
 -- MANUAL STEP REQUIRED: before this file's storage policies do anything useful,
 -- create a bucket named "bag-logos" in Dashboard → Storage → New bucket, and
 -- mark it Public (same as the existing "product-images" bucket), so that
 -- getPublicUrl() links resolve for visitors.
+--
+-- Safe to re-run in full — every table uses "if not exists", every policy is
+-- dropped and recreated, every function is dropped and recreated, and the form
+-- seed rows use "on conflict do nothing" so re-running never overwrites content
+-- an admin has already edited through the Form Builder.
 -- ════════════════════════════════════════════════════════════════════════════
 
 
@@ -137,6 +145,18 @@ insert into public.bhss_forms (id, title, description, fields) values
     {"id":"payment_method","label":"Original Payment Method","type":"select","options":["Personal card/cash","Group card","Other"],"required":true},
     {"id":"receipt_notes","label":"Receipt Notes","type":"textarea","required":false}
   ]'::jsonb
+),
+(
+  'storage_request',
+  'Request Storage Space',
+  'Request storage space for BAG or committee materials. Only available to signed-in BAGs and committees.',
+  '[
+    {"id":"item_description","label":"What do you need to store?","type":"textarea","required":true},
+    {"id":"estimated_space","label":"Estimated Space Needed (e.g. 1 shelf, 2 boxes)","type":"text","required":true},
+    {"id":"start_date","label":"Storage Start Date","type":"date","required":true},
+    {"id":"end_date","label":"Storage End Date","type":"date","required":true},
+    {"id":"additional_notes","label":"Additional Notes","type":"textarea","required":false}
+  ]'::jsonb
 )
 on conflict (id) do nothing;
 
@@ -168,6 +188,48 @@ create policy "public_insert" on public.bhss_form_submissions for insert to publ
 create policy "admin_select"  on public.bhss_form_submissions for select to authenticated using (true);
 create policy "admin_update"  on public.bhss_form_submissions for update to authenticated using (true) with check (true);
 create policy "admin_delete"  on public.bhss_form_submissions for delete to authenticated using (true);
+
+
+-- ─────────────────────────────────────────────────────────────────────────────
+-- 4b. "MY SUBMISSIONS" — students can view/edit only submissions tied to the
+--     authorization code they're signed in with. anon still has NO direct
+--     select/update on bhss_form_submissions — these RPCs are the only path,
+--     and both re-check the code server-side before returning/touching a row.
+--     (Submissions made without a code — group_name/auth_code null — have no
+--     key to look them up by later, which is intentional: unauthorized
+--     submissions can't be reviewed or recalled, by design.)
+-- ─────────────────────────────────────────────────────────────────────────────
+drop function if exists public.get_my_bag_submissions(text);
+create function public.get_my_bag_submissions(p_code text)
+returns setof public.bhss_form_submissions
+language sql
+security definer
+set search_path = public
+as $$
+  select * from public.bhss_form_submissions
+  where auth_code = p_code
+  order by submitted_at desc;
+$$;
+grant execute on function public.get_my_bag_submissions(text) to anon, authenticated;
+
+drop function if exists public.update_my_bag_submission(text, text, jsonb);
+create function public.update_my_bag_submission(p_code text, p_submission_id text, p_answers jsonb)
+returns void
+language plpgsql
+security definer
+set search_path = public
+as $$
+begin
+  update public.bhss_form_submissions
+  set answers = p_answers
+  where id = p_submission_id and auth_code = p_code;
+
+  if not found then
+    raise exception 'Submission not found, or this code does not match it.';
+  end if;
+end;
+$$;
+grant execute on function public.update_my_bag_submission(text, text, jsonb) to anon, authenticated;
 
 
 -- ─────────────────────────────────────────────────────────────────────────────
