@@ -1,0 +1,3 @@
+# Local-only Claude context — do not commit
+CLAUDE.md
+.claude/
