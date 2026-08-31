@@ -143,13 +143,13 @@
       transition: box-shadow 0.15s, transform 0.15s;
     }
     .se-link-row:hover { box-shadow: 0 10px 28px rgba(0,0,0,0.06); transform: translateY(-2px); }
+    .se-link-row.c-mysubs  { border-left-color: #ddeaf7; }
     .se-link-row.c-eohss   { border-left-color: #181718; }
     .se-link-row.c-room    { border-left-color: #181718; }
+    .se-link-row.c-storage { border-left-color: #181718; }
     .se-link-row.c-reimb   { border-left-color: #46B749; }
-    .se-link-row.c-storage { border-left-color: #1d4fa1; }
-    .se-link-row.c-mysubs  { border-left-color: #13A89E; }
     .se-link-row.c-guide   { border-left-color: #6A2C8F; }
-    .se-link-row.c-brand   { border-left-color: #7a003c; }
+    .se-link-row.c-brand   { border-left-color: #13A89E; }
     .se-link-icon {
       width: 56px; height: 56px; background: var(--off); border-radius: 12px; flex-shrink: 0;
       display: flex; align-items: center; justify-content: center; color: var(--mid);
@@ -382,6 +382,16 @@
         <p>Want to plan an event for your group? Here's everything you need to plan an event with the BHSS — risk management, room bookings, reimbursements, and accessibility guidelines. Please ensure that all information you provide is accurate and complete. Incomplete submissions may be delayed or rejected.</p>
       </div>
       <div class="se-link-rows">
+        <div class="se-link-row c-mysubs">
+          <div class="se-link-icon">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+          </div>
+          <div class="se-link-body">
+            <h3>My Submissions</h3>
+            <p>View and edit the forms you've submitted this year.</p>
+          </div>
+          <button class="se-go-btn" onclick="showView('my-submissions')">Go there</button>
+        </div>
         <div class="se-link-row c-eohss">
           <div class="se-link-icon">
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 2 2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
@@ -402,16 +412,6 @@
           </div>
           <button class="se-go-btn" onclick="showView('room_booking')">Go there</button>
         </div>
-        <div class="se-link-row c-reimb">
-          <div class="se-link-icon">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
-          </div>
-          <div class="se-link-body">
-            <h3>Request a Reimbursement</h3>
-            <p>Submit a reimbursement request for approved expenses. </p>
-          </div>
-          <button class="se-go-btn" onclick="showView('reimbursement')">Go there</button>
-        </div>
         <div class="se-link-row c-storage">
           <div class="se-link-icon">
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 8V21H3V8"/><path d="M1 3h22v5H1z"/><line x1="10" y1="12" x2="14" y2="12"/></svg>
@@ -422,15 +422,15 @@
           </div>
           <button class="se-go-btn" onclick="showView('storage_request')">Go there</button>
         </div>
-        <div class="se-link-row c-mysubs">
+        <div class="se-link-row c-reimb">
           <div class="se-link-icon">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
           </div>
           <div class="se-link-body">
-            <h3>My Submissions</h3>
-            <p>View and edit the forms you've submitted this year.</p>
+            <h3>Request a Reimbursement</h3>
+            <p>Submit a reimbursement request for approved expenses. </p>
           </div>
-          <button class="se-go-btn" onclick="showView('my-submissions')">Go there</button>
+          <button class="se-go-btn" onclick="showView('reimbursement')">Go there</button>
         </div>
         <div class="se-link-row c-guide">
           <div class="se-link-icon">
