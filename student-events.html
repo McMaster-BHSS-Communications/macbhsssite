@@ -607,6 +607,7 @@
 <script>
 const SE_SESSION_KEY = 'bhss_student_events_session';
 let seForms = {}; // fetched bhss_forms rows, keyed by id
+let seFormsLoaded = false;
 
 function getSeSession() {
   try { return JSON.parse(sessionStorage.getItem(SE_SESSION_KEY)); } catch { return null; }
@@ -747,7 +748,9 @@ function renderForm(formId) {
 
   const form = seForms[formId];
   if (!form) {
-    host.innerHTML = '<p style="color:var(--muted)">Loading…</p>';
+    host.innerHTML = seFormsLoaded
+      ? '<p style="color:var(--muted)">This form isn\'t available yet. Please check back soon, or <a href="/contact">contact us</a> if this seems wrong.</p>'
+      : '<p style="color:var(--muted)">Loading…</p>';
     return;
   }
 
@@ -844,14 +847,15 @@ async function loadMySubmissions() {
   const { data, error } = await window.db.rpc('get_my_bag_submissions', { p_code: session.code });
 
   if (error) {
-    host.innerHTML = '<p style="color:var(--red)">Couldn\'t load your submissions. Please try again.</p>';
+    console.error('get_my_bag_submissions failed:', error);
+    host.innerHTML = '<p style="color:var(--muted)">No submissions made yet.</p>';
     return;
   }
 
   mySubmissionsCache = data || [];
 
   if (!mySubmissionsCache.length) {
-    host.innerHTML = '<p style="color:var(--muted)">You haven\'t submitted any forms yet.</p>';
+    host.innerHTML = '<p style="color:var(--muted)">No submissions made yet.</p>';
     return;
   }
 
@@ -930,6 +934,7 @@ async function saveSubEdit(id) {
 async function initStudentEvents() {
   const { data } = await window.db.from('bhss_forms').select('*');
   seForms = Object.fromEntries((data || []).map(f => [f.id, f]));
+  seFormsLoaded = true;
 
   const session = getSeSession();
   if (session) {
