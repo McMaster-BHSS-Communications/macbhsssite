@@ -1016,6 +1016,7 @@
         <div>
           <h1>Store Orders</h1>
           <p>Orders placed through the store. Update status, search, and export.</p>
+          <p style="font-size:0.78rem;color:var(--muted);margin-top:4px">To delete or refund an order, do it in the Zeffy dashboard — orders here are synced from Zeffy and can't be removed from this page.</p>
         </div>
         <div style="display:flex;gap:10px;align-items:center">
           <button class="btn-secondary" id="exportBtn">⭳ Export CSV</button>
@@ -1035,7 +1036,10 @@
           <option value="fulfilled">Fulfilled</option>
           <option value="cancelled">Cancelled</option>
         </select>
-        <button class="btn-danger" id="clearAllBtn">Clear All</button>
+        <select class="status-filter" id="sortFilter">
+          <option value="date">Newest First</option>
+          <option value="item">Sort by Item (A–Z)</option>
+        </select>
       </div>
 
       <div class="table-wrap">
@@ -1043,7 +1047,7 @@
           <thead>
             <tr>
               <th>Order ID</th><th>Name</th><th>Email</th><th>Mac ID</th>
-              <th>Items</th><th>Total</th><th>Date</th><th>Status</th><th>Notes</th><th></th>
+              <th>Items</th><th>Total</th><th>Date</th><th>Status</th><th>Notes</th>
             </tr>
           </thead>
           <tbody id="ordersBody"></tbody>
@@ -1052,6 +1056,20 @@
           <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
           <h3>No orders yet</h3>
           <p>Orders placed through the store will appear here.</p>
+        </div>
+      </div>
+
+      <div class="orders-toolbar" style="margin-top:14px">
+        <span style="font-size:0.8rem;color:var(--muted)" id="paginationSummary"></span>
+        <div style="margin-left:auto;display:flex;gap:10px;align-items:center">
+          <select class="status-filter" id="pageSizeSelect" style="width:auto">
+            <option value="10">10 / page</option>
+            <option value="25" selected>25 / page</option>
+            <option value="50">50 / page</option>
+          </select>
+          <button class="btn-secondary" id="prevPageBtn">‹ Prev</button>
+          <span style="font-size:0.82rem;color:var(--mid)" id="pageIndicator"></span>
+          <button class="btn-secondary" id="nextPageBtn">Next ›</button>
         </div>
       </div>
 
@@ -2340,9 +2358,13 @@ async function deleteContactSubmission(id) {
 // ─────────────────────────────────────
 let _allOrders = [];
 
+let _ordersPage = 1;
+let _ordersPageSize = 25;
+let _filteredOrders = [];
+
 async function loadOrders() {
   const tbody = document.getElementById('ordersBody');
-  if (tbody) tbody.innerHTML = '<tr><td colspan="10" style="text-align:center;color:var(--muted);padding:30px">Loading…</td></tr>';
+  if (tbody) tbody.innerHTML = '<tr><td colspan="9" style="text-align:center;color:var(--muted);padding:30px">Loading…</td></tr>';
   const { data, error } = await window.db
     .from('orders')
     .select('*')
@@ -2366,17 +2388,10 @@ async function updateOrderStatus(id, status) {
   return !error;
 }
 
-async function deleteOrder(id) {
-  if (!confirm('Delete this order? This cannot be undone.')) return;
-  const { error } = await window.db.from('orders').delete().eq('id', id);
-  if (error) { toast('Delete failed: ' + error.message, 'error'); return; }
-  toast('Order deleted.');
-  loadOrders();
-}
-
 function applyOrderFilters() {
   const q      = document.getElementById('searchInput').value.toLowerCase().trim();
   const status = document.getElementById('statusFilter').value;
+  const sort   = document.getElementById('sortFilter').value;
   let filtered = _allOrders;
   if (status !== 'all') filtered = filtered.filter(o => o.status === status);
   if (q) filtered = filtered.filter(o =>
@@ -2384,8 +2399,42 @@ function applyOrderFilters() {
     (o.email || '').toLowerCase().includes(q) ||
     (o.orderId || '').toLowerCase().includes(q)
   );
+  filtered = filtered.slice();
+  if (sort === 'item') {
+    filtered.sort((a, b) => {
+      const an = ((a.items || [])[0]?.name || '').toLowerCase();
+      const bn = ((b.items || [])[0]?.name || '').toLowerCase();
+      return an.localeCompare(bn);
+    });
+  } else {
+    filtered.sort((a, b) => new Date(b.submittedAt || 0) - new Date(a.submittedAt || 0));
+  }
+  _filteredOrders = filtered;
+  _ordersPage = 1;
   renderOrderStats(_allOrders);
-  renderOrderTable(filtered);
+  renderOrdersPage();
+}
+
+function renderOrdersPage() {
+  const totalPages = Math.max(1, Math.ceil(_filteredOrders.length / _ordersPageSize));
+  _ordersPage = Math.min(Math.max(1, _ordersPage), totalPages);
+  const start = (_ordersPage - 1) * _ordersPageSize;
+  const pageItems = _filteredOrders.slice(start, start + _ordersPageSize);
+
+  renderOrderTable(_filteredOrders, pageItems);
+
+  const summaryEl = document.getElementById('paginationSummary');
+  if (summaryEl) {
+    summaryEl.textContent = _filteredOrders.length
+      ? `Showing ${start + 1}–${Math.min(start + _ordersPageSize, _filteredOrders.length)} of ${_filteredOrders.length}`
+      : 'No orders';
+  }
+  const indicatorEl = document.getElementById('pageIndicator');
+  if (indicatorEl) indicatorEl.textContent = `Page ${_ordersPage} of ${totalPages}`;
+  const prevBtn = document.getElementById('prevPageBtn');
+  const nextBtn = document.getElementById('nextPageBtn');
+  if (prevBtn) prevBtn.disabled = _ordersPage <= 1;
+  if (nextBtn) nextBtn.disabled = _ordersPage >= totalPages;
 }
 
 function renderOrderStats(orders) {
@@ -2400,13 +2449,13 @@ function renderOrderStats(orders) {
     <div class="stat-card highlight"><div class="stat-label">Total Revenue</div><div class="stat-value">$${revenue.toFixed(2)}</div></div>`;
 }
 
-function renderOrderTable(orders) {
-  document.getElementById('orderCount').textContent = orders.length + ' Order' + (orders.length !== 1 ? 's' : '');
+function renderOrderTable(allFiltered, pageItems) {
+  document.getElementById('orderCount').textContent = allFiltered.length + ' Order' + (allFiltered.length !== 1 ? 's' : '');
   const tbody = document.getElementById('ordersBody');
   const empty = document.getElementById('emptyState');
-  if (!orders.length) { tbody.innerHTML = ''; empty.style.display = 'block'; return; }
+  if (!pageItems.length) { tbody.innerHTML = ''; empty.style.display = 'block'; return; }
   empty.style.display = 'none';
-  tbody.innerHTML = orders.map(o => {
+  tbody.innerHTML = pageItems.map(o => {
     const itemsHtml = (o.items || []).map(i => `${_esc(i.name)}${i.size ? ' (' + _esc(i.size) + ')' : ''} ×${i.qty}`).join('<br>');
     const date   = o.submittedAt ? new Date(o.submittedAt).toLocaleDateString('en-CA', { year:'numeric', month:'short', day:'numeric', hour:'2-digit', minute:'2-digit' }) : '—';
     const status = o.status || 'pending';
@@ -2426,7 +2475,6 @@ function renderOrderTable(orders) {
         </select>
       </td>
       <td style="font-size:0.75rem;color:var(--muted);max-width:160px">${_esc(o.notes || '')}</td>
-      <td><button class="btn-danger" onclick="deleteOrder('${_esc(o.id)}')">Delete</button></td>
     </tr>`;
   }).join('');
 }
@@ -2506,16 +2554,16 @@ document.getElementById('exportBtn').addEventListener('click', () => {
   toast('CSV downloaded ✓');
 });
 
-document.getElementById('clearAllBtn').addEventListener('click', async () => {
-  if (!confirm('Delete ALL orders from the database? This affects every device and cannot be undone.')) return;
-  const { error } = await window.db.from('orders').delete().gte('created_at', '1900-01-01T00:00:00Z');
-  if (error) { toast('Clear failed: ' + error.message, 'error'); return; }
-  toast('All orders cleared.');
-  loadOrders();
-});
-
 document.getElementById('searchInput').addEventListener('input', applyOrderFilters);
 document.getElementById('statusFilter').addEventListener('change', applyOrderFilters);
+document.getElementById('sortFilter').addEventListener('change', applyOrderFilters);
+document.getElementById('pageSizeSelect').addEventListener('change', (e) => {
+  _ordersPageSize = Number(e.target.value);
+  _ordersPage = 1;
+  renderOrdersPage();
+});
+document.getElementById('prevPageBtn').addEventListener('click', () => { _ordersPage--; renderOrdersPage(); });
+document.getElementById('nextPageBtn').addEventListener('click', () => { _ordersPage++; renderOrdersPage(); });
 
 // ── URL PARAM AUTO-OPEN ──
 (function() {

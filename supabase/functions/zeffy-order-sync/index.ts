@@ -35,6 +35,7 @@ interface ZeffyPayment {
   amount: number; // cents
   currency: string;
   status: string;
+  refund_status: string; // "none" | "partial" | "full"
   description: string; // campaign name
   campaign_id: string;
   buyer: ZeffyBuyer;
@@ -52,10 +53,11 @@ async function fetchZeffyPayments(
   apiKey: string,
   campaignId: string,
   cursor: string | null,
+  status: string | null = "succeeded",
 ): Promise<ZeffyPaymentsPage> {
   const url = new URL(`${ZEFFY_API_BASE}/payments`);
   url.searchParams.set("campaign", campaignId);
-  url.searchParams.set("status", "succeeded");
+  if (status) url.searchParams.set("status", status);
   url.searchParams.set("limit", "100");
   if (cursor) url.searchParams.set("cursor", cursor);
 
@@ -97,6 +99,15 @@ async function fetchNewPayments(
 // the only line to change.
 function centsToDollars(cents: number): number {
   return cents / 100;
+}
+
+// Maps a Zeffy payment's refund/status fields to the status we store locally.
+// Returns null if it's a normal, unrefunded successful payment (no change needed).
+function refundAwareStatus(payment: ZeffyPayment): string | null {
+  if (payment.refund_status === "full") return "refunded";
+  if (payment.refund_status === "partial") return "partially_refunded";
+  if (payment.status !== "succeeded") return payment.status;
+  return null;
 }
 
 function paymentToOrderRow(payment: ZeffyPayment) {
@@ -162,6 +173,34 @@ Deno.serve(async (_req) => {
         last_seen_payment_id: newPayments[0].id,
         last_synced_at: new Date().toISOString(),
       });
+    }
+
+    // Reconcile refund/status changes on payments we've already synced.
+    // Only checks the most recent 100 payments per campaign per run (not
+    // full history) — refunds happening long after purchase on an older
+    // order won't be caught by this, but covers the common case.
+    const recentPage = await fetchZeffyPayments(apiKey, campaignId, null, null);
+    const paymentsById = new Map(recentPage.data.map((p) => [p.id, p]));
+    const knownIds = [...paymentsById.keys()];
+    if (knownIds.length) {
+      const { data: existingRows } = await supabase
+        .from(table)
+        .select("zeffy_payment_id, status")
+        .eq("source", "zeffy")
+        .in("zeffy_payment_id", knownIds);
+
+      for (const row of existingRows ?? []) {
+        const payment = paymentsById.get(row.zeffy_payment_id);
+        if (!payment) continue;
+        const newStatus = refundAwareStatus(payment);
+        if (newStatus && newStatus !== row.status) {
+          const { error } = await supabase
+            .from(table)
+            .update({ status: newStatus })
+            .eq("zeffy_payment_id", row.zeffy_payment_id);
+          if (error) throw new Error(`Refund status update in ${table} failed: ${error.message}`);
+        }
+      }
     }
 
     results[campaignId] = { table, synced: newPayments.length };

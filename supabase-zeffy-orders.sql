@@ -17,8 +17,14 @@ alter table public.orders
   add column if not exists source           text not null default 'site',
   add column if not exists zeffy_payment_id text;
 
-create unique index if not exists orders_zeffy_payment_id_idx
-  on public.orders (zeffy_payment_id) where zeffy_payment_id is not null;
+-- Plain (non-partial) unique index — required for the sync function's
+-- `upsert(..., { onConflict: 'zeffy_payment_id' })` to work: Postgres's
+-- ON CONFLICT needs a real unique constraint/index on the exact column, and
+-- won't match a partial index. NULLs (site-sourced orders) don't count as
+-- duplicates under a plain unique index, so this is safe.
+drop index if exists orders_zeffy_payment_id_idx;
+create unique index if not exists orders_zeffy_payment_id_key
+  on public.orders (zeffy_payment_id);
 
 
 -- ── ticket_orders: committee event ticket sales via Zeffy ─────────────────
@@ -37,8 +43,8 @@ create table if not exists public.ticket_orders (
   created_at        timestamptz not null default now()
 );
 
-create unique index if not exists ticket_orders_zeffy_payment_id_idx
-  on public.ticket_orders (zeffy_payment_id) where zeffy_payment_id is not null;
+create unique index if not exists ticket_orders_zeffy_payment_id_key
+  on public.ticket_orders (zeffy_payment_id);
 create index if not exists ticket_orders_created_at_idx on public.ticket_orders (created_at desc);
 
 alter table public.ticket_orders enable row level security;
@@ -74,22 +80,20 @@ create policy "admin_all" on public.zeffy_sync_state for all to authenticated us
 
 
 -- ── Scheduled invocation ───────────────────────────────────────────────────
--- Run this block separately, AFTER the zeffy-order-sync Edge Function has
--- been deployed (`supabase functions deploy zeffy-order-sync`). Replace
--- YOUR-PROJECT-REF and YOUR-ANON-KEY below with the real values from
--- Project Settings → API. Uses pg_cron + pg_net, both enabled by default on
--- Supabase. Runs every 5 minutes.
---
--- create extension if not exists pg_cron;
--- create extension if not exists pg_net;
---
--- select cron.schedule(
---   'zeffy-order-sync',
---   '*/5 * * * *',
---   $$
---   select net.http_post(
---     url := 'https://YOUR-PROJECT-REF.supabase.co/functions/v1/zeffy-order-sync',
---     headers := jsonb_build_object('Authorization', 'Bearer YOUR-ANON-KEY')
---   );
---   $$
--- );
+-- Runs every 5 minutes. Uses pg_cron + pg_net, both free, running inside
+-- this project's existing Postgres — no separate billing. The Edge Function
+-- itself is called ~8,640 times/month at this interval, well under the free
+-- plan's 500,000/month included invocations.
+create extension if not exists pg_cron;
+create extension if not exists pg_net;
+
+select cron.schedule(
+  'zeffy-order-sync',
+  '*/5 * * * *',
+  $$
+  select net.http_post(
+    url := 'https://lnqbcatlepeagnjmktpk.supabase.co/functions/v1/zeffy-order-sync',
+    headers := jsonb_build_object('Authorization', 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImxucWJjYXRsZXBlYWduam1rdHBrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA2MjIyNDgsImV4cCI6MjA5NjE5ODI0OH0.FdpteU8bG3ymIvZ7ao9KzU-XJD4DeTBf_idmzsjuiN0')
+  );
+  $$
+);
