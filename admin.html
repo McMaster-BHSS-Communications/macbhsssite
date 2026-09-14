@@ -1167,6 +1167,17 @@
         <button class="btn-danger" onclick="regenerateBagCodes()">Regenerate 30 Codes</button>
       </div>
 
+      <div class="composer-card" style="margin-bottom:28px;display:flex;align-items:center;justify-content:space-between;gap:20px;flex-wrap:wrap">
+        <div>
+          <h3 style="font-family:'Familjen Grotesk',serif;font-size:1rem;font-weight:600;margin-bottom:6px">Add Codes</h3>
+          <p style="font-size:0.82rem;color:var(--mid)">Generates additional unnamed codes for the current year without touching any existing codes — requires the admin password.</p>
+        </div>
+        <div style="display:flex;align-items:center;gap:10px">
+          <input type="number" id="addBagCodesCount" value="20" min="1" max="200" style="width:70px;padding:7px 10px;border:1px solid var(--border);border-radius:6px;font-size:0.85rem;font-family:'Inter',sans-serif" />
+          <button class="btn-secondary" onclick="addBagCodes()">Add Codes</button>
+        </div>
+      </div>
+
       <div id="bagCodesList" class="posts-list"></div>
     </div>
 
@@ -2738,6 +2749,28 @@ async function regenerateBagCodes() {
   renderBagCodesList();
 }
 
+async function addBagCodes() {
+  const pw = prompt('Enter the admin password to add new authorization codes:');
+  if (pw === null) return;
+  if (pw !== 'LilRedSchoolHaus2000') { toast('Incorrect password.', 'error'); return; }
+
+  const count = parseInt(document.getElementById('addBagCodesCount').value, 10);
+  if (!count || count < 1) { toast('Enter a valid number of codes to add.', 'error'); return; }
+
+  const year = new Date().getFullYear();
+  if (!confirm(`This will generate ${count} new codes for ${year} without affecting any existing codes. Continue?`)) return;
+
+  const rows = Array.from({ length: count }, () => ({
+    id: _uid(), code: _genBagCode(), group_name: null, group_type: null,
+    batch_year: year, active: true
+  }));
+  const { error: insertError } = await window.db.from('bag_auth_codes').insert(rows);
+  if (insertError) { toast('Error generating codes: ' + insertError.message, 'error'); return; }
+
+  toast(`Added ${count} new codes for ${year}!`);
+  renderBagCodesList();
+}
+
 async function renderBagCodesList() {
   const el = document.getElementById('bagCodesList');
   el.innerHTML = '<p style="color:var(--muted);text-align:center;padding:40px">Loading…</p>';
@@ -2798,7 +2831,28 @@ async function toggleBagCodeActive(id, active) {
 // ── Form Builder ──
 let _bagForms = {};
 const BAG_FORM_IDS = ['eohss', 'room_booking', 'reimbursement', 'storage_request'];
-const BAG_FIELD_TYPES = ['text', 'textarea', 'select', 'date', 'number', 'checkbox'];
+const BAG_FIELD_TYPES = ['text', 'textarea', 'select', 'date', 'number', 'checkbox', 'file'];
+
+// Values for file-type answers are snapshotted as "__file__:<bucket>/<path>:<filename>"
+// (see student-events.html's parseFileAnswer) so bhss_form_submissions.answers stays a
+// plain {label,value} shape — this just parses that string back out for display.
+function parseBagFileAnswer(value) {
+  if (typeof value !== 'string' || !value.startsWith('__file__:')) return null;
+  const rest = value.slice('__file__:'.length);
+  const sep = rest.lastIndexOf(':');
+  if (sep === -1) return null;
+  const bucketAndPath = rest.slice(0, sep);
+  const filename = rest.slice(sep + 1);
+  const slash = bucketAndPath.indexOf('/');
+  if (slash === -1) return null;
+  return { bucket: bucketAndPath.slice(0, slash), path: bucketAndPath.slice(slash + 1), filename };
+}
+
+async function downloadBagSubmissionFile(bucket, path, filename) {
+  const { data, error } = await window.db.storage.from(bucket).createSignedUrl(path, 3600);
+  if (error) { toast('Failed to generate link: ' + error.message, 'error'); return; }
+  window.open(data.signedUrl, '_blank');
+}
 
 async function loadBagForms() {
   const el = document.getElementById('bagFormsEditor');
@@ -2826,7 +2880,8 @@ function renderBagFormEditor(formId) {
     </div>
     <div class="form-group full">
       <label>Form Description</label>
-      <input type="text" value="${(form.description || '').replace(/"/g, '&quot;')}" oninput="_bagForms['${formId}'].description = this.value" />
+      <textarea rows="6" style="font-family:'Inter',sans-serif;font-size:0.85rem" oninput="_bagForms['${formId}'].description = this.value">${(form.description || '').replace(/</g, '&lt;')}</textarea>
+      <p style="font-size:0.76rem;color:var(--muted);margin-top:4px">HTML is allowed here (it's rendered as-is on the Student Events page) — e.g. &lt;strong&gt;, &lt;ul&gt;&lt;li&gt;, &lt;a href&gt;.</p>
     </div>
     <div id="bagform-fields-${formId}"></div>
     <button class="btn-secondary" style="margin-top:10px" onclick="addBagFormField('${formId}')">+ Add Field</button>
@@ -2839,18 +2894,21 @@ function renderBagFormFields(formId) {
   const el = document.getElementById('bagform-fields-' + formId);
   if (!el) return;
   el.innerHTML = form.fields.map((f, i) => `
-    <div style="display:flex;gap:8px;align-items:center;margin-bottom:8px;padding:10px;background:var(--off);border-radius:8px">
-      <input type="text" placeholder="Question label" value="${(f.label || '').replace(/"/g, '&quot;')}" style="flex:2;padding:7px 10px;border:1px solid var(--border);border-radius:6px;font-size:0.83rem;outline:none;font-family:'Inter',sans-serif" oninput="updateBagFormField('${formId}',${i},'label',this.value)" />
-      <select style="flex:1;padding:7px 10px;border:1px solid var(--border);border-radius:6px;font-size:0.82rem;background:var(--white)" onchange="updateBagFormField('${formId}',${i},'type',this.value)">
-        ${BAG_FIELD_TYPES.map(t => `<option value="${t}" ${f.type === t ? 'selected' : ''}>${t}</option>`).join('')}
-      </select>
-      ${f.type === 'select' ? `<input type="text" placeholder="Options, comma separated" value="${(f.options || []).join(', ')}" style="flex:2;padding:7px 10px;border:1px solid var(--border);border-radius:6px;font-size:0.83rem;outline:none;font-family:'Inter',sans-serif" oninput="updateBagFormField('${formId}',${i},'options',this.value.split(',').map(s=>s.trim()).filter(Boolean))" />` : ''}
-      <label style="display:flex;align-items:center;gap:5px;font-size:0.78rem;color:var(--mid);white-space:nowrap">
-        <input type="checkbox" ${f.required ? 'checked' : ''} onchange="updateBagFormField('${formId}',${i},'required',this.checked)" /> Required
-      </label>
-      <button title="Move up" onclick="moveBagFormField('${formId}',${i},-1)" style="background:none;border:none;cursor:pointer;color:var(--muted);font-size:0.9rem">↑</button>
-      <button title="Move down" onclick="moveBagFormField('${formId}',${i},1)" style="background:none;border:none;cursor:pointer;color:var(--muted);font-size:0.9rem">↓</button>
-      <button title="Remove" onclick="removeBagFormField('${formId}',${i})" style="background:none;border:none;cursor:pointer;color:var(--red);font-size:0.9rem">✕</button>
+    <div style="margin-bottom:8px;padding:10px;background:var(--off);border-radius:8px">
+      <div style="display:flex;gap:8px;align-items:center">
+        <input type="text" placeholder="Question label" value="${(f.label || '').replace(/"/g, '&quot;')}" style="flex:2;padding:7px 10px;border:1px solid var(--border);border-radius:6px;font-size:0.83rem;outline:none;font-family:'Inter',sans-serif" oninput="updateBagFormField('${formId}',${i},'label',this.value)" />
+        <select style="flex:1;padding:7px 10px;border:1px solid var(--border);border-radius:6px;font-size:0.82rem;background:var(--white)" onchange="updateBagFormField('${formId}',${i},'type',this.value)">
+          ${BAG_FIELD_TYPES.map(t => `<option value="${t}" ${f.type === t ? 'selected' : ''}>${t}</option>`).join('')}
+        </select>
+        ${f.type === 'select' ? `<input type="text" placeholder="Options, comma separated" value="${(f.options || []).join(', ')}" style="flex:2;padding:7px 10px;border:1px solid var(--border);border-radius:6px;font-size:0.83rem;outline:none;font-family:'Inter',sans-serif" oninput="updateBagFormField('${formId}',${i},'options',this.value.split(',').map(s=>s.trim()).filter(Boolean))" />` : ''}
+        <label style="display:flex;align-items:center;gap:5px;font-size:0.78rem;color:var(--mid);white-space:nowrap">
+          <input type="checkbox" ${f.required ? 'checked' : ''} onchange="updateBagFormField('${formId}',${i},'required',this.checked)" /> Required
+        </label>
+        <button title="Move up" onclick="moveBagFormField('${formId}',${i},-1)" style="background:none;border:none;cursor:pointer;color:var(--muted);font-size:0.9rem">↑</button>
+        <button title="Move down" onclick="moveBagFormField('${formId}',${i},1)" style="background:none;border:none;cursor:pointer;color:var(--muted);font-size:0.9rem">↓</button>
+        <button title="Remove" onclick="removeBagFormField('${formId}',${i})" style="background:none;border:none;cursor:pointer;color:var(--red);font-size:0.9rem">✕</button>
+      </div>
+      <input type="text" placeholder="Help text shown under the label (optional)" value="${(f.help || '').replace(/"/g, '&quot;')}" style="width:100%;margin-top:6px;padding:6px 10px;border:1px solid var(--border);border-radius:6px;font-size:0.78rem;outline:none;font-family:'Inter',sans-serif;color:var(--mid)" oninput="updateBagFormField('${formId}',${i},'help',this.value)" />
     </div>`).join('') || '<p style="font-size:0.82rem;color:var(--muted);padding:8px 0">No fields yet — add one below.</p>';
 }
 
@@ -2975,11 +3033,17 @@ function openBagSubmissionModal(id) {
       <div style="font-family:'Familjen Grotesk',serif;font-size:1.3rem;font-weight:600;color:var(--text)">${BAG_FORM_LABELS[s.form_id] || s.form_id}</div>
       <div style="font-size:0.78rem;color:var(--muted);margin-top:2px">${who} · ${dateStr}</div>
     </div>
-    ${(s.answers || []).map(a => `
+    ${(s.answers || []).map(a => {
+      const file = parseBagFileAnswer(a.value);
+      const body = file
+        ? `<button class="btn-secondary" style="width:auto;padding:6px 14px;font-size:0.82rem" onclick="downloadBagSubmissionFile('${file.bucket}','${file.path.replace(/'/g, "\\'")}','${(file.filename || '').replace(/'/g, "\\'")}')">⬇ ${file.filename}</button>`
+        : (a.value || '—');
+      return `
       <div style="margin-bottom:16px">
         <div style="font-size:0.68rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted);margin-bottom:5px">${a.label}</div>
-        <div style="font-size:0.88rem;color:var(--text);line-height:1.6;white-space:pre-wrap">${a.value || '—'}</div>
-      </div>`).join('')}`;
+        <div style="font-size:0.88rem;color:var(--text);line-height:1.6;white-space:pre-wrap">${body}</div>
+      </div>`;
+    }).join('')}`;
 
   document.getElementById('bagSubmissionModalActions').innerHTML = `
     <button class="btn-danger" onclick="deleteBagSubmission('${s.id}');closeBagSubmissionModal()">Delete</button>`;

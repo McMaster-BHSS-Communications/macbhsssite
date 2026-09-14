@@ -168,8 +168,15 @@
     .se-form-card { background: var(--white); border: 1px solid var(--border); border-radius: 16px; padding: 36px; max-width: 640px; }
     .se-form-card h2 { font-family: 'Familjen Grotesk', sans-serif; font-size: 1.3rem; font-weight: 600; color: var(--text); margin-bottom: 8px; }
     .se-form-card .lead { font-size: 0.88rem; color: var(--mid); margin-bottom: 28px; line-height: 1.6; }
+    .se-form-card .lead h4 { font-family: 'Familjen Grotesk', sans-serif; font-size: 0.95rem; font-weight: 600; color: var(--text); margin: 18px 0 8px; }
+    .se-form-card .lead h4:first-child { margin-top: 0; }
+    .se-form-card .lead ul { margin: 0 0 4px 20px; padding: 0; }
+    .se-form-card .lead li { margin-bottom: 7px; }
+    .se-form-card .lead li ul { margin-top: 7px; }
+    .se-form-card .lead a { color: var(--blue); }
     .se-form-group { margin-bottom: 20px; }
     .se-form-group label { display: block; font-size: 0.82rem; font-weight: 600; color: var(--mid); margin-bottom: 6px; }
+    .se-field-help { font-size: 0.78rem; color: var(--muted); line-height: 1.5; margin: -2px 0 8px; }
     .se-form-group input, .se-form-group select, .se-form-group textarea {
       width: 100%; padding: 11px 14px; border: 1px solid var(--border); border-radius: 8px;
       font-family: 'Inter', sans-serif; font-size: 0.88rem; color: var(--text); background: var(--white); outline: none;
@@ -177,6 +184,11 @@
     }
     .se-form-group input:focus, .se-form-group select:focus, .se-form-group textarea:focus { border-color: var(--blue); box-shadow: 0 0 0 3px rgba(29,79,161,0.1); }
     .se-form-group textarea { resize: vertical; min-height: 100px; }
+    .se-form-group input[type="checkbox"] { width: auto; }
+    .se-form-group input[type="file"] { padding: 9px 10px; }
+    .se-form-group.se-checkbox-group { display: flex; align-items: flex-start; gap: 9px; }
+    .se-form-group.se-checkbox-group input[type="checkbox"] { margin-top: 3px; }
+    .se-form-group.se-checkbox-group label { margin-bottom: 0; }
     .se-submit-error { font-size: 0.78rem; color: var(--red); margin-bottom: 14px; display: none; }
     .se-form-success { display: none; text-align: center; padding: 30px 10px; }
     .se-form-success .check { width: 52px; height: 52px; background: rgba(21,128,61,0.1); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 16px; color: var(--green); }
@@ -430,7 +442,7 @@
           </div>
           <div class="se-link-body">
             <h3>Request a Reimbursement</h3>
-            <p>Submit a reimbursement request for approved expenses. </p>
+            <p>Submit a cheque reimbursement request for approved event expenses, with receipts attached.</p>
           </div>
           <button class="se-go-btn" onclick="showView('reimbursement')">Go there</button>
         </div>
@@ -710,6 +722,23 @@ function showView(name) {
 }
 
 // ── Dynamic form rendering ──
+const BHSS_FORM_UPLOADS_BUCKET = 'bhss-form-uploads';
+const MAX_UPLOAD_MB = 20;
+
+// Values for file-type answers are snapshotted as "__file__:<bucket>/<path>:<filename>"
+// so the display-ready {label,value} shape (see bhss_form_submissions) still works unchanged.
+function parseFileAnswer(value) {
+  if (typeof value !== 'string' || !value.startsWith('__file__:')) return null;
+  const rest = value.slice('__file__:'.length);
+  const sep = rest.lastIndexOf(':');
+  if (sep === -1) return null;
+  const bucketAndPath = rest.slice(0, sep);
+  const filename = rest.slice(sep + 1);
+  const slash = bucketAndPath.indexOf('/');
+  if (slash === -1) return null;
+  return { bucket: bucketAndPath.slice(0, slash), path: bucketAndPath.slice(slash + 1), filename };
+}
+
 function fieldInputHtml(f) {
   const req = f.required ? 'required' : '';
   switch (f.type) {
@@ -723,6 +752,8 @@ function fieldInputHtml(f) {
       return `<input type="date" id="sf-${f.id}" ${req} />`;
     case 'number':
       return `<input type="number" id="sf-${f.id}" ${req} />`;
+    case 'file':
+      return `<input type="file" id="sf-${f.id}" accept="application/pdf,.pdf" ${req} />`;
     default:
       return `<input type="text" id="sf-${f.id}" ${req} />`;
   }
@@ -760,12 +791,21 @@ function renderForm(formId) {
     <div class="se-form-card">
       <div id="sf-card-${formId}">
         <h2>${form.title}</h2>
-        <p class="lead">${form.description || ''}</p>
+        <div class="lead">${form.description || ''}</div>
         ${(form.fields || []).map(f => `
-          <div class="se-form-group">
-            <label>${f.label}${f.required ? ' *' : ''}</label>
+          ${f.type === 'checkbox' ? `
+          <div class="se-form-group se-checkbox-group">
             ${fieldInputHtml(f)}
-          </div>`).join('')}
+            <div>
+              <label for="sf-${f.id}" style="margin-bottom:2px">${f.label}${f.required ? ' *' : ''}</label>
+              ${f.help ? `<div class="se-field-help" style="margin:0">${f.help}</div>` : ''}
+            </div>
+          </div>` : `
+          <div class="se-form-group">
+            <label for="sf-${f.id}">${f.label}${f.required ? ' *' : ''}</label>
+            ${f.help ? `<div class="se-field-help">${f.help}</div>` : ''}
+            ${fieldInputHtml(f)}
+          </div>`}`).join('')}
         <div class="se-submit-error" id="sf-error-${formId}"></div>
         <button class="se-btn-primary" id="sf-submit-${formId}" onclick="submitSeForm('${formId}')">Submit</button>
       </div>
@@ -783,9 +823,31 @@ async function submitSeForm(formId) {
   const btn = document.getElementById('sf-submit-' + formId);
   errEl.style.display = 'none';
 
-  const answers = [];
+  // Validate first (before any uploads start).
   for (const f of (form.fields || [])) {
     const el = document.getElementById('sf-' + f.id);
+    if (f.type === 'file') {
+      const file = el.files[0];
+      if (f.required && !file) {
+        errEl.textContent = `Please attach a file for "${f.label}".`;
+        errEl.style.display = 'block';
+        el.focus();
+        return;
+      }
+      if (file && file.type !== 'application/pdf' && !file.name.toLowerCase().endsWith('.pdf')) {
+        errEl.textContent = `"${f.label}" must be a PDF file.`;
+        errEl.style.display = 'block';
+        el.focus();
+        return;
+      }
+      if (file && file.size > MAX_UPLOAD_MB * 1024 * 1024) {
+        errEl.textContent = `"${f.label}" is too large (max ${MAX_UPLOAD_MB}MB). Please bundle/compress your receipts into one smaller PDF.`;
+        errEl.style.display = 'block';
+        el.focus();
+        return;
+      }
+      continue;
+    }
     const value = f.type === 'checkbox' ? (el.checked ? 'Yes' : 'No') : el.value.trim();
     if (f.required && !value) {
       errEl.textContent = `Please fill out "${f.label}".`;
@@ -793,12 +855,36 @@ async function submitSeForm(formId) {
       el.focus();
       return;
     }
-    answers.push({ label: f.label, value });
   }
 
   const session = getSeSession();
-  btn.textContent = 'Submitting…';
   btn.disabled = true;
+
+  const answers = [];
+  for (const f of (form.fields || [])) {
+    const el = document.getElementById('sf-' + f.id);
+    if (f.type === 'file') {
+      const file = el.files[0];
+      if (!file) { answers.push({ label: f.label, value: '' }); continue; }
+      btn.textContent = 'Uploading file…';
+      const safeName = file.name.replace(/[^a-zA-Z0-9._-]/g, '_');
+      const path = `${formId}/${f.id}/${Date.now().toString(36)}_${Math.random().toString(36).slice(2)}_${safeName}`;
+      const { error: uploadError } = await window.db.storage.from(BHSS_FORM_UPLOADS_BUCKET).upload(path, file);
+      if (uploadError) {
+        errEl.textContent = `Failed to upload "${f.label}": ${uploadError.message}`;
+        errEl.style.display = 'block';
+        btn.textContent = 'Submit';
+        btn.disabled = false;
+        return;
+      }
+      answers.push({ label: f.label, value: `__file__:${BHSS_FORM_UPLOADS_BUCKET}/${path}:${file.name}` });
+      continue;
+    }
+    const value = f.type === 'checkbox' ? (el.checked ? 'Yes' : 'No') : el.value.trim();
+    answers.push({ label: f.label, value });
+  }
+
+  btn.textContent = 'Submitting…';
 
   const { error } = await window.db.from('bhss_form_submissions').insert({
     id: Date.now().toString(36) + Math.random().toString(36).slice(2),
@@ -880,11 +966,21 @@ function renderSubCard(s) {
         </div>
       </div>
       <div class="sub-edit-area" id="sub-edit-${s.id}">
-        ${(s.answers || []).map((a, i) => `
+        ${(s.answers || []).map((a, i) => {
+          const file = parseFileAnswer(a.value);
+          if (file) {
+            return `
+          <div class="sub-edit-field">
+            <label>${a.label}</label>
+            <div style="font-size:0.82rem;color:var(--muted)">${file.filename} <em>(uploaded file — can't be changed here; contact bhssfin@mcmaster.ca to replace it)</em></div>
+          </div>`;
+          }
+          return `
           <div class="sub-edit-field">
             <label>${a.label}</label>
             <input type="text" id="sub-field-${s.id}-${i}" value="${(a.value ?? '').toString().replace(/"/g, '&quot;')}" />
-          </div>`).join('')}
+          </div>`;
+        }).join('')}
         <div class="sub-edit-error" id="sub-error-${s.id}"></div>
         <div style="display:flex;gap:8px">
           <button class="sub-btn primary" onclick="saveSubEdit('${s.id}')">Save Changes</button>
@@ -907,10 +1003,10 @@ async function saveSubEdit(id) {
   errEl.style.color = '';
   errEl.style.display = 'none';
 
-  const updatedAnswers = (sub.answers || []).map((a, i) => ({
-    label: a.label,
-    value: document.getElementById(`sub-field-${id}-${i}`).value.trim()
-  }));
+  const updatedAnswers = (sub.answers || []).map((a, i) => {
+    if (parseFileAnswer(a.value)) return { label: a.label, value: a.value };
+    return { label: a.label, value: document.getElementById(`sub-field-${id}-${i}`).value.trim() };
+  });
 
   const { error } = await window.db.rpc('update_my_bag_submission', {
     p_code: session.code, p_submission_id: id, p_answers: updatedAnswers
