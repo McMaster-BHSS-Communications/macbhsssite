@@ -121,7 +121,6 @@
       margin-bottom: 5px;
     }
     .hero-banner p { font-size: 0.82rem; color: rgba(255,255,255,0.68); line-height: 1.4; }
-    .hero-banner.full { grid-column: 1 / -1; min-height: 240px; border-right: none; }
 
     /* ─── SEARCH ─── */
     .search-wrap {
@@ -375,7 +374,6 @@
       nav.sitenav { padding: 0 16px; }
       .nav-links, .nav-resources { display: none; }
       .banners-section { grid-template-columns: 1fr; }
-      .hero-banner.full { grid-column: 1; }
       .res-grid { grid-template-columns: 1fr; }
       .resources-main { padding: 0 16px 48px; }
       .search-wrap { padding: 10px 16px; }
@@ -430,7 +428,7 @@
     <li><a href="/resources" class="active">Resources</a></li>
     <li><a href="/shop">Store</a></li>
     <li><a href="/bags">BAGs</a></li>
-    <li><a href="/student-events">Student Events</a></li>
+    <li><a href="/student-groups">Student Groups</a></li>
     <li><a href="/about">About Us</a></li>
     <li><a href="/contact">Contact</a></li>
   </ul>
@@ -457,10 +455,16 @@
       <p>View opportunities and roles within the Society</p>
     </div>
   </a>
-  <a href="#section-students" class="hero-banner full" style="background-image: url('assets/images/banners/student_resources.png')">
+  <a href="#section-students" class="hero-banner" style="background-image: url('assets/images/banners/student_resources.png')">
     <div class="hero-banner-content">
       <h2>For Students</h2>
       <p>Peruse through a collection of materials to aid your semester</p>
+    </div>
+  </a>
+  <a href="#section-forms" class="hero-banner" style="background-image: url('assets/images/banners/form_resources.png')">
+    <div class="hero-banner-content">
+      <h2>Event &amp; Misc. Forms</h2>
+      <p>Find event and miscellaneous forms in one place</p>
     </div>
   </a>
 </div>
@@ -512,6 +516,18 @@
       <div class="res-grid-msg">Loading resources…</div>
     </div>
     <div class="res-pagination" id="pag-students"></div>
+  </div>
+
+  <!-- Event & Misc Forms -->
+  <div class="res-section" id="section-forms">
+    <p class="section-title">Event and Miscellaneous Forms</p>
+    <div class="section-tabs-wrap">
+      <div class="section-tabs" id="tabs-forms"></div>
+    </div>
+    <div class="res-grid" id="grid-forms">
+      <div class="res-grid-msg">Loading resources…</div>
+    </div>
+    <div class="res-pagination" id="pag-forms"></div>
   </div>
 
 </div>
@@ -592,7 +608,7 @@ const COMMITTEES = {
 };
 
 const ITEMS_PER_PAGE = 9;
-const SECTIONS = ['administration', 'opportunities', 'students'];
+const SECTIONS = ['administration', 'opportunities', 'students', 'forms'];
 
 const state = {
   allItems: [],
@@ -600,6 +616,7 @@ const state = {
   administration: { filter: 'all', page: 0 },
   opportunities:  { filter: 'all', page: 0 },
   students:       { filter: 'all', page: 0 },
+  forms:          { filter: 'all', page: 0 },
 };
 
 // id → item map for fast modal lookup

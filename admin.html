@@ -679,6 +679,7 @@
                 <option value="administration">Administration</option>
                 <option value="opportunities">Opportunities</option>
                 <option value="students">For Students</option>
+                <option value="forms">Event &amp; Misc Forms</option>
               </select>
             </div>
             <div class="form-group">
@@ -742,6 +743,7 @@
               <option value="administration">Administration</option>
               <option value="opportunities">Opportunities</option>
               <option value="students">For Students</option>
+              <option value="forms">Event &amp; Misc Forms</option>
             </select>
           </div>
           <div id="pr-list" class="posts-list"></div>
@@ -1154,7 +1156,7 @@
       <div class="topbar">
         <div>
           <h1>Authorization Codes</h1>
-          <p>Issue and manage the yearly codes BAGs and committees use to sign into the Student Events portal.</p>
+          <p>Issue and manage the yearly codes BAGs and committees use to sign into the Student Groups portal.</p>
         </div>
         <button class="btn-secondary" onclick="renderBagCodesList()">↻ Refresh</button>
       </div>
@@ -1198,7 +1200,7 @@
       <div class="topbar">
         <div>
           <h1>Form Submissions</h1>
-          <p>All EOHSS, Room Booking, and Reimbursement submissions from the Student Events portal.</p>
+          <p>All EOHSS, Room Booking, and Reimbursement submissions from the Student Groups portal.</p>
         </div>
         <button class="btn-secondary" onclick="loadBagSubmissions()">↻ Refresh</button>
       </div>
@@ -2185,7 +2187,7 @@ async function renderPageResourceList() {
     return;
   }
 
-  const sectionLabel = { administration: 'Administration', opportunities: 'Opportunities', students: 'For Students' };
+  const sectionLabel = { administration: 'Administration', opportunities: 'Opportunities', students: 'For Students', forms: 'Event & Misc Forms' };
   el.innerHTML = data.map(r => {
     const comm = PR_COMMITTEES[r.committee] || PR_COMMITTEES.com;
     return `
@@ -2834,7 +2836,7 @@ const BAG_FORM_IDS = ['eohss', 'room_booking', 'reimbursement', 'storage_request
 const BAG_FIELD_TYPES = ['text', 'textarea', 'select', 'date', 'number', 'checkbox', 'file'];
 
 // Values for file-type answers are snapshotted as "__file__:<bucket>/<path>:<filename>"
-// (see student-events.html's parseFileAnswer) so bhss_form_submissions.answers stays a
+// (see student-groups.html's parseFileAnswer) so bhss_form_submissions.answers stays a
 // plain {label,value} shape — this just parses that string back out for display.
 function parseBagFileAnswer(value) {
   if (typeof value !== 'string' || !value.startsWith('__file__:')) return null;
@@ -2881,7 +2883,7 @@ function renderBagFormEditor(formId) {
     <div class="form-group full">
       <label>Form Description</label>
       <textarea rows="6" style="font-family:'Inter',sans-serif;font-size:0.85rem" oninput="_bagForms['${formId}'].description = this.value">${(form.description || '').replace(/</g, '&lt;')}</textarea>
-      <p style="font-size:0.76rem;color:var(--muted);margin-top:4px">HTML is allowed here (it's rendered as-is on the Student Events page) — e.g. &lt;strong&gt;, &lt;ul&gt;&lt;li&gt;, &lt;a href&gt;.</p>
+      <p style="font-size:0.76rem;color:var(--muted);margin-top:4px">HTML is allowed here (it's rendered as-is on the Student Groups page) — e.g. &lt;strong&gt;, &lt;ul&gt;&lt;li&gt;, &lt;a href&gt;.</p>
     </div>
     <div id="bagform-fields-${formId}"></div>
     <button class="btn-secondary" style="margin-top:10px" onclick="addBagFormField('${formId}')">+ Add Field</button>

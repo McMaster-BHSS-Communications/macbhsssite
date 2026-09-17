@@ -1,5 +1,5 @@
 -- ════════════════════════════════════════════════════════════════════════════
--- BHSS Website — BAGs (BHSS-Affiliated Groups) + Student Events Setup
+-- BHSS Website — BAGs (BHSS-Affiliated Groups) + Student Groups Setup
 -- Run this entire file once in: Supabase Dashboard → SQL Editor → New query → Run
 --
 -- Adds:

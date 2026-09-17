@@ -55,7 +55,7 @@
     <a href="/resources">Resources</a>
     <a href="/shop">Store</a>
     <a href="/bags">BAGs</a>
-    <a href="/student-events">Student Events</a>
+    <a href="/student-groups">Student Groups</a>
     <a href="/about">About Us</a>
     <a href="/contact">Contact</a>
     <div class="mob-cta"><a href="https://drive.google.com/drive/folders/1YlpnrLa7I39miOYMrV8sf2DoPRnFAx20">Academic Resources</a></div>

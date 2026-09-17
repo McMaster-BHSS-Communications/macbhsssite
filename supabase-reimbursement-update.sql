@@ -14,14 +14,14 @@
 -- of truth for the reimbursement form going forward; don't hand-edit that
 -- original insert in supabase-bags-setup.sql).
 --
--- File-upload fields (student-events.html / admin.html) snapshot their
+-- File-upload fields (student-groups.html / admin.html) snapshot their
 -- answer as the string "__file__:<bucket>/<path>:<filename>" so
 -- bhss_form_submissions.answers keeps its existing {label,value} shape.
--- Parsing that string back out is done by parseFileAnswer() (student-events.html)
+-- Parsing that string back out is done by parseFileAnswer() (student-groups.html)
 -- and parseBagFileAnswer() (admin.html).
 --
 -- Uploads are restricted to PDF only, 20MB max -- enforced client-side
--- (student-events.html) AND at the bucket level below (storage.buckets
+-- (student-groups.html) AND at the bucket level below (storage.buckets
 -- file_size_limit/allowed_mime_types) as a backstop.
 -- ─────────────────────────────────────────────────────────────────────────────
 
@@ -75,7 +75,7 @@ where id = 'reimbursement';
 -- then run the policies below.
 --
 -- File type/size are restricted to PDF-only, 20MB max (matches the client-side
--- check in student-events.html's submitSeForm, which rejects non-PDF/oversized
+-- check in student-groups.html's submitSeForm, which rejects non-PDF/oversized
 -- files before ever attempting an upload) -- this bucket-level limit is a
 -- server-side backstop in case that client check is ever bypassed or changed.
 -- If a future file-upload field needs a different type/size, either loosen
