@@ -133,11 +133,13 @@
     /* ─── STRUCTURE TIERS ─── */
     .tier-block { margin-bottom: 40px; }
     .tier-label { font-size: 0.68rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); margin-bottom: 14px; padding-bottom: 8px; border-bottom: 1px solid var(--border); }
-    .tier-cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 10px; }
-    .tier-card { background: var(--white); border: 1px solid var(--border); border-radius: 10px; padding: 14px 16px; font-size: 0.83rem; font-weight: 500; color: var(--text); text-decoration: none; display: block; transition: background 0.15s, border-color 0.15s, transform 0.15s; }
-    .tier-card:hover { background: var(--blue-pale); border-color: rgba(29,79,161,0.2); transform: translateY(-2px); }
-    .tier-card.chair { background: var(--blue); color: var(--white); border-color: var(--blue); font-size: 0.88rem; max-width: 200px; text-align: center; }
-    .tier-card.chair:hover { background: var(--blue-mid); }
+    .tier-cards { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; }
+    .tier-cards.cols-2 { grid-template-columns: repeat(2, 1fr); max-width: 50%; }
+    .tier-card { background: var(--white); border: 1px solid var(--border); border-radius: 2px; overflow: hidden; display: flex; flex-direction: column; color: var(--text); text-decoration: none; transition: transform 0.22s, box-shadow 0.22s; }
+    .tier-card:hover { transform: translateY(-4px); box-shadow: 0 14px 36px rgba(0,0,0,0.09); }
+    .tier-card img { width: 100%; aspect-ratio: 1 / 1; object-fit: contain; display: block; }
+    .tier-card span { font-size: 0.82rem; font-weight: 700; text-align: center; padding: 10px 10px 14px; line-height: 1.3; }
+    .tier-card.chair { width: 100%; max-width: 200px; }
     .chair-wrap { display: flex; justify-content: center; margin-bottom: 20px; }
     .tier-arrow { text-align: center; color: var(--muted); font-size: 1.2rem; margin: 8px 0 16px; }
 
@@ -187,6 +189,7 @@
       .page-hero { padding: 36px 20px 36px; }
       .filter-bar { padding: 0 16px; }
       .involve-grid { grid-template-columns: 1fr; }
+      .tier-cards, .tier-cards.cols-2 { grid-template-columns: repeat(2, 1fr); max-width: 100%; }
       footer { padding: 36px 24px 28px; }
       .footer-top { grid-template-columns: 1fr; gap: 24px; }
       .footer-bottom { flex-direction: column; gap: 6px; text-align: center; }
@@ -294,29 +297,15 @@
       </div>
     </div>
 
-    <div class="pull-quote">
-      "The BHSS is built on the belief that students know best what students need — and that a strong community begins with showing up for one another."
-    </div>
-
     <div class="article-block text-only">
       <div class="article-text">
         <h3>Who We Represent</h3>
-        <p>We represent all undergraduate students enrolled in the Honours Health Sciences Program, one of the most competitive and distinctive undergraduate programs in Canada. The HHSP attracts students interested in health, science, and research, and is known for its problem-based learning approach and close-knit community.</p>
-        <p>The BHSS serves students across all four years — from the First Year Council welcoming new students, to the Fourth Year Council supporting those preparing to graduate and move on to medical school, graduate programs, and careers in health.</p>
+        <p>We represent all undergraduate students enrolled in the Honours Health Sciences Program, one of the most unique and well-known undergraduate programs in Canada. The HHSP attracts students interested in health, science, and research, and is known for its problem-based learning approach and close-knit community.</p>
+        <p>The BHSS serves HHSP students across all years — from the First Year Council welcoming new students, to the Fourth Year Council supporting those preparing to graduate and move on to diverse careers post-graduation.</p>
       </div>
     </div>
 
     <hr class="section-divider">
-
-    <div class="callout land-ack">
-      <div class="callout-icon">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
-      </div>
-      <div class="callout-body">
-        <h4>Land Acknowledgement</h4>
-        <p>The McMaster Bachelor of Health Sciences Society recognizes that McMaster University sits on the traditional territories of the Haudenosaunee Confederacy and the Anishinaabe Nations, which is recognized by the "Dish With One Spoon" wampum agreement. We are grateful to live and learn on this land, and we are committed to reconciliation and the ongoing work of honouring Indigenous peoples, histories, and knowledge.</p>
-      </div>
-    </div>
   </div>
 
   <!-- STRUCTURE -->
@@ -329,43 +318,45 @@
     <div class="article-block text-only">
       <div class="article-text">
         <h3>How the BHSS is Organized</h3>
-        <p>At the top is the <strong>Chair</strong>, who oversees and coordinates the entire society. Beneath the Chair are eight <strong>Core Committees</strong> responsible for the day-to-day operations of the BHSS — from academics and finances to social events and communications. Two <strong>Special Committees</strong> handle larger, program-specific mandates: Welcome Week and the Student Representative Assembly (SRA). Finally, <strong>Year Councils</strong> serve as the representative body for each cohort of students.</p>
+        <p>At the top is the <strong>Chair</strong>, who oversees and coordinates the entire society.</p>
+        <p>Beneath the Chair are: </p>
+        <p>Eight <strong>Core Committees</strong> responsible for the day-to-day operations of the BHSS — from academics and finances to social events and communications. <br> Two <strong>Special Committees</strong> handle specialized mandates: Welcome Week (otherwise known aas the Heartbeats) and the Student Representative Assembly, who handle orientation and respresentation on the MSU respectively. <br> Finally, four <strong>Year Councils</strong> serve as the representative body for each cohort of students.</p>
         <p>Every committee is led by one or more elected or hired coordinators, supported by volunteer members from across the program. Learn more about each committee by visiting the <a href="/committees">Committees page</a>.</p>
       </div>
     </div>
 
     <div class="tier-block">
       <div class="chair-wrap">
-        <a href="/committees/chair" class="tier-card chair">Chair</a>
+        <a href="/committees/chair" class="tier-card chair"><img src="assets/images/portrait/chr_portrait@4x.png" alt="" loading="lazy"><span>Chair</span></a>
       </div>
       <div class="tier-arrow">↓</div>
 
       <div class="tier-label">Core Committees</div>
       <div class="tier-cards">
-        <a href="/committees/academics" class="tier-card">Academics</a>
-        <a href="/committees/communications" class="tier-card">Communications</a>
-        <a href="/committees/edi" class="tier-card">EDI</a>
-        <a href="/committees/external" class="tier-card">External</a>
-        <a href="/committees/financial" class="tier-card">Financial</a>
-        <a href="/committees/internal" class="tier-card">Internal</a>
-        <a href="/committees/logistics" class="tier-card">Logistics &amp; Elections</a>
-        <a href="/committees/social" class="tier-card">Social</a>
+        <a href="/committees/academics" class="tier-card"><img src="assets/images/portrait/aca_portrait@4x.png" alt="" loading="lazy"><span>Academics</span></a>
+        <a href="/committees/communications" class="tier-card"><img src="assets/images/portrait/com_portrait@4x.png" alt="" loading="lazy"><span>Communications</span></a>
+        <a href="/committees/edi" class="tier-card"><img src="assets/images/portrait/edi_portrait@4x.png" alt="" loading="lazy"><span>EDI</span></a>
+        <a href="/committees/external" class="tier-card"><img src="assets/images/portrait/ext_portrait@4x.png" alt="" loading="lazy"><span>External</span></a>
+        <a href="/committees/financial" class="tier-card"><img src="assets/images/portrait/fin_portrait@4x.png" alt="" loading="lazy"><span>Financial</span></a>
+        <a href="/committees/internal" class="tier-card"><img src="assets/images/portrait/int_portrait@4x.png" alt="" loading="lazy"><span>Internal</span></a>
+        <a href="/committees/logistics" class="tier-card"><img src="assets/images/portrait/log_portrait@4x.png" alt="" loading="lazy"><span>Logistics &amp; Elections</span></a>
+        <a href="/committees/social" class="tier-card"><img src="assets/images/portrait/soc_portrait@4x.png" alt="" loading="lazy"><span>Social</span></a>
       </div>
       <div class="tier-arrow" style="margin-top:20px">↓</div>
 
       <div class="tier-label" style="margin-top:0">Special Committees</div>
-      <div class="tier-cards">
-        <a href="/committees/welcome-week" class="tier-card">Welcome Week</a>
-        <a href="/committees/sra" class="tier-card">Student Representative Assembly</a>
+      <div class="tier-cards cols-2">
+        <a href="/committees/welcome-week" class="tier-card"><img src="assets/images/portrait/wwc_portrait@4x.png" alt="" loading="lazy"><span>Welcome Week</span></a>
+        <a href="/committees/sra" class="tier-card"><img src="assets/images/portrait/sra_portrait@4x.png" alt="" loading="lazy"><span>Student Representative Assembly</span></a>
       </div>
       <div class="tier-arrow" style="margin-top:20px">↓</div>
 
       <div class="tier-label" style="margin-top:0">Year Councils</div>
       <div class="tier-cards">
-        <a href="/committees/first-year-council" class="tier-card">First Year Council</a>
-        <a href="/committees/second-year-council" class="tier-card">Second Year Council</a>
-        <a href="/committees/third-year-council" class="tier-card">Third Year Council</a>
-        <a href="/committees/fourth-year-council" class="tier-card">Fourth Year Council</a>
+        <a href="/committees/first-year-council" class="tier-card"><img src="assets/images/portrait/fyc_portrait@4x.png" alt="" loading="lazy"><span>First Year Council</span></a>
+        <a href="/committees/second-year-council" class="tier-card"><img src="assets/images/portrait/syc_portrait@4x.png" alt="" loading="lazy"><span>Second Year Council</span></a>
+        <a href="/committees/third-year-council" class="tier-card"><img src="assets/images/portrait/tyc_portrait@4x.png" alt="" loading="lazy"><span>Third Year Council</span></a>
+        <a href="/committees/fourth-year-council" class="tier-card"><img src="assets/images/portrait/4yc_portrait@4x.png" alt="" loading="lazy"><span>Fourth Year Council</span></a>
       </div>
     </div>
 
@@ -392,51 +383,8 @@
     <div class="article-block text-only">
       <div class="article-text">
         <h3>How We're Governed</h3>
-        <p>The BHSS is a student society that operates within the McMaster Student Union (MSU) and in accordance with McMaster University's policies. We maintain a formal constitution and set of bylaws that define how the society is structured, how decisions are made, and how members are held accountable.</p>
+        <p>The BHSS is a student society that operates in collaboration with the Faculty of Health Sciences and in accordance with McMaster University's policies. We maintain a formal constitution and set of bylaws that define how the society is structured, how decisions are made, and how members are held accountable.</p>
         <p>All BHSS coordinators are either elected by the student body or hired through a formal application process. Elections are administered by the Logistics &amp; Elections Committee. The BHSS also sends representatives to the MSU's Student Representative Assembly (SRA), where HHSP student voices are heard at the university-wide level.</p>
-      </div>
-    </div>
-
-    <div class="doc-list">
-      <div class="doc-row">
-        <div class="doc-icon">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
-        </div>
-        <div class="doc-info">
-          <strong>BHSS Constitution</strong>
-          <span>The foundational document defining the BHSS's mandate, structure, and governance.</span>
-        </div>
-        <a href="#" class="doc-link">View Document →</a>
-      </div>
-      <div class="doc-row">
-        <div class="doc-icon">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
-        </div>
-        <div class="doc-info">
-          <strong>BHSS Bylaws</strong>
-          <span>Detailed operational rules, procedures, and policies for BHSS committees and members.</span>
-        </div>
-        <a href="#" class="doc-link">View Document →</a>
-      </div>
-      <div class="doc-row">
-        <div class="doc-icon">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-        </div>
-        <div class="doc-info">
-          <strong>Elections Schedule</strong>
-          <span>Upcoming and past BHSS election dates, positions, and results.</span>
-        </div>
-        <a href="/committees/logistics" class="doc-link">See Logistics &amp; Elections →</a>
-      </div>
-      <div class="doc-row">
-        <div class="doc-icon">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
-        </div>
-        <div class="doc-info">
-          <strong>SRA Representation</strong>
-          <span>BHSS representatives on the McMaster Student Union's governing body.</span>
-        </div>
-        <a href="/committees/sra" class="doc-link">See SRA Committee →</a>
       </div>
     </div>
 
@@ -446,6 +394,7 @@
       <div class="article-text">
         <h3>Elections &amp; Appointments</h3>
         <p>Most BHSS coordinator positions are filled through elections held during the academic year. The Logistics &amp; Elections Committee oversees the process, including nominations, campaigning, and vote counting. Results are shared across BHSS channels.</p>
+        <p>Two elections are typically held each academic year — one for vacant positions and the First-Year Representative in the Fall, and another for the general election in the Spring.</p>
         <p>Some positions, such as Welcome Week Coordinators and committee members, may be filled through an application and interview process. Hiring timelines are shared when applications open — reach out via the <a href="/contact">Contact page</a> if you have questions.</p>
       </div>
     </div>
