@@ -4,7 +4,7 @@
 -- Adds the "media_request" row to bhss_forms: the web version of HeartyBot's
 -- /media-request command, built from the COMMS: Media Consolidation Protocols
 -- (14-day lead time, 7-day absolute minimum, what is / isn't Comms' scope).
--- Open to everyone on /student-groups (NOT in GATED_FORM_IDS). Submissions land
+-- Locked to signed-in BAGs/committees on /student-groups (in GATED_FORM_IDS). Submissions land
 -- in bhss_form_submissions like every other form and show in the admin
 -- "Form Submissions" panel.
 --
@@ -16,7 +16,7 @@ insert into public.bhss_forms (id, title, description, fields)
 values (
   'media_request',
   'Request Media from Communications',
-  $desc$<p>Use this form to ask Communications to create and post media on <strong>@macbhss</strong>. @macbhss is the BHSS's <em>information authority</em>: it handles event details, hiring, program-wide announcements and administrative documents. Committee accounts handle additional content (recaps, reels, series posts, Meet the Team).</p>
+  $desc$<p><em>Only available to signed-in BAGs and committees.</em> Use this form to ask Communications to create and post media on <strong>@macbhss</strong>. @macbhss is the BHSS's <em>information authority</em>: it handles event details, hiring, program-wide announcements and administrative documents. Committee accounts handle additional content (recaps, reels, series posts, Meet the Team).</p>
 <h4>Lead time</h4>
 <ul>
 <li><strong>Submit at least 14 days (2 weeks)</strong> before the intended post date so Comms can prepare and allocate time.</li>
@@ -29,7 +29,9 @@ values (
   '[
     {"id":"requester_name","label":"Your Name","type":"text","required":true},
     {"id":"requester_email","label":"Your Email","type":"text","required":true,"help":"So Comms can follow up with you."},
-    {"id":"committee","label":"Committee or Group","type":"select","options":["Academics","Chair","Communications","EDI","External","Financial","Internal","Logistics & Elections","Social","SRA","Multiple committees / General","BAG or external group"],"required":true},
+    {"id":"committee","label":"Committee or Group","type":"select","options":["Academics","Chair","Communications","EDI","External","Financial","Internal","Logistics & Elections","Social","SRA","Multiple committees / General","BAG","Other (e.g. a Year Council)"],"required":true},
+    {"id":"bag_name","label":"BAG Name","type":"text","required":false,"help":"Required if you selected BAG."},
+    {"id":"bag_instagram","label":"BAG Instagram Handle","type":"text","required":false,"help":"Required if you selected BAG, e.g. @yourbag"},
     {"id":"topic","label":"Topic","type":"text","required":true,"help":"What is the post about?"},
     {"id":"post_date","label":"Intended Post Date","type":"date","required":true,"help":"Ideally 14+ days from today; 7 days is the absolute minimum."},
     {"id":"event_date","label":"Event Date","type":"text","required":true,"help":"Type n/a if not applicable."},
@@ -37,7 +39,7 @@ values (
     {"id":"location","label":"Location","type":"text","required":true,"help":"Type n/a if not applicable."},
     {"id":"caption","label":"Caption","type":"textarea","required":false,"help":"Caption you would like on the post, if you have one."},
     {"id":"design_requests","label":"Image / Design Requests","type":"textarea","required":false,"help":"Specific design or image requests."},
-    {"id":"notes","label":"Additional Notes","type":"textarea","required":false,"help":"E.g. you would like @macbhss to repost your own promo."}
+    {"id":"notes","label":"Additional Notes","type":"textarea","required":false,"help":"If you selected Other, tell us who this is for (e.g. which Year Council). You can also ask for @macbhss to repost your own promo here."}
   ]'::jsonb
 )
 on conflict (id) do update

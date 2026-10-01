@@ -450,7 +450,7 @@
           </div>
           <div class="se-link-body">
             <h3>Request Media</h3>
-            <p>Ask Communications to create and post media on @macbhss — posters, announcements, hiring and more. Submit at least 14 days before your post date.</p>
+            <p>Ask Communications to create and post media on @macbhss — posters, announcements, hiring and more. Only available to signed-in BAGs and committees. Submit at least 14 days before your post date.</p>
           </div>
           <button class="se-go-btn" onclick="showView('media_request')">Go there</button>
         </div>
@@ -728,7 +728,7 @@ function enterDashboard() {
   showView('home');
 }
 
-const GATED_FORM_IDS = ['reimbursement', 'storage_request'];
+const GATED_FORM_IDS = ['reimbursement', 'storage_request', 'media_request'];
 
 function showView(name) {
   document.querySelectorAll('.se-view').forEach(v => v.classList.remove('active'));
@@ -782,7 +782,7 @@ function renderForm(formId) {
 
   // Reimbursement and Storage Request are locked to signed-in BAGs/committees.
   if (GATED_FORM_IDS.includes(formId) && (!session || session.mode !== 'bag')) {
-    const label = formId === 'storage_request' ? 'Storage requests' : 'Reimbursement submissions';
+    const label = { storage_request: 'Storage requests', media_request: 'Media requests' }[formId] || 'Reimbursement submissions';
     host.innerHTML = `
       <div class="se-unavailable">
         <div class="se-unavailable-icon">
@@ -832,6 +832,22 @@ function renderForm(formId) {
         <p>Your submission has been received. The relevant committee will follow up if needed.</p>
       </div>
     </div>`;
+
+  if (formId === 'media_request') {
+    const sel = document.getElementById('sf-committee');
+    const toggle = () => {
+      const isBag = sel.value === 'BAG';
+      ['bag_name', 'bag_instagram'].forEach(id => {
+        document.getElementById('sf-' + id).closest('.se-form-group').style.display = isBag ? '' : 'none';
+      });
+    };
+    sel.addEventListener('change', toggle);
+    if (session && session.mode === 'bag' && session.groupType === 'bag') {
+      sel.value = 'BAG';
+      document.getElementById('sf-bag_name').value = session.groupName || '';
+    }
+    toggle();
+  }
 }
 
 async function submitSeForm(formId) {
@@ -871,6 +887,19 @@ async function submitSeForm(formId) {
       errEl.style.display = 'block';
       el.focus();
       return;
+    }
+  }
+
+  // Media requests: BAG name + Instagram handle are required when "BAG" is selected.
+  if (formId === 'media_request' && document.getElementById('sf-committee').value === 'BAG') {
+    for (const [id, label] of [['bag_name', 'BAG Name'], ['bag_instagram', 'BAG Instagram Handle']]) {
+      const el = document.getElementById('sf-' + id);
+      if (!el.value.trim()) {
+        errEl.textContent = `Please fill out "${label}" since you selected BAG.`;
+        errEl.style.display = 'block';
+        el.focus();
+        return;
+      }
     }
   }
 
