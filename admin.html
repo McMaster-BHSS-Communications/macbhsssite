@@ -464,6 +464,12 @@
         <span id="contact-unread-badge" style="display:none;margin-left:auto;background:#ef4444;color:#fff;font-size:0.6rem;font-weight:700;padding:1px 6px;border-radius:100px"></span>
       </button>
 
+      <div class="sidebar-label" style="margin-top:24px">Calendar</div>
+      <button class="sidebar-link" onclick="showPanel('calendar-sync')" id="link-calendar-sync">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+        Calendar Sync
+      </button>
+
       <div class="sidebar-label" style="margin-top:24px">Site</div>
       <a class="sidebar-link" href="/" target="_blank">
         <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
@@ -1245,6 +1251,22 @@
       </div>
     </div>
 
+    <!-- CALENDAR SYNC PANEL -->
+    <div class="panel" id="panel-calendar-sync">
+      <div class="topbar">
+        <div>
+          <h1>Calendar Sync</h1>
+          <p>The public calendar and homepage "Upcoming" panel are copied from the two Notion databases (BHSS Events and Academic Calendar). Only rows with <strong>Public?</strong> checked are shown.</p>
+        </div>
+        <button class="btn-secondary" onclick="loadCalendarSync()">↻ Refresh</button>
+      </div>
+      <div style="background:#fff;border:1px solid var(--border);border-radius:14px;padding:28px;max-width:640px">
+        <div id="calSyncStatus" style="font-size:0.88rem;line-height:1.7;color:var(--mid);margin-bottom:20px">Loading…</div>
+        <button class="btn-primary" id="calSyncBtn" onclick="syncCalendarNow()">Sync now</button>
+        <p style="font-size:0.75rem;color:var(--muted);margin-top:14px">It also syncs automatically every 6 hours. Use this after a last-minute change in Notion — it takes a few seconds.</p>
+      </div>
+    </div>
+
   </div>
 </div>
 
@@ -1337,6 +1359,38 @@ function showPanel(name) {
   if (name === 'bag-codes')       renderBagCodesList();
   if (name === 'bag-forms')       loadBagForms();
   if (name === 'bag-submissions') loadBagSubmissions();
+  if (name === 'calendar-sync')   loadCalendarSync();
+}
+
+// ── CALENDAR SYNC ──
+// Calls the sync-notion-calendar Edge Function with the admin's session token.
+// Status is read from the one-row calendar_sync_status table (supabase-calendar.sql).
+async function loadCalendarSync() {
+  const el = document.getElementById('calSyncStatus');
+  const [{ data: st }, { count }] = await Promise.all([
+    window.db.from('calendar_sync_status').select('*').eq('id', 1).maybeSingle(),
+    window.db.from('calendar_events').select('*', { count: 'exact', head: true }),
+  ]);
+  if (!st || !st.last_synced_at) { el.innerHTML = 'Never synced yet. Click <strong>Sync now</strong> to pull from Notion.'; return; }
+  const when = new Date(st.last_synced_at).toLocaleString('en-CA', { timeZone: 'America/Toronto', dateStyle: 'medium', timeStyle: 'short' });
+  el.innerHTML =
+    `Last synced: <strong>${when} ET</strong> (${st.trigger === 'cron' ? 'automatic' : 'manual'})<br>` +
+    `${count ?? '?'} events currently on the site · last run: +${st.added ?? 0} added, ${st.updated ?? 0} updated, −${st.removed ?? 0} removed` +
+    (st.error ? `<br><span style="color:#b91c1c">Error: ${st.error.replace(/</g, '&lt;')}</span>` : '');
+}
+
+async function syncCalendarNow() {
+  const btn = document.getElementById('calSyncBtn');
+  btn.disabled = true; btn.textContent = 'Syncing…';
+  try {
+    const { data, error } = await window.db.functions.invoke('sync-notion-calendar', { body: {} });
+    if (error) throw error;
+    toast(`Synced: +${data.added} added, ${data.updated} updated, −${data.removed} removed`);
+  } catch (e) {
+    toast('Sync failed — see the status box for details', 'error');
+  }
+  btn.disabled = false; btn.textContent = 'Sync now';
+  loadCalendarSync();
 }
 
 // ── TOAST ──

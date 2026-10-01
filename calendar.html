@@ -1,0 +1,572 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="icon" type="image/x-icon" href="favicon/favicon.ico">
+  <link rel="icon" type="image/svg+xml" href="favicon/favicon.svg">
+  <link rel="icon" type="image/png" sizes="96x96" href="favicon/favicon-96x96.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="favicon/apple-touch-icon.png">
+  <link rel="manifest" href="favicon/site.webmanifest">
+  <title>Calendar | Mac BHSS</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Familjen+Grotesk:wght@400;500;600;700&family=Inter:wght@300;400;500;600&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="mobile-nav.css" />
+  <style>
+    :root {
+      --maroon:    #7a003c;
+      --maroon-dk: #5a002c;
+      --blue:      #1d4fa1;
+      --blue-mid:  #2e69c9;
+      --blue-lt:   #5b9bd5;
+      --blue-pale: #ddeaf7;
+      --dark:      #0f1b2d;
+      --text:      #1a2640;
+      --mid:       #4a5a7a;
+      --muted:     #8899bb;
+      --white:     #ffffff;
+      --off:       #f5f7fa;
+      --border:    #dde5f0;
+      --nav-h:     64px;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; overflow-x: hidden; }
+    body { font-family: 'Inter', sans-serif; background: var(--off); color: var(--text); overflow-x: hidden; }
+    button { font-family: inherit; }
+
+    /* ─── NAV ─── */
+    nav.sitenav {
+      position: sticky; top: 0; z-index: 500; height: var(--nav-h);
+      background: var(--white); border-bottom: 1px solid var(--border);
+      display: flex; align-items: center; padding: 0 32px; gap: 0;
+    }
+    .nav-logo { display: flex; align-items: center; gap: 10px; text-decoration: none; margin-right: 28px; flex-shrink: 0; }
+    .nav-logo-mark { width: 38px; height: 38px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-family: 'Familjen Grotesk', serif; font-size: 1rem; font-weight: 600; color: var(--blue); }
+    .nav-logo-text { font-family: 'Familjen Grotesk', serif; font-size: clamp(0.05rem, 3.5vw, 1.05rem); font-weight: 600; color: var(--text); line-height: 1.2; }
+    .nav-logo-text span { display: block; font-size: clamp(0.2rem, 3.5vw, 0.7rem); font-weight: 400; color: var(--muted); font-family: 'Inter', sans-serif; letter-spacing: 0.04em; }
+    .nav-links { display: flex; align-items: center; gap: 2px; list-style: none; }
+    .nav-links a { display: block; padding: 7px 13px; font-size: 0.83rem; font-weight: 500; color: var(--mid); text-decoration: none; border-radius: 6px; transition: background 0.15s, color 0.15s; white-space: nowrap; }
+    .nav-links a:hover, .nav-links a.active { background: var(--blue); color: var(--white); }
+    .has-drop { position: relative; }
+    .has-drop > a::after { content: ' ▾'; font-size: 0.6rem; opacity: 0.7; }
+    .drop { display: none; position: absolute; top: calc(100% + 6px); left: 0; background: var(--white); border: 1px solid var(--border); border-radius: 10px; box-shadow: 0 10px 32px rgba(0,0,0,0.1); min-width: 176px; padding: 6px; z-index: 300; }
+    .drop::before { content: ""; position: absolute; top: -20px; left: 0; width: 100%; height: 20px; background: transparent; }
+    .has-drop:hover .drop { display: block; }
+    .drop a { border-radius: 6px; font-size: 0.8rem; padding: 7px 12px; color: var(--mid); }
+    .drop a:hover { background: var(--blue-pale); color: var(--blue); }
+    .has-sidedrop { position: relative; }
+    .has-sidedrop > a::after { content: ' ▸'; font-size: 0.6rem; opacity: 0.7; }
+    .sidedrop { display: none; position: absolute; top: -200%; left: calc(100% + 8px); background: var(--white); border: 1px solid var(--border); border-radius: 10px; box-shadow: 0 10px 32px rgba(0,0,0,0.1); min-width: 220px; padding: 10px; z-index: 500; white-space: normal; }
+    .has-sidedrop::after { content: ""; position: absolute; top: 0; left: 100%; width: 12px; height: 100%; background: transparent; pointer-events: auto; }
+    .has-sidedrop:hover .sidedrop { display: block; }
+    .sidedrop a { display: block; border-radius: 6px; font-size: 0.8rem; padding: 8px 12px; color: var(--mid); }
+    .sidedrop a:hover { background: var(--blue-pale); color: var(--blue); }
+    .nav-resources { margin-left: auto; display: flex; align-items: center; }
+    .nav-resources a { display: flex; align-items: center; gap: 6px; padding: 8px 16px; background: var(--blue-pale); color: var(--blue); font-size: 0.8rem; font-weight: 600; text-decoration: none; border-radius: 8px; border: 1px solid rgba(45,105,201,0.2); transition: background 0.15s, color 0.15s; white-space: nowrap; }
+    .nav-resources a:hover { background: var(--blue); color: var(--white); }
+
+    /* ─── PAGE HERO ─── */
+    .page-hero { background: var(--blue); position: relative; overflow: hidden; padding: 64px 60px 56px; text-align: center; }
+    .page-hero .decor-img { position: absolute; pointer-events: none; user-select: none; opacity: 1; animation: floatDecor 7s ease-in-out infinite alternate; animation-fill-mode: both; }
+    @keyframes floatDecor { from { transform: rotate(var(--r, 0deg)) translateY(0); } to { transform: rotate(var(--r, 0deg)) translateY(-12px); } }
+    .page-hero .decor-img1 { width: 90px;  top: 10px;   left: 36px;   --r: -8deg; }
+    .page-hero .decor-img2 { width: 66px;  bottom: 12px; right: 72px;  --r: 18deg; }
+    .page-hero .decor-img3 { width: 50px;  top: 20px;   right: 160px; --r: -4deg; }
+    .page-hero .decor-img4 { width: 78px;  bottom: 14px; left: 130px;  --r: 10deg; }
+    .page-hero h1 { font-family: 'Familjen Grotesk', sans-serif; font-size: clamp(1.8rem, 5vw, 3.2rem); font-weight: 600; color: var(--white); letter-spacing: -0.02em; position: relative; z-index: 1; margin-bottom: 16px; }
+    .page-hero p { font-size: clamp(0.85rem, 2vw, 1rem); color: rgba(255,255,255,0.8); max-width: 640px; margin: 0 auto; line-height: 1.7; position: relative; z-index: 1; }
+
+    /* ─── CALENDAR ─── */
+    .cal-wrap { max-width: 1180px; margin: 0 auto; padding: 36px 32px 72px; }
+    .cal-toolbar { display: flex; flex-wrap: wrap; gap: 14px 24px; align-items: center; justify-content: space-between; margin-bottom: 18px; }
+    .cal-month-nav { display: flex; align-items: center; gap: 10px; }
+    .cal-month-title { font-family: 'Familjen Grotesk', sans-serif; font-size: 1.6rem; font-weight: 600; letter-spacing: -0.01em; min-width: 210px; }
+    .cal-btn { background: var(--white); border: 1px solid var(--border); color: var(--text); font-size: 0.8rem; font-weight: 600; padding: 8px 14px; border-radius: 8px; cursor: pointer; transition: background 0.15s, color 0.15s, border-color 0.15s; }
+    .cal-btn:hover { border-color: var(--blue); color: var(--blue); }
+    .cal-btn.icon { padding: 8px 12px; font-size: 0.95rem; line-height: 1; }
+    .cal-controls { display: flex; flex-wrap: wrap; gap: 10px 16px; align-items: center; }
+    .seg { display: inline-flex; background: var(--white); border: 1px solid var(--border); border-radius: 9px; padding: 3px; }
+    .seg button { background: none; border: none; font-size: 0.78rem; font-weight: 600; color: var(--mid); padding: 6px 13px; border-radius: 6px; cursor: pointer; }
+    .seg button.active { background: var(--blue); color: var(--white); }
+    .cal-select { background: var(--white); border: 1px solid var(--border); border-radius: 9px; padding: 8px 12px; font-size: 0.78rem; font-weight: 600; color: var(--mid); font-family: inherit; cursor: pointer; }
+
+    .cal-legend { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 20px; min-height: 30px; }
+    .legend-chip { display: inline-flex; align-items: center; gap: 7px; background: var(--white); border: 1px solid var(--border); border-radius: 100px; padding: 5px 12px 5px 10px; font-size: 0.74rem; font-weight: 500; color: var(--mid); cursor: pointer; transition: opacity 0.15s; }
+    .legend-chip i { width: 9px; height: 9px; border-radius: 50%; background: var(--c); flex-shrink: 0; }
+    .legend-chip.off { opacity: 0.4; text-decoration: line-through; }
+
+    .cal-grid-wrap { background: var(--white); border: 1px solid var(--border); border-radius: 14px; overflow: hidden; }
+    .cal-dow { display: grid; grid-template-columns: repeat(7, 1fr); background: var(--off); border-bottom: 1px solid var(--border); }
+    .cal-dow div { padding: 10px 8px; font-size: 0.68rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); text-align: center; }
+    .cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); }
+    .cal-cell { min-height: 112px; border-right: 1px solid var(--border); border-bottom: 1px solid var(--border); padding: 6px; cursor: pointer; min-width: 0; transition: background 0.12s; }
+    .cal-cell:nth-child(7n) { border-right: none; }
+    .cal-cell:hover { background: #fafcff; }
+    .cal-cell.other { background: var(--off); }
+    .cal-cell.other .cal-num { color: var(--muted); opacity: 0.7; }
+    .cal-num { display: inline-flex; align-items: center; justify-content: center; min-width: 24px; height: 24px; font-size: 0.78rem; font-weight: 600; color: var(--text); border-radius: 50%; margin-bottom: 4px; }
+    .cal-cell.today .cal-num { background: var(--maroon); color: var(--white); }
+    .pill { display: block; width: 100%; text-align: left; background: var(--c); color: #fff; border: none; border-radius: 4px; font-size: 0.7rem; font-weight: 600; padding: 3px 6px; margin-bottom: 3px; cursor: pointer; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; line-height: 1.3; }
+    .pill:hover { filter: brightness(1.12); }
+    .pill-more { background: none; border: none; color: var(--blue); font-size: 0.7rem; font-weight: 600; cursor: pointer; padding: 1px 4px; }
+    .cal-dots { display: none; gap: 3px; flex-wrap: wrap; justify-content: center; }
+    .cal-dots i { width: 6px; height: 6px; border-radius: 50%; background: var(--c); }
+
+    /* list view */
+    .cal-list { background: var(--white); border: 1px solid var(--border); border-radius: 14px; overflow: hidden; }
+    .list-day { display: grid; grid-template-columns: 84px 1fr; border-bottom: 1px solid var(--border); }
+    .list-day:last-child { border-bottom: none; }
+    .list-date { padding: 16px 12px; text-align: center; background: var(--off); border-right: 1px solid var(--border); }
+    .list-date b { display: block; font-family: 'Familjen Grotesk', sans-serif; font-size: 1.5rem; line-height: 1.1; }
+    .list-date span { font-size: 0.68rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); }
+    .list-items { padding: 8px; }
+    .list-item { display: flex; align-items: center; gap: 12px; width: 100%; background: none; border: none; text-align: left; padding: 10px 12px; border-radius: 8px; cursor: pointer; }
+    .list-item:hover { background: var(--off); }
+    .list-item i { width: 10px; height: 10px; border-radius: 50%; background: var(--c); flex-shrink: 0; }
+    .list-item .t { font-size: 0.9rem; font-weight: 600; color: var(--text); }
+    .list-item .s { font-size: 0.76rem; color: var(--muted); margin-top: 2px; }
+    .cal-empty { padding: 56px 20px; text-align: center; color: var(--muted); font-size: 0.9rem; }
+
+    .cal-note { margin-top: 18px; font-size: 0.75rem; color: var(--muted); text-align: center; }
+
+    /* modal */
+    .cal-overlay { display: none; position: fixed; inset: 0; background: rgba(15,27,45,0.55); z-index: 900; align-items: center; justify-content: center; padding: 20px; }
+    .cal-overlay.open { display: flex; }
+    .cal-modal { background: var(--white); border-radius: 16px; width: 100%; max-width: 460px; max-height: 86vh; overflow-y: auto; position: relative; box-shadow: 0 24px 64px rgba(0,0,0,0.3); }
+    .cal-modal-bar { height: 8px; background: var(--c, var(--blue)); border-radius: 16px 16px 0 0; }
+    .cal-modal-body { padding: 26px 28px 28px; }
+    .cal-close { position: absolute; top: 16px; right: 14px; background: none; border: none; color: var(--muted); font-size: 1.15rem; cursor: pointer; line-height: 1; padding: 4px 8px; }
+    .cal-close:hover { color: var(--text); }
+    .cal-back { background: none; border: none; color: var(--blue); font-size: 0.78rem; font-weight: 600; cursor: pointer; margin-bottom: 12px; padding: 0; }
+    .m-chip { display: inline-block; background: var(--c); color: #fff; font-size: 0.68rem; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; padding: 4px 10px; border-radius: 100px; margin-bottom: 12px; }
+    .m-title { font-family: 'Familjen Grotesk', sans-serif; font-size: 1.5rem; font-weight: 600; line-height: 1.2; letter-spacing: -0.01em; margin-bottom: 18px; padding-right: 20px; }
+    .m-row { display: flex; gap: 12px; padding: 11px 0; border-top: 1px solid var(--border); font-size: 0.88rem; }
+    .m-row .k { width: 84px; flex-shrink: 0; font-size: 0.7rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); padding-top: 2px; }
+    .m-row .v { color: var(--text); line-height: 1.5; }
+    .m-daytitle { font-family: 'Familjen Grotesk', sans-serif; font-size: 1.25rem; font-weight: 600; margin-bottom: 14px; padding-right: 20px; }
+
+    /* ─── FOOTER ─── */
+    footer { background: var(--dark); color: rgba(255,255,255,0.55); padding: 48px 60px 40px; }
+    .footer-top { display: grid; grid-template-columns: 1.5fr 1fr 1fr 1.5fr 0.6fr; gap: 40px; margin-bottom: 40px; }
+    .footer-brand p.pre { font-size: 0.6rem; font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase; color: rgba(255,255,255,0.35); margin-bottom: 4px; }
+    .footer-brand h3 { font-family: 'Familjen Grotesk', serif; font-size: 1.25rem; font-weight: 600; color: var(--white); line-height: 1.25; margin-bottom: 14px; }
+    .footer-brand .desc { font-size: 0.76rem; line-height: 1.65; color: rgba(255,255,255,0.4); }
+    .footer-brand .desc a { color: rgba(255,255,255,0.55); text-decoration: underline; }
+    .footer-col h4 { font-size: 0.7rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: rgba(255,255,255,0.5); margin-bottom: 12px; }
+    .footer-col p, .footer-col address { font-size: 0.78rem; font-style: normal; color: rgba(255,255,255,0.4); line-height: 1.65; padding-right: 100px;}
+    .footer-col a { display: inline-flex; color: rgba(255,255,255,0.45); text-decoration: none; font-size: 0.78rem; margin-bottom: 5px; transition: color 0.15s; }
+    .footer-col a:hover { color: var(--white); }
+    .footer-bottom { border-top: 1px solid rgba(255,255,255,0.07); padding-top: 20px; font-size: 0.72rem; color: rgba(255,255,255,0.25); display: flex; align-items: center; justify-content: space-between; }
+
+    /* ─── RESPONSIVE ─── */
+    @media (max-width: 960px) {
+      .footer-top { grid-template-columns: 1fr 1fr; gap: 28px; }
+      .page-hero { padding: 48px 32px 44px; }
+      .cal-wrap { padding: 28px 20px 56px; }
+    }
+    @media (max-width: 720px) {
+      nav.sitenav { padding: 0 16px; }
+      .nav-links, .nav-resources { display: none; }
+      .page-hero { padding: 36px 20px 36px; }
+      .cal-month-title { font-size: 1.3rem; min-width: 0; }
+      .cal-cell { min-height: 64px; padding: 4px 2px; text-align: center; }
+      .cal-cell .pill, .cal-cell .pill-more { display: none; }
+      .cal-dots { display: flex; }
+      .list-day { grid-template-columns: 64px 1fr; }
+      footer { padding: 36px 24px 28px; }
+      .footer-top { grid-template-columns: 1fr; gap: 24px; }
+      .footer-bottom { flex-direction: column; gap: 6px; text-align: center; }
+    }
+  </style>
+  <link rel="canonical" href="https://bhssmcmaster.com/calendar" />
+  <meta name="description" content="BHSS events and McMaster Health Sciences academic deadlines in one calendar — tests, assignments, applications, and everything the BHSS is running." />
+</head>
+<body>
+
+<!-- Nav -->
+<nav class="sitenav">
+  <a href="/" class="nav-logo">
+    <img class="nav-logo-mark" src="assets/images/logoNEW@4x.png" alt="BHSS Logo">
+    <div class="nav-logo-text">Bachelor of Health Sciences Society<span>McMaster University</span></div>
+  </a>
+  <ul class="nav-links">
+    <li><a href="/">Home</a></li>
+    <li class="has-drop">
+      <a href="/committees">Committees</a>
+      <div class="drop">
+        <a href="/committees">All Committees</a>
+        <a href="/committees/chair">Chair</a>
+        <a href="/committees/academics">Academics</a>
+        <a href="/committees/communications">Communications</a>
+        <a href="/committees/edi">Equity, Diversity &amp; Inclusion</a>
+        <a href="/committees/external">External</a>
+        <a href="/committees/financial">Financial</a>
+        <a href="/committees/internal">Internal</a>
+        <a href="/committees/logistics">Logistics &amp; Elections</a>
+        <a href="/committees/social">Social</a>
+        <a href="/committees/welcome-week">Welcome Week</a>
+        <a href="/committees/sra">SRA</a>
+        <div class="has-sidedrop">
+          <a href="#">Year Councils</a>
+          <div class="sidedrop">
+            <a href="/committees/first-year-council">First Year Council</a>
+            <a href="/committees/second-year-council">Second Year Council</a>
+            <a href="/committees/third-year-council">Third Year Council</a>
+            <a href="/committees/fourth-year-council">Fourth Year Council</a>
+          </div>
+        </div>
+      </div>
+    </li>
+    <li><a href="/resources">Resources</a></li>
+    <li><a href="/calendar" class="active">Calendar</a></li>
+    <li><a href="/shop">Store</a></li>
+    <li><a href="/bags">BAGs</a></li>
+    <li><a href="/student-groups">Student Groups</a></li>
+    <li><a href="/about">About Us</a></li>
+    <li><a href="/contact">Contact</a></li>
+  </ul>
+  <div class="nav-resources">
+    <a href="https://drive.google.com/drive/folders/1YlpnrLa7I39miOYMrV8sf2DoPRnFAx20">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
+      Academic Resources
+    </a>
+  </div>
+  <button class="hamburger" aria-label="Open menu"><span></span><span></span><span></span></button>
+</nav>
+
+<!-- Page Hero -->
+<div class="page-hero">
+  <img class="decor-img decor-img1" src="assets/svg/decor/sqs4.svg" alt="" aria-hidden="true">
+  <img class="decor-img decor-img2" src="assets/svg/decor/sqs6.svg" alt="" aria-hidden="true">
+  <img class="decor-img decor-img3" src="assets/svg/decor/sqs8.svg" alt="" aria-hidden="true">
+  <img class="decor-img decor-img4" src="assets/svg/decor/sqs2.svg" alt="" aria-hidden="true">
+  <h1>Calendar</h1>
+  <p>BHSS events and academic deadlines, all in one place. Click anything to see the details.</p>
+</div>
+
+<div class="cal-wrap">
+  <div class="cal-toolbar">
+    <div class="cal-month-nav">
+      <button class="cal-btn icon" id="calPrev" aria-label="Previous month">&#8249;</button>
+      <button class="cal-btn icon" id="calNext" aria-label="Next month">&#8250;</button>
+      <button class="cal-btn" id="calToday">Today</button>
+      <h2 class="cal-month-title" id="calTitle"></h2>
+    </div>
+    <div class="cal-controls">
+      <div class="seg" id="segSource">
+        <button class="active" data-v="all">All</button>
+        <button data-v="events">BHSS Events</button>
+        <button data-v="academic">Academic</button>
+      </div>
+      <select class="cal-select" id="levelSel" aria-label="Academic level">
+        <option value="all">All levels</option>
+        <option value="I">Level I</option>
+        <option value="II">Level II</option>
+        <option value="III">Level III</option>
+        <option value="IV">Level IV</option>
+      </select>
+      <div class="seg" id="segView">
+        <button class="active" data-v="month">Month</button>
+        <button data-v="list">List</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="cal-legend" id="calLegend"></div>
+  <div id="calBody"><div class="cal-empty">Loading calendar…</div></div>
+  <p class="cal-note">All times are Eastern Time. This calendar updates automatically.</p>
+</div>
+
+<!-- Popup -->
+<div class="cal-overlay" id="calOverlay" role="dialog" aria-modal="true">
+  <div class="cal-modal" id="calModal">
+    <div class="cal-modal-bar" id="calModalBar"></div>
+    <button class="cal-close" id="calClose" aria-label="Close">&#10005;</button>
+    <div class="cal-modal-body" id="calModalBody"></div>
+  </div>
+</div>
+
+<!-- Footer -->
+<footer>
+  <div class="footer-top">
+    <div class="footer-brand">
+      <p class="pre">McMaster</p>
+      <h3>BACHELOR OF HEALTH<br>SCIENCES SOCIETY</h3>
+      <p class="desc">The McMaster Bachelor of Health Sciences Society recognizes that McMaster University sits on the traditional territories of the Haudenosaunee Confederacy and the Anishinaabe Nations, which is recognized by the "Dish With One Spoon" wampum agreement. <a href="#">Click here to learn more.</a></p>
+    </div>
+    <div class="footer-col">
+      <h4>Legal</h4>
+      <a href="#">Terms of Use</a><br>
+      <a href="#">Privacy Policy</a>
+    </div>
+    <div class="footer-col">
+      <h4>Office</h4>
+      <address>MDCL 3308, McMaster University<br>1280 Main Street West<br>Hamilton, ON  L8S 4K1</address>
+    </div>
+    <div class="footer-col">
+      <h4>Contact</h4>
+      <p>The Bachelors of Health Science Society's Website is designed and developed by the BHSS Communications Committee. If you have any questions, please reach out to <a href="mailto:bhsscom@mcmaster.ca" style="color:rgba(255,255,255,0.55);text-decoration:underline">bhsscom@mcmaster.ca</a> or <a href="https://instagram.com/macbhss" style="color:rgba(255,255,255,0.55);text-decoration:underline">@macbhss</a>.</p>
+    </div>
+    <div class="footer-col">
+      <h4>Other</h4>
+      <a href="/admin">Admin</a>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span>© 2026 McMaster Bachelor of Health Sciences Society</span>
+    <span>Built by BHSS Communications Committee</span>
+  </div>
+</footer>
+
+<script src="mobile-nav.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="supabase-client.js"></script>
+<script>
+// ── CONFIG ──
+const TZ = 'America/Toronto';
+const MAX_PILLS = 3;
+
+// Colours: events by committee (palette from hexcodes.md), academic by Notion "Type".
+const COMMITTEE_COLORS = [
+  [/academ/i, '#293593'], [/social/i, '#DD1084'], [/internal/i, '#F58120'], [/external/i, '#EE2824'],
+  [/logistic|election/i, '#181718'], [/financ/i, '#46B749'], [/communic/i, '#13A89E'],
+  [/edi|equity/i, '#7c3aed'], [/year council/i, '#2e69c9'], [/welcome/i, '#0ea5e9'],
+  [/chair|sra/i, '#7a003c'], [/^bag$/i, '#7a003c'],
+];
+const TYPE_COLORS = {
+  'Test': '#b91c1c', 'Exam': '#db2777', 'Assessment': '#ca8a04', 'Assignment': '#92400e',
+  'Academic Deadline': '#475569', 'Application': '#7c3aed', 'Break / Holiday': '#0ea5e9',
+};
+function colorFor(source, cat) {
+  if (source === 'academic') return TYPE_COLORS[cat] || '#475569';
+  const hit = COMMITTEE_COLORS.find(([re]) => re.test(cat || ''));
+  return hit ? hit[1] : '#1d4fa1';
+}
+
+// ── DATE HELPERS (everything displays in Eastern Time) ──
+const keyFmt = new Intl.DateTimeFormat('en-CA', { timeZone: TZ, year: 'numeric', month: '2-digit', day: '2-digit' });
+const dayKey = d => keyFmt.format(d);
+const keyDate = k => new Date(k + 'T12:00:00Z');
+const addDays = (k, n) => { const [y, m, d] = k.split('-').map(Number); return new Date(Date.UTC(y, m - 1, d + n)).toISOString().slice(0, 10); };
+const pad = n => String(n).padStart(2, '0');
+const fmtKeyLong  = new Intl.DateTimeFormat('en-US', { timeZone: 'UTC', weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' });
+const fmtKeyShort = new Intl.DateTimeFormat('en-US', { timeZone: 'UTC', month: 'short', day: 'numeric' });
+const fmtTime     = new Intl.DateTimeFormat('en-US', { timeZone: TZ, hour: 'numeric', minute: '2-digit' });
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+
+function normalize(r) {
+  const start = new Date(r.start_at);
+  const end = r.end_at ? new Date(r.end_at) : null;
+  const startKey = dayKey(start);
+  let endKey = end ? dayKey(end) : startKey;
+  if (endKey < startKey) endKey = startKey;
+  const cat = (r.category || '').split(',')[0].trim();
+  return {
+    id: r.notion_id, source: r.source, title: r.title, start, end, startKey, endKey,
+    allDay: r.all_day, category: r.category || '', cat, levels: r.levels || [], bag: r.bag_name,
+    color: colorFor(r.source, cat),
+  };
+}
+
+function whenText(e) {
+  if (e.allDay) {
+    return e.endKey === e.startKey
+      ? fmtKeyLong.format(keyDate(e.startKey))
+      : `${fmtKeyShort.format(keyDate(e.startKey))} – ${fmtKeyLong.format(keyDate(e.endKey))}`;
+  }
+  const day = fmtKeyLong.format(keyDate(e.startKey));
+  if (!e.end) return `${day} · ${fmtTime.format(e.start)} ET`;
+  if (e.endKey === e.startKey) return `${day} · ${fmtTime.format(e.start)} – ${fmtTime.format(e.end)} ET`;
+  return `${day}, ${fmtTime.format(e.start)} → ${fmtKeyShort.format(keyDate(e.endKey))}, ${fmtTime.format(e.end)} ET`;
+}
+function shortWhen(e) {
+  if (e.allDay) return e.endKey === e.startKey ? 'All day' : `Through ${fmtKeyShort.format(keyDate(e.endKey))}`;
+  return fmtTime.format(e.start) + (e.end && e.endKey === e.startKey ? ' – ' + fmtTime.format(e.end) : '');
+}
+
+// ── STATE ──
+let ALL = [];
+const todayKey = dayKey(new Date());
+const state = { y: +todayKey.slice(0, 4), m: +todayKey.slice(5, 7) - 1, source: 'all', level: 'all', view: 'month', hidden: new Set() };
+
+function visibleBase() {
+  return ALL.filter(e => {
+    if (state.source !== 'all' && e.source !== state.source) return false;
+    if (e.source === 'academic' && state.level !== 'all' && e.levels.length && !e.levels.includes('All') && !e.levels.includes(state.level)) return false;
+    return true;
+  });
+}
+const visible = () => visibleBase().filter(e => !state.hidden.has(e.cat));
+
+// ── RENDER ──
+function render() {
+  const monthName = new Date(Date.UTC(state.y, state.m, 1)).toLocaleString('en-US', { timeZone: 'UTC', month: 'long', year: 'numeric' });
+  document.getElementById('calTitle').textContent = monthName;
+  renderLegend();
+  if (state.view === 'month') renderMonth(); else renderList();
+}
+
+function renderLegend() {
+  const cats = new Map();
+  visibleBase().forEach(e => { if (e.cat && !cats.has(e.cat)) cats.set(e.cat, e.color); });
+  document.getElementById('calLegend').innerHTML = [...cats].sort((a, b) => a[0].localeCompare(b[0])).map(([c, col]) =>
+    `<button class="legend-chip${state.hidden.has(c) ? ' off' : ''}" style="--c:${col}" data-cat="${esc(c)}"><i></i>${esc(c)}</button>`).join('');
+}
+
+function indexByDay(events) {
+  const map = {};
+  events.forEach(e => {
+    let k = e.startKey, n = 0;
+    while (k <= e.endKey && n++ < 62) { (map[k] ||= []).push(e); k = addDays(k, 1); }
+  });
+  Object.values(map).forEach(list => list.sort((a, b) => (b.allDay - a.allDay) || (a.start - b.start)));
+  return map;
+}
+
+function renderMonth() {
+  const first = `${state.y}-${pad(state.m + 1)}-01`;
+  const dow = new Date(Date.UTC(state.y, state.m, 1)).getUTCDay();
+  const dim = new Date(Date.UTC(state.y, state.m + 1, 0)).getUTCDate();
+  const rows = Math.ceil((dow + dim) / 7);
+  const start = addDays(first, -dow);
+  const byDay = indexByDay(visible());
+
+  let cells = '';
+  for (let i = 0; i < rows * 7; i++) {
+    const k = addDays(start, i);
+    const inMonth = +k.slice(5, 7) === state.m + 1;
+    const evs = byDay[k] || [];
+    const pills = evs.slice(0, MAX_PILLS).map(e => `<button class="pill" style="--c:${e.color}" data-id="${esc(e.id)}" title="${esc(e.title)}">${esc(e.title)}</button>`).join('');
+    const more = evs.length > MAX_PILLS ? `<button class="pill-more" data-day="${k}">+${evs.length - MAX_PILLS} more</button>` : '';
+    const dots = evs.length ? `<div class="cal-dots">${evs.slice(0, 4).map(e => `<i style="--c:${e.color}"></i>`).join('')}</div>` : '';
+    cells += `<div class="cal-cell${inMonth ? '' : ' other'}${k === todayKey ? ' today' : ''}" data-day="${k}"><span class="cal-num">${+k.slice(8)}</span>${pills}${more}${dots}</div>`;
+  }
+  document.getElementById('calBody').innerHTML =
+    `<div class="cal-grid-wrap"><div class="cal-dow">${['Sun','Mon','Tue','Wed','Thu','Fri','Sat'].map(d => `<div>${d}</div>`).join('')}</div><div class="cal-grid">${cells}</div></div>`;
+}
+
+function renderList() {
+  const first = `${state.y}-${pad(state.m + 1)}-01`;
+  const last = addDays(`${state.y}-${pad(state.m + 1)}-${pad(new Date(Date.UTC(state.y, state.m + 1, 0)).getUTCDate())}`, 0);
+  const groups = {};
+  visible().filter(e => e.endKey >= first && e.startKey <= last).forEach(e => {
+    const k = e.startKey < first ? first : e.startKey;
+    (groups[k] ||= []).push(e);
+  });
+  const keys = Object.keys(groups).sort();
+  if (!keys.length) { document.getElementById('calBody').innerHTML = '<div class="cal-list"><div class="cal-empty">Nothing scheduled this month.</div></div>'; return; }
+  document.getElementById('calBody').innerHTML = '<div class="cal-list">' + keys.map(k => {
+    const d = keyDate(k);
+    const items = groups[k].sort((a, b) => (b.allDay - a.allDay) || (a.start - b.start)).map(e =>
+      `<button class="list-item" style="--c:${e.color}" data-id="${esc(e.id)}"><i></i><div><div class="t">${esc(e.title)}</div><div class="s">${esc(e.category)}${e.category ? ' · ' : ''}${esc(shortWhen(e))}</div></div></button>`).join('');
+    return `<div class="list-day"><div class="list-date"><b>${+k.slice(8)}</b><span>${d.toLocaleString('en-US', { timeZone: 'UTC', weekday: 'short' })}</span></div><div class="list-items">${items}</div></div>`;
+  }).join('') + '</div>';
+}
+
+// ── POPUP ──
+const overlay = document.getElementById('calOverlay');
+function closeModal() {
+  overlay.classList.remove('open');
+  document.body.style.overflow = '';
+  if (location.hash.startsWith('#e=')) history.replaceState(null, '', location.pathname + location.search);
+}
+function openModal(html, color) {
+  document.getElementById('calModalBar').style.setProperty('--c', color || 'var(--blue)');
+  document.getElementById('calModalBody').innerHTML = html;
+  overlay.classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+function openEvent(id, backDay) {
+  const e = ALL.find(x => x.id === id);
+  if (!e) return;
+  const rows = [['When', whenText(e)]];
+  if (e.source === 'academic') {
+    if (e.category) rows.push(['Type', e.category]);
+    if (e.levels.length) rows.push(['Level', e.levels.join(', ')]);
+  } else {
+    if (e.category) rows.push(['Committee', e.category]);
+    if (e.bag) rows.push(['BAG', e.bag]);
+  }
+  openModal(
+    (backDay ? `<button class="cal-back" data-day="${backDay}">&#8592; Back</button>` : '') +
+    `<span class="m-chip" style="--c:${e.color}">${esc(e.source === 'academic' ? 'Academic' : 'BHSS Event')}</span>` +
+    `<div class="m-title">${esc(e.title)}</div>` +
+    rows.map(([k, v]) => `<div class="m-row"><div class="k">${k}</div><div class="v">${esc(v)}</div></div>`).join(''),
+    e.color);
+}
+function openDay(k) {
+  const evs = indexByDay(visible())[k] || [];
+  if (!evs.length) return;
+  openModal(
+    `<div class="m-daytitle">${esc(fmtKeyLong.format(keyDate(k)))}</div>` +
+    evs.map(e => `<button class="list-item" style="--c:${e.color}" data-id="${esc(e.id)}" data-back="${k}"><i></i><div><div class="t">${esc(e.title)}</div><div class="s">${esc(e.category)}${e.category ? ' · ' : ''}${esc(shortWhen(e))}</div></div></button>`).join(''));
+}
+
+// ── EVENTS ──
+document.getElementById('calPrev').onclick = () => { state.m--; if (state.m < 0) { state.m = 11; state.y--; } render(); };
+document.getElementById('calNext').onclick = () => { state.m++; if (state.m > 11) { state.m = 0; state.y++; } render(); };
+document.getElementById('calToday').onclick = () => { state.y = +todayKey.slice(0, 4); state.m = +todayKey.slice(5, 7) - 1; render(); };
+document.getElementById('levelSel').onchange = e => { state.level = e.target.value; render(); };
+function wireSeg(id, key) {
+  document.getElementById(id).addEventListener('click', e => {
+    const b = e.target.closest('button'); if (!b) return;
+    document.querySelectorAll(`#${id} button`).forEach(x => x.classList.toggle('active', x === b));
+    state[key] = b.dataset.v; render();
+  });
+}
+wireSeg('segSource', 'source'); wireSeg('segView', 'view');
+
+document.getElementById('calLegend').addEventListener('click', e => {
+  const c = e.target.closest('.legend-chip'); if (!c) return;
+  const cat = c.dataset.cat;
+  state.hidden.has(cat) ? state.hidden.delete(cat) : state.hidden.add(cat);
+  render();
+});
+document.getElementById('calBody').addEventListener('click', e => {
+  const pill = e.target.closest('[data-id]');
+  if (pill) { openEvent(pill.dataset.id); return; }
+  const more = e.target.closest('.pill-more');
+  if (more) { openDay(more.dataset.day); return; }
+  const cell = e.target.closest('.cal-cell');
+  if (cell) openDay(cell.dataset.day);
+});
+document.getElementById('calModalBody').addEventListener('click', e => {
+  const item = e.target.closest('[data-id]');
+  if (item) { openEvent(item.dataset.id, item.dataset.back); return; }
+  const back = e.target.closest('.cal-back');
+  if (back) openDay(back.dataset.day);
+});
+document.getElementById('calClose').onclick = closeModal;
+overlay.addEventListener('click', e => { if (e.target === overlay) closeModal(); });
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
+
+// ── DEEP LINK  (#e=<notion id>, used by the homepage "Upcoming" panel) ──
+function openFromHash() {
+  const m = location.hash.match(/^#e=(.+)$/);
+  if (!m) return;
+  const e = ALL.find(x => x.id === decodeURIComponent(m[1]));
+  if (!e) return;
+  state.source = 'all'; state.level = 'all'; state.hidden.clear();
+  document.querySelectorAll('#segSource button').forEach(b => b.classList.toggle('active', b.dataset.v === 'all'));
+  document.getElementById('levelSel').value = 'all';
+  state.y = +e.startKey.slice(0, 4); state.m = +e.startKey.slice(5, 7) - 1;
+  render();
+  openEvent(e.id);
+}
+window.addEventListener('hashchange', openFromHash);
+
+// ── LOAD ──
+(async function () {
+  const { data, error } = await window.db.from('calendar_events').select('*').order('start_at').limit(2000);
+  if (error) {
+    document.getElementById('calBody').innerHTML = '<div class="cal-empty">Couldn\'t load the calendar right now. Please try again later.</div>';
+    return;
+  }
+  ALL = data.map(normalize);
+  render();
+  openFromHash();
+})();
+</script>
+</body>
+</html>

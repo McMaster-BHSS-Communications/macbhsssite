@@ -53,6 +53,7 @@
     </div>
 
     <a href="/resources">Resources</a>
+    <a href="/calendar">Calendar</a>
     <a href="/shop">Store</a>
     <a href="/bags">BAGs</a>
     <a href="/student-groups">Student Groups</a>
