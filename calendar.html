@@ -74,77 +74,104 @@
     .page-hero .decor-img2 { width: 66px;  bottom: 12px; right: 72px;  --r: 18deg; }
     .page-hero .decor-img3 { width: 50px;  top: 20px;   right: 160px; --r: -4deg; }
     .page-hero .decor-img4 { width: 78px;  bottom: 14px; left: 130px;  --r: 10deg; }
+    .page-hero .decor-img5 { width: 42px;  top: 44%;    right: 48px;  --r: 24deg; }
     .page-hero h1 { font-family: 'Familjen Grotesk', sans-serif; font-size: clamp(1.8rem, 5vw, 3.2rem); font-weight: 600; color: var(--white); letter-spacing: -0.02em; position: relative; z-index: 1; margin-bottom: 16px; }
     .page-hero p { font-size: clamp(0.85rem, 2vw, 1rem); color: rgba(255,255,255,0.8); max-width: 640px; margin: 0 auto; line-height: 1.7; position: relative; z-index: 1; }
+    .page-hero p em { color: var(--white); font-style: italic; font-weight: 500; }
+
+    /* ─── SOURCE TABS (same pattern as committees.html filter bar) ─── */
+    .filter-bar-wrap { background: var(--white); border-bottom: 1px solid var(--border); overflow-x: auto; scrollbar-width: none; }
+    .filter-bar-wrap::-webkit-scrollbar { display: none; }
+    .filter-bar { display: flex; align-items: center; padding: 0 32px; white-space: nowrap; }
+    .filter-btn { display: inline-block; padding: 14px 16px; font-family: 'Familjen Grotesk', serif; font-size: 0.8rem; font-weight: 600; color: var(--mid); border: none; background: none; cursor: pointer; border-bottom: 3px solid transparent; transition: color 0.15s, border-color 0.15s; letter-spacing: 0.01em; }
+    .filter-btn:hover { color: var(--text); }
+    .filter-btn.active { color: var(--c); border-bottom-color: var(--c, var(--blue)); }
 
     /* ─── CALENDAR ─── */
-    .cal-wrap { max-width: 1180px; margin: 0 auto; padding: 36px 32px 72px; }
-    .cal-toolbar { display: flex; flex-wrap: wrap; gap: 14px 24px; align-items: center; justify-content: space-between; margin-bottom: 18px; }
-    .cal-month-nav { display: flex; align-items: center; gap: 10px; }
-    .cal-month-title { font-family: 'Familjen Grotesk', sans-serif; font-size: 1.6rem; font-weight: 600; letter-spacing: -0.01em; min-width: 210px; }
-    .cal-btn { background: var(--white); border: 1px solid var(--border); color: var(--text); font-size: 0.8rem; font-weight: 600; padding: 8px 14px; border-radius: 8px; cursor: pointer; transition: background 0.15s, color 0.15s, border-color 0.15s; }
-    .cal-btn:hover { border-color: var(--blue); color: var(--blue); }
-    .cal-btn.icon { padding: 8px 12px; font-size: 0.95rem; line-height: 1; }
-    .cal-controls { display: flex; flex-wrap: wrap; gap: 10px 16px; align-items: center; }
-    .seg { display: inline-flex; background: var(--white); border: 1px solid var(--border); border-radius: 9px; padding: 3px; }
-    .seg button { background: none; border: none; font-size: 0.78rem; font-weight: 600; color: var(--mid); padding: 6px 13px; border-radius: 6px; cursor: pointer; }
+    .cal-section { position: relative; overflow: hidden; isolation: isolate; }
+    .bg-decor { position: absolute; pointer-events: none; user-select: none; z-index: -1; }
+    .cal-wrap { max-width: 1180px; margin: 0 auto; padding: 44px 32px 80px; }
+
+    .cal-head { display: flex; flex-wrap: wrap; gap: 20px 24px; align-items: flex-end; justify-content: space-between; margin-bottom: 26px; }
+    /* Month label: stacked blue blocks, like the homepage hero text */
+    .cal-month-title { display: flex; align-items: flex-end; flex-wrap: wrap; padding-bottom: 10px; }
+    .mt-month { background: var(--blue); color: var(--white); font-family: 'Familjen Grotesk', sans-serif; font-size: clamp(1.9rem, 4.5vw, 3rem); font-weight: 600; letter-spacing: -0.02em; line-height: 1; padding: 6px 16px 8px; }
+    .mt-year { background: var(--dark); color: var(--white); font-family: 'Familjen Grotesk', sans-serif; font-size: clamp(0.95rem, 2vw, 1.25rem); font-weight: 500; line-height: 1; padding: 6px 10px; margin: 0 0 -10px -8px; position: relative; }
+
+    .cal-controls { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+    .cal-btn { background: var(--white); border: 1.5px solid var(--blue); color: var(--blue); font-size: 0.8rem; font-weight: 600; padding: 7px 14px; border-radius: 2px; cursor: pointer; transition: background 0.15s, color 0.15s; }
+    .cal-btn:hover { background: var(--blue); color: var(--white); }
+    .cal-btn.icon { padding: 7px 12px; font-size: 1rem; line-height: 1; }
+    .seg { display: inline-flex; border: 1.5px solid var(--blue); border-radius: 2px; }
+    .seg button { background: var(--white); border: none; font-size: 0.78rem; font-weight: 600; color: var(--blue); padding: 7px 14px; cursor: pointer; }
+    .seg button + button { border-left: 1.5px solid var(--blue); }
     .seg button.active { background: var(--blue); color: var(--white); }
-    .cal-select { background: var(--white); border: 1px solid var(--border); border-radius: 9px; padding: 8px 12px; font-size: 0.78rem; font-weight: 600; color: var(--mid); font-family: inherit; cursor: pointer; }
+    .cal-select { background: var(--white); border: 1.5px solid var(--border); border-radius: 2px; padding: 7px 10px; font-size: 0.78rem; font-weight: 600; color: var(--text); font-family: inherit; cursor: pointer; }
 
-    .cal-legend { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 20px; min-height: 30px; }
-    .legend-chip { display: inline-flex; align-items: center; gap: 7px; background: var(--white); border: 1px solid var(--border); border-radius: 100px; padding: 5px 12px 5px 10px; font-size: 0.74rem; font-weight: 500; color: var(--mid); cursor: pointer; transition: opacity 0.15s; }
-    .legend-chip i { width: 9px; height: 9px; border-radius: 50%; background: var(--c); flex-shrink: 0; }
-    .legend-chip.off { opacity: 0.4; text-decoration: line-through; }
+    .cal-legend { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 22px; min-height: 30px; }
+    .legend-chip { display: inline-flex; align-items: center; gap: 7px; background: var(--white); border: 1px solid var(--border); border-radius: 2px; padding: 5px 11px 5px 8px; font-size: 0.74rem; font-weight: 600; color: var(--text); cursor: pointer; transition: opacity 0.15s, border-color 0.15s; }
+    .legend-chip:hover { border-color: var(--c); }
+    .legend-chip i { width: 10px; height: 10px; background: var(--c); flex-shrink: 0; }
+    .legend-chip.off { opacity: 0.45; text-decoration: line-through; }
 
-    .cal-grid-wrap { background: var(--white); border: 1px solid var(--border); border-radius: 14px; overflow: hidden; }
-    .cal-dow { display: grid; grid-template-columns: repeat(7, 1fr); background: var(--off); border-bottom: 1px solid var(--border); }
-    .cal-dow div { padding: 10px 8px; font-size: 0.68rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); text-align: center; }
+    /* Grid: hard edges + offset block shadow */
+    .cal-grid-wrap, .cal-list { background: var(--white); border: 1px solid var(--border); border-radius: 2px; box-shadow: 10px 10px 0 var(--blue-pale); }
+    .cal-dow { display: grid; grid-template-columns: repeat(7, 1fr); background: var(--blue); }
+    .cal-dow div { padding: 11px 8px; font-family: 'Familjen Grotesk', sans-serif; font-size: 0.72rem; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: var(--white); text-align: center; }
     .cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); }
-    .cal-cell { min-height: 112px; border-right: 1px solid var(--border); border-bottom: 1px solid var(--border); padding: 6px; cursor: pointer; min-width: 0; transition: background 0.12s; }
+    .cal-cell { min-height: 116px; border-right: 1px solid var(--border); border-bottom: 1px solid var(--border); padding: 6px; cursor: pointer; min-width: 0; transition: background 0.12s; position: relative; }
     .cal-cell:nth-child(7n) { border-right: none; }
-    .cal-cell:hover { background: #fafcff; }
-    .cal-cell.other { background: var(--off); }
-    .cal-cell.other .cal-num { color: var(--muted); opacity: 0.7; }
-    .cal-num { display: inline-flex; align-items: center; justify-content: center; min-width: 24px; height: 24px; font-size: 0.78rem; font-weight: 600; color: var(--text); border-radius: 50%; margin-bottom: 4px; }
-    .cal-cell.today .cal-num { background: var(--maroon); color: var(--white); }
-    .pill { display: block; width: 100%; text-align: left; background: var(--c); color: #fff; border: none; border-radius: 4px; font-size: 0.7rem; font-weight: 600; padding: 3px 6px; margin-bottom: 3px; cursor: pointer; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; line-height: 1.3; }
-    .pill:hover { filter: brightness(1.12); }
-    .pill-more { background: none; border: none; color: var(--blue); font-size: 0.7rem; font-weight: 600; cursor: pointer; padding: 1px 4px; }
+    .cal-cell:nth-child(7n), .cal-cell:nth-child(7n+1) { background: #fbfcfe; }
+    .cal-cell:hover { background: #f3f7fd; }
+    .cal-cell.other { background: repeating-linear-gradient(135deg, var(--off) 0 7px, #edf1f7 7px 8px); }
+    .cal-cell.other .cal-num { color: var(--muted); }
+    .cal-num { display: inline-flex; align-items: center; justify-content: center; min-width: 26px; height: 26px; font-family: 'Familjen Grotesk', sans-serif; font-size: 0.85rem; font-weight: 600; color: var(--text); margin-bottom: 4px; }
+    .cal-cell.today { box-shadow: inset 0 3px 0 #6b6b6b; background: #f0f0f0; }
+    .cal-cell.today .cal-num { background: #6b6b6b; color: var(--white); }
+    /* Tinted pills with dark text — readable for every category colour */
+    .pill { display: block; width: 100%; text-align: left; background: color-mix(in srgb, var(--c) 13%, #fff); color: var(--text); border: none; border-left: 3px solid var(--c); border-radius: 0; font-size: 0.7rem; font-weight: 600; padding: 3px 6px; margin-bottom: 3px; cursor: pointer; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; line-height: 1.35; transition: background 0.12s; }
+    .pill:hover { background: color-mix(in srgb, var(--c) 24%, #fff); }
+    .pill-more { background: none; border: none; color: var(--blue); font-size: 0.7rem; font-weight: 700; cursor: pointer; padding: 1px 4px; }
     .cal-dots { display: none; gap: 3px; flex-wrap: wrap; justify-content: center; }
-    .cal-dots i { width: 6px; height: 6px; border-radius: 50%; background: var(--c); }
+    .cal-dots i { width: 7px; height: 7px; background: var(--c); }
 
     /* list view */
-    .cal-list { background: var(--white); border: 1px solid var(--border); border-radius: 14px; overflow: hidden; }
-    .list-day { display: grid; grid-template-columns: 84px 1fr; border-bottom: 1px solid var(--border); }
+    .list-day { display: grid; grid-template-columns: 88px 1fr; border-bottom: 1px solid var(--border); }
     .list-day:last-child { border-bottom: none; }
-    .list-date { padding: 16px 12px; text-align: center; background: var(--off); border-right: 1px solid var(--border); }
-    .list-date b { display: block; font-family: 'Familjen Grotesk', sans-serif; font-size: 1.5rem; line-height: 1.1; }
-    .list-date span { font-size: 0.68rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); }
+    .list-date { padding: 16px 10px; text-align: center; background: var(--blue); color: var(--white); }
+    .list-day.today .list-date { background: #6b6b6b; }
+    .list-date b { display: block; font-family: 'Familjen Grotesk', sans-serif; font-size: 1.7rem; font-weight: 600; line-height: 1.05; }
+    .list-date span { font-size: 0.66rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--blue-pale); }
     .list-items { padding: 8px; }
-    .list-item { display: flex; align-items: center; gap: 12px; width: 100%; background: none; border: none; text-align: left; padding: 10px 12px; border-radius: 8px; cursor: pointer; }
-    .list-item:hover { background: var(--off); }
-    .list-item i { width: 10px; height: 10px; border-radius: 50%; background: var(--c); flex-shrink: 0; }
-    .list-item .t { font-size: 0.9rem; font-weight: 600; color: var(--text); }
-    .list-item .s { font-size: 0.76rem; color: var(--muted); margin-top: 2px; }
-    .cal-empty { padding: 56px 20px; text-align: center; color: var(--muted); font-size: 0.9rem; }
+    .list-item { display: flex; align-items: center; gap: 12px; width: 100%; background: none; border: none; border-left: 3px solid transparent; text-align: left; padding: 10px 12px; cursor: pointer; transition: background 0.12s, border-color 0.12s; }
+    .list-item:hover { background: color-mix(in srgb, var(--c) 10%, #fff); border-left-color: var(--c); }
+    .list-item i { width: 11px; height: 11px; background: var(--c); flex-shrink: 0; }
+    .list-item .t { font-size: 0.92rem; font-weight: 600; color: var(--text); }
+    .list-item .s { font-size: 0.76rem; color: var(--mid); margin-top: 2px; }
+    .cal-empty { padding: 56px 20px; text-align: center; color: var(--mid); font-size: 0.9rem; }
 
-    .cal-note { margin-top: 18px; font-size: 0.75rem; color: var(--muted); text-align: center; }
+    .cal-note { margin-top: 28px; font-size: 0.75rem; color: var(--mid); text-align: center; }
 
-    /* modal */
-    .cal-overlay { display: none; position: fixed; inset: 0; background: rgba(15,27,45,0.55); z-index: 900; align-items: center; justify-content: center; padding: 20px; }
+    /* modal: colour block header with pixel squares, white body */
+    .cal-overlay { display: none; position: fixed; inset: 0; background: rgba(15,27,45,0.6); z-index: 900; align-items: center; justify-content: center; padding: 20px; }
     .cal-overlay.open { display: flex; }
-    .cal-modal { background: var(--white); border-radius: 16px; width: 100%; max-width: 460px; max-height: 86vh; overflow-y: auto; position: relative; box-shadow: 0 24px 64px rgba(0,0,0,0.3); }
-    .cal-modal-bar { height: 8px; background: var(--c, var(--blue)); border-radius: 16px 16px 0 0; }
-    .cal-modal-body { padding: 26px 28px 28px; }
-    .cal-close { position: absolute; top: 16px; right: 14px; background: none; border: none; color: var(--muted); font-size: 1.15rem; cursor: pointer; line-height: 1; padding: 4px 8px; }
-    .cal-close:hover { color: var(--text); }
-    .cal-back { background: none; border: none; color: var(--blue); font-size: 0.78rem; font-weight: 600; cursor: pointer; margin-bottom: 12px; padding: 0; }
-    .m-chip { display: inline-block; background: var(--c); color: #fff; font-size: 0.68rem; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; padding: 4px 10px; border-radius: 100px; margin-bottom: 12px; }
-    .m-title { font-family: 'Familjen Grotesk', sans-serif; font-size: 1.5rem; font-weight: 600; line-height: 1.2; letter-spacing: -0.01em; margin-bottom: 18px; padding-right: 20px; }
+    .cal-modal { background: var(--white); border-radius: 2px; width: 100%; max-width: 470px; max-height: 86vh; overflow-y: auto; position: relative; box-shadow: 12px 12px 0 rgba(29,79,161,0.35); }
+    .cal-modal-bar { height: 76px; background: var(--c, var(--blue)); position: relative; overflow: hidden; }
+    .cal-modal-bar i { position: absolute; background: #fff; }
+    .cal-modal-bar i:nth-child(1) { width: 34px; height: 34px; right: 74px; top: 14px; opacity: 0.18; }
+    .cal-modal-bar i:nth-child(2) { width: 20px; height: 20px; right: 56px; top: 40px; opacity: 0.32; }
+    .cal-modal-bar i:nth-child(3) { width: 14px; height: 14px; right: 112px; top: 50px; opacity: 0.25; }
+    .cal-modal-bar i:nth-child(4) { width: 48px; height: 48px; left: -12px; bottom: -18px; opacity: 0.14; transform: rotate(14deg); }
+    .cal-modal-body { padding: 24px 28px 28px; }
+    .cal-close { position: absolute; top: 14px; right: 14px; z-index: 2; background: rgba(0,0,0,0.22); border: none; color: #fff; font-size: 1rem; cursor: pointer; line-height: 1; width: 32px; height: 32px; border-radius: 2px; }
+    .cal-close:hover { background: rgba(0,0,0,0.38); }
+    .cal-back { background: none; border: none; color: var(--blue); font-size: 0.78rem; font-weight: 700; cursor: pointer; margin-bottom: 14px; padding: 0; }
+    .m-chip { display: inline-block; background: color-mix(in srgb, var(--c) 13%, #fff); border-left: 3px solid var(--c); color: var(--text); font-size: 0.68rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; padding: 4px 10px; margin-bottom: 12px; }
+    .m-title { font-family: 'Familjen Grotesk', sans-serif; font-size: 1.6rem; font-weight: 600; line-height: 1.2; letter-spacing: -0.01em; margin-bottom: 18px; }
     .m-row { display: flex; gap: 12px; padding: 11px 0; border-top: 1px solid var(--border); font-size: 0.88rem; }
-    .m-row .k { width: 84px; flex-shrink: 0; font-size: 0.7rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); padding-top: 2px; }
+    .m-row .k { width: 88px; flex-shrink: 0; font-size: 0.68rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--mid); padding-top: 3px; }
     .m-row .v { color: var(--text); line-height: 1.5; }
-    .m-daytitle { font-family: 'Familjen Grotesk', sans-serif; font-size: 1.25rem; font-weight: 600; margin-bottom: 14px; padding-right: 20px; }
+    .m-daytitle { font-family: 'Familjen Grotesk', sans-serif; font-size: 1.35rem; font-weight: 600; margin-bottom: 14px; }
 
     /* ─── FOOTER ─── */
     footer { background: var(--dark); color: rgba(255,255,255,0.55); padding: 48px 60px 40px; }
@@ -163,14 +190,18 @@
     @media (max-width: 960px) {
       .footer-top { grid-template-columns: 1fr 1fr; gap: 28px; }
       .page-hero { padding: 48px 32px 44px; }
-      .cal-wrap { padding: 28px 20px 56px; }
+      .cal-wrap { padding: 32px 20px 64px; }
+      .page-hero .decor-img3, .page-hero .decor-img5 { display: none; }
     }
     @media (max-width: 720px) {
       nav.sitenav { padding: 0 16px; }
       .nav-links, .nav-resources { display: none; }
       .page-hero { padding: 36px 20px 36px; }
-      .cal-month-title { font-size: 1.3rem; min-width: 0; }
+      .filter-bar { padding: 0 16px; }
+      .cal-grid-wrap, .cal-list { box-shadow: 6px 6px 0 var(--blue-pale); }
+      .cal-dow div { font-size: 0.62rem; letter-spacing: 0.06em; padding: 9px 2px; }
       .cal-cell { min-height: 64px; padding: 4px 2px; text-align: center; }
+      .bg-decor { display: none; }
       .cal-cell .pill, .cal-cell .pill-more { display: none; }
       .cal-dots { display: flex; }
       .list-day { grid-template-columns: 64px 1fr; }
@@ -241,24 +272,32 @@
   <img class="decor-img decor-img2" src="assets/svg/decor/sqs6.svg" alt="" aria-hidden="true">
   <img class="decor-img decor-img3" src="assets/svg/decor/sqs8.svg" alt="" aria-hidden="true">
   <img class="decor-img decor-img4" src="assets/svg/decor/sqs2.svg" alt="" aria-hidden="true">
-  <h1>Calendar</h1>
-  <p>BHSS events and academic deadlines, all in one place. Click anything to see the details.</p>
+  <img class="decor-img decor-img5" src="assets/svg/decor/sqs5.svg" alt="" aria-hidden="true">
+  <h1>Never miss a moment.</h1>
+  <p>Every BHSS event and academic deadline in one place — <em>click anything to see the details.</em></p>
 </div>
 
+<!-- Source tabs -->
+<div class="filter-bar-wrap">
+  <div class="filter-bar" id="segSource">
+    <button class="filter-btn active" data-v="all" style="--c:#1d4fa1">All</button>
+    <button class="filter-btn" data-v="events" style="--c:#7a003c">BHSS Events</button>
+    <button class="filter-btn" data-v="academic" style="--c:#293593">Academic</button>
+  </div>
+</div>
+
+<section class="cal-section">
+<img class="bg-decor" src="assets/svg/decor/sqs4.svg" alt="" aria-hidden="true" style="width:200px;top:-30px;right:-40px;transform:rotate(12deg)">
+<img class="bg-decor" src="assets/svg/decor/sqs5.svg" alt="" aria-hidden="true" style="width:110px;top:140px;left:-30px;transform:rotate(-20deg)">
+<img class="bg-decor" src="assets/svg/decor/sqs1.svg" alt="" aria-hidden="true" style="width:190px;top:560px;left:-60px;transform:rotate(-40deg)">
+<img class="bg-decor" src="assets/svg/decor/sqs6.svg" alt="" aria-hidden="true" style="width:150px;bottom:90px;right:-20px;transform:rotate(6deg)">
 <div class="cal-wrap">
-  <div class="cal-toolbar">
-    <div class="cal-month-nav">
-      <button class="cal-btn icon" id="calPrev" aria-label="Previous month">&#8249;</button>
-      <button class="cal-btn icon" id="calNext" aria-label="Next month">&#8250;</button>
-      <button class="cal-btn" id="calToday">Today</button>
-      <h2 class="cal-month-title" id="calTitle"></h2>
-    </div>
+  <div class="cal-head">
+    <h2 class="cal-month-title" id="calTitle"></h2>
     <div class="cal-controls">
-      <div class="seg" id="segSource">
-        <button class="active" data-v="all">All</button>
-        <button data-v="events">BHSS Events</button>
-        <button data-v="academic">Academic</button>
-      </div>
+      <button class="cal-btn icon" id="calPrev" aria-label="Previous month">&#8249;</button>
+      <button class="cal-btn" id="calToday">Today</button>
+      <button class="cal-btn icon" id="calNext" aria-label="Next month">&#8250;</button>
       <select class="cal-select" id="levelSel" aria-label="Academic level">
         <option value="all">All levels</option>
         <option value="I">Level I</option>
@@ -277,11 +316,12 @@
   <div id="calBody"><div class="cal-empty">Loading calendar…</div></div>
   <p class="cal-note">All times are Eastern Time. This calendar updates automatically.</p>
 </div>
+</section>
 
 <!-- Popup -->
 <div class="cal-overlay" id="calOverlay" role="dialog" aria-modal="true">
   <div class="cal-modal" id="calModal">
-    <div class="cal-modal-bar" id="calModalBar"></div>
+    <div class="cal-modal-bar" id="calModalBar"><i></i><i></i><i></i><i></i></div>
     <button class="cal-close" id="calClose" aria-label="Close">&#10005;</button>
     <div class="cal-modal-body" id="calModalBody"></div>
   </div>
@@ -327,19 +367,22 @@
 const TZ = 'America/Toronto';
 const MAX_PILLS = 3;
 
-// Colours: events by committee (palette from hexcodes.md), academic by Notion "Type".
+// Colours: events by committee (same hexes as committees.html's filter bar), academic by Notion "Type".
 const COMMITTEE_COLORS = [
+  [/first year/i, '#4DAADC'], [/second year/i, '#449BD4'], [/third year/i, '#396AB3'], [/fourth year/i, '#292D73'],
   [/academ/i, '#293593'], [/social/i, '#DD1084'], [/internal/i, '#F58120'], [/external/i, '#EE2824'],
   [/logistic|election/i, '#181718'], [/financ/i, '#46B749'], [/communic/i, '#13A89E'],
-  [/edi|equity/i, '#7c3aed'], [/year council/i, '#2e69c9'], [/welcome/i, '#0ea5e9'],
-  [/chair|sra/i, '#7a003c'], [/^bag$/i, '#7a003c'],
+  [/edi|equity/i, '#6A2C8F'], [/welcome/i, '#1a90c9'], [/chair/i, '#0DABDC'], [/sra/i, '#7a003c'],
+  [/^bag$/i, '#7a003c'],
 ];
+// Academic types are greys in big steps (darkest = most important) so they read as one calm group
+// next to the coloured BHSS events. Mirrored in index.html's Upcoming script (lighter set for dark bg).
 const TYPE_COLORS = {
-  'Test': '#b91c1c', 'Exam': '#db2777', 'Assessment': '#ca8a04', 'Assignment': '#92400e',
-  'Academic Deadline': '#475569', 'Application': '#7c3aed', 'Break / Holiday': '#0ea5e9',
+  'Test': '#1a1a1a', 'Exam': '#3b3b3b', 'Assignment': '#5c5c5c', 'Assessment': '#7d7d7d',
+  'Academic Deadline': '#9a9a9a', 'Application': '#b0b0b0', 'Break / Holiday': '#c8c8c8',
 };
 function colorFor(source, cat) {
-  if (source === 'academic') return TYPE_COLORS[cat] || '#475569';
+  if (source === 'academic') return TYPE_COLORS[cat] || '#7d7d7d';
   const hit = COMMITTEE_COLORS.find(([re]) => re.test(cat || ''));
   return hit ? hit[1] : '#1d4fa1';
 }
@@ -401,8 +444,8 @@ const visible = () => visibleBase().filter(e => !state.hidden.has(e.cat));
 
 // ── RENDER ──
 function render() {
-  const monthName = new Date(Date.UTC(state.y, state.m, 1)).toLocaleString('en-US', { timeZone: 'UTC', month: 'long', year: 'numeric' });
-  document.getElementById('calTitle').textContent = monthName;
+  const monthName = new Date(Date.UTC(state.y, state.m, 1)).toLocaleString('en-US', { timeZone: 'UTC', month: 'long' });
+  document.getElementById('calTitle').innerHTML = `<span class="mt-month">${monthName}</span><span class="mt-year">${state.y}</span>`;
   renderLegend();
   if (state.view === 'month') renderMonth(); else renderList();
 }
@@ -460,7 +503,7 @@ function renderList() {
     const d = keyDate(k);
     const items = groups[k].sort((a, b) => (b.allDay - a.allDay) || (a.start - b.start)).map(e =>
       `<button class="list-item" style="--c:${e.color}" data-id="${esc(e.id)}"><i></i><div><div class="t">${esc(e.title)}</div><div class="s">${esc(e.category)}${e.category ? ' · ' : ''}${esc(shortWhen(e))}</div></div></button>`).join('');
-    return `<div class="list-day"><div class="list-date"><b>${+k.slice(8)}</b><span>${d.toLocaleString('en-US', { timeZone: 'UTC', weekday: 'short' })}</span></div><div class="list-items">${items}</div></div>`;
+    return `<div class="list-day${k === todayKey ? ' today' : ''}"><div class="list-date"><b>${+k.slice(8)}</b><span>${d.toLocaleString('en-US', { timeZone: 'UTC', weekday: 'short' })}</span></div><div class="list-items">${items}</div></div>`;
   }).join('') + '</div>';
 }
 

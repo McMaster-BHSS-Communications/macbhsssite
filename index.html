@@ -574,9 +574,11 @@ window.addEventListener('DOMContentLoaded', async function () {
   const keyFmt = new Intl.DateTimeFormat('en-CA', { timeZone: TZ, year: 'numeric', month: '2-digit', day: '2-digit' });
   const timeFmt = new Intl.DateTimeFormat('en-US', { timeZone: TZ, hour: 'numeric', minute: '2-digit' });
   const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
-  const COLORS = [[/academ/i,'#293593'],[/social/i,'#DD1084'],[/internal/i,'#F58120'],[/external/i,'#EE2824'],[/logistic|election/i,'#4a5a7a'],[/financ/i,'#46B749'],[/communic/i,'#13A89E'],[/edi|equity/i,'#7c3aed'],[/year council/i,'#2e69c9'],[/^bag$/i,'#7a003c']];
-  const TYPES = { 'Test':'#b91c1c','Exam':'#db2777','Assessment':'#ca8a04','Assignment':'#92400e','Academic Deadline':'#94a3b8','Application':'#7c3aed','Break / Holiday':'#0ea5e9' };
-  const colorFor = r => r.source === 'academic' ? (TYPES[r.category] || '#94a3b8') : ((COLORS.find(([re]) => re.test(r.category || '')) || [])[1] || '#5b9bd5');
+  // Same palette as calendar.html (logistics black lightened so it shows on the dark panel)
+  const COLORS = [[/first year/i,'#4DAADC'],[/second year/i,'#449BD4'],[/third year/i,'#396AB3'],[/fourth year/i,'#5b62c9'],[/academ/i,'#293593'],[/social/i,'#DD1084'],[/internal/i,'#F58120'],[/external/i,'#EE2824'],[/logistic|election/i,'#8899bb'],[/financ/i,'#46B749'],[/communic/i,'#13A89E'],[/edi|equity/i,'#6A2C8F'],[/welcome/i,'#1a90c9'],[/chair/i,'#0DABDC'],[/sra/i,'#7a003c'],[/^bag$/i,'#7a003c']];
+  // Greys, reversed (lightest = most important) so they stand out on the dark panel
+  const TYPES = { 'Test':'#f2f2f2','Exam':'#d4d4d4','Assignment':'#b3b3b3','Assessment':'#939393','Academic Deadline':'#767676','Application':'#5f5f5f','Break / Holiday':'#4b4b4b' };
+  const colorFor = r => r.source === 'academic' ? (TYPES[r.category] || '#939393') : ((COLORS.find(([re]) => re.test(r.category || '')) || [])[1] || '#5b9bd5');
   try {
     const todayKey = keyFmt.format(new Date());
     // Pull from yesterday on, then drop anything whose last day has already passed.
