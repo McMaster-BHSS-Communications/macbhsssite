@@ -71,7 +71,7 @@ select cron.schedule(
   '0 */6 * * *',
   $$
   select net.http_post(
-    url     := 'https://<PROJECT_REF>.supabase.co/functions/v1/sync-notion-calendar',
+    url     := 'https://lnqbcatlepeagnjmktpk.supabase.co/functions/v1/sync-notion-calendar',
     headers := jsonb_build_object('Content-Type', 'application/json', 'x-cron-secret', '<CRON_SECRET>'),
     body    := '{}'::jsonb
   );
