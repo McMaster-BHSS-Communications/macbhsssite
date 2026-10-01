@@ -150,6 +150,7 @@
     .se-link-row.c-reimb   { border-left-color: #46B749; }
     .se-link-row.c-guide   { border-left-color: #6A2C8F; }
     .se-link-row.c-brand   { border-left-color: #13A89E; }
+    .se-link-row.c-media   { border-left-color: #13A89E; }
     .se-link-icon {
       width: 56px; height: 56px; background: var(--off); border-radius: 12px; flex-shrink: 0;
       display: flex; align-items: center; justify-content: center; color: var(--mid);
@@ -443,6 +444,16 @@
           </div>
           <button class="se-go-btn" onclick="showView('reimbursement')">Go there</button>
         </div>
+        <div class="se-link-row c-media">
+          <div class="se-link-icon">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+          </div>
+          <div class="se-link-body">
+            <h3>Request Media</h3>
+            <p>Ask Communications to create and post media on @macbhss — posters, announcements, hiring and more. Submit at least 14 days before your post date.</p>
+          </div>
+          <button class="se-go-btn" onclick="showView('media_request')">Go there</button>
+        </div>
         <div class="se-link-row c-guide">
           <div class="se-link-icon">
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
@@ -500,6 +511,15 @@
         Back to Student Groups
       </a>
       <div id="formHost-storage_request"></div>
+    </div>
+
+    <!-- MEDIA REQUEST FORM -->
+    <div class="se-view" id="view-media_request">
+      <a class="se-back-link" onclick="showView('home')" href="#home">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+        Back to Student Groups
+      </a>
+      <div id="formHost-media_request"></div>
     </div>
 
     <!-- MY SUBMISSIONS -->
@@ -714,7 +734,7 @@ function showView(name) {
   document.querySelectorAll('.se-view').forEach(v => v.classList.remove('active'));
   document.getElementById('view-' + name).classList.add('active');
   history.replaceState(null, '', name === 'home' ? location.pathname : '#' + name);
-  if (['eohss', 'room_booking', 'reimbursement', 'storage_request'].includes(name)) renderForm(name);
+  if (['eohss', 'room_booking', 'reimbursement', 'storage_request', 'media_request'].includes(name)) renderForm(name);
   if (name === 'my-submissions') loadMySubmissions();
 }
 
@@ -851,6 +871,15 @@ async function submitSeForm(formId) {
       errEl.style.display = 'block';
       el.focus();
       return;
+    }
+  }
+
+  // Media requests: warn (don't block) when inside Comms' 7-day absolute minimum lead time.
+  if (formId === 'media_request') {
+    const pd = document.getElementById('sf-post_date');
+    if (pd && pd.value) {
+      const days = Math.ceil((new Date(pd.value + 'T00:00:00') - new Date().setHours(0, 0, 0, 0)) / 86400000);
+      if (days < 7 && !confirm('Communications asks for at least 7 days (ideally 14) before the post date. Requests inside this window can be delayed and may not be fulfilled before your event. Submit anyway?')) return;
     }
   }
 
