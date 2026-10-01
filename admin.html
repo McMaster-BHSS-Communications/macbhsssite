@@ -1214,6 +1214,15 @@
           <button class="btn-secondary bag-sub-filter-form" data-val="reimbursement" onclick="setBagSubmissionFormFilter('reimbursement')" style="font-size:0.78rem;padding:7px 14px">Reimbursement</button>
           <button class="btn-secondary bag-sub-filter-form" data-val="storage_request" onclick="setBagSubmissionFormFilter('storage_request')" style="font-size:0.78rem;padding:7px 14px">Storage Request</button>
           <button class="btn-secondary bag-sub-filter-form" data-val="media_request" onclick="setBagSubmissionFormFilter('media_request')" style="font-size:0.78rem;padding:7px 14px">Media Request</button>
+          <button class="btn-secondary bag-sub-filter-form" data-val="collab_request" onclick="setBagSubmissionFormFilter('collab_request')" style="font-size:0.78rem;padding:7px 14px">Collab Request</button>
+        </div>
+        <div style="display:flex;gap:8px;align-items:center">
+          <span style="font-size:0.72rem;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--muted)">Status:</span>
+          <button class="btn-secondary bag-sub-filter-status" data-val="all" onclick="setBagSubmissionStatusFilter('all')" style="font-size:0.78rem;padding:7px 14px;background:var(--blue);color:#fff;border-color:var(--blue)">All</button>
+          <button class="btn-secondary bag-sub-filter-status" data-val="new" onclick="setBagSubmissionStatusFilter('new')" style="font-size:0.78rem;padding:7px 14px">New</button>
+          <button class="btn-secondary bag-sub-filter-status" data-val="in_progress" onclick="setBagSubmissionStatusFilter('in_progress')" style="font-size:0.78rem;padding:7px 14px">In Progress</button>
+          <button class="btn-secondary bag-sub-filter-status" data-val="completed" onclick="setBagSubmissionStatusFilter('completed')" style="font-size:0.78rem;padding:7px 14px">Completed</button>
+          <button class="btn-secondary bag-sub-filter-status" data-val="declined" onclick="setBagSubmissionStatusFilter('declined')" style="font-size:0.78rem;padding:7px 14px">Declined</button>
         </div>
         <div style="display:flex;gap:8px;align-items:center">
           <span style="font-size:0.72rem;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--muted)">Submitted by:</span>
@@ -2833,7 +2842,7 @@ async function toggleBagCodeActive(id, active) {
 
 // ── Form Builder ──
 let _bagForms = {};
-const BAG_FORM_IDS = ['eohss', 'room_booking', 'reimbursement', 'storage_request', 'media_request'];
+const BAG_FORM_IDS = ['eohss', 'room_booking', 'reimbursement', 'storage_request', 'media_request', 'collab_request'];
 const BAG_FIELD_TYPES = ['text', 'textarea', 'select', 'date', 'number', 'checkbox', 'file'];
 
 // Values for file-type answers are snapshotted as "__file__:<bucket>/<path>:<filename>"
@@ -2951,6 +2960,34 @@ async function saveBagForm(formId) {
 let _bagSubmissions = [];
 let _bagSubFormFilter = 'all';
 let _bagSubTypeFilter = 'all';
+let _bagSubStatusFilter = 'all';
+
+// Submission status workflow (mirrors the shop's order-status dropdown). Rows inserted from
+// /student-groups default to 'new', so older submissions already carry a valid status.
+const BAG_SUB_STATUSES = {
+  new:         { label: 'New',         color: '#3b82f6' },
+  in_progress: { label: 'In Progress', color: '#f59e0b' },
+  completed:   { label: 'Completed',   color: '#15803d' },
+  declined:    { label: 'Declined',    color: '#6b7280' }
+};
+function bagSubStatus(s) { return BAG_SUB_STATUSES[s.status] ? s.status : 'new'; }
+function bagSubStatusSelect(s, stop) {
+  const cur = bagSubStatus(s);
+  const c = BAG_SUB_STATUSES[cur].color;
+  return `<select class="status-select" style="border-color:${c};color:${c};font-weight:600" ${stop ? 'onclick="event.stopPropagation()" ' : ''}onchange="handleBagSubStatusChange('${s.id}', this.value)">${
+    Object.entries(BAG_SUB_STATUSES).map(([k, v]) => `<option value="${k}"${k === cur ? ' selected' : ''}>${v.label}</option>`).join('')
+  }</select>`;
+}
+async function handleBagSubStatusChange(id, status) {
+  const { error } = await window.db.from('bhss_form_submissions').update({ status }).eq('id', id);
+  if (error) { toast('Status update failed: ' + error.message, 'error'); renderBagSubmissionsList(); return; }
+  const item = _bagSubmissions.find(x => x.id === id);
+  if (item) item.status = status;
+  toast('Status updated to ' + BAG_SUB_STATUSES[status].label + '.');
+  renderBagSubmissionsList();
+  const modal = document.getElementById('bagSubmissionModal');
+  if (modal && modal.style.display === 'flex' && window._bagSubOpenId === id) openBagSubmissionModal(id);
+}
 
 async function loadBagSubmissions() {
   const el = document.getElementById('bagSubmissionsList');
@@ -2980,6 +3017,17 @@ function setBagSubmissionFormFilter(val) {
   renderBagSubmissionsList();
 }
 
+function setBagSubmissionStatusFilter(val) {
+  _bagSubStatusFilter = val;
+  document.querySelectorAll('.bag-sub-filter-status').forEach(b => {
+    const active = b.dataset.val === val;
+    b.style.background = active ? 'var(--blue)' : '';
+    b.style.color = active ? '#fff' : '';
+    b.style.borderColor = active ? 'var(--blue)' : '';
+  });
+  renderBagSubmissionsList();
+}
+
 function setBagSubmissionTypeFilter(val) {
   _bagSubTypeFilter = val;
   document.querySelectorAll('.bag-sub-filter-type').forEach(b => {
@@ -2991,12 +3039,13 @@ function setBagSubmissionTypeFilter(val) {
   renderBagSubmissionsList();
 }
 
-const BAG_FORM_LABELS = { eohss: 'EOHSS', room_booking: 'Room Booking', reimbursement: 'Reimbursement', storage_request: 'Storage Request', media_request: 'Media Request' };
+const BAG_FORM_LABELS = { eohss: 'EOHSS', room_booking: 'Room Booking', reimbursement: 'Reimbursement', storage_request: 'Storage Request', media_request: 'Media Request', collab_request: 'Collab Request' };
 
 function renderBagSubmissionsList() {
   const el = document.getElementById('bagSubmissionsList');
   let filtered = _bagSubmissions;
   if (_bagSubFormFilter !== 'all') filtered = filtered.filter(s => s.form_id === _bagSubFormFilter);
+  if (_bagSubStatusFilter !== 'all') filtered = filtered.filter(s => bagSubStatus(s) === _bagSubStatusFilter);
   if (_bagSubTypeFilter !== 'all') {
     filtered = _bagSubTypeFilter === 'none'
       ? filtered.filter(s => !s.group_type)
@@ -3014,19 +3063,21 @@ function renderBagSubmissionsList() {
     const dateStr = d.toLocaleDateString('en-CA', { month: 'short', day: 'numeric', year: 'numeric', hour: '2-digit', minute: '2-digit' });
     const who = s.group_name ? `${s.group_name} (${s.group_type === 'bag' ? 'BAG' : 'Committee'})` : 'Unauthorized';
     return `
-      <div class="post-row" style="cursor:pointer" onclick="openBagSubmissionModal('${s.id}')">
+      <div class="post-row" style="cursor:pointer;border-left:3px solid ${BAG_SUB_STATUSES[bagSubStatus(s)].color};${bagSubStatus(s) === 'completed' || bagSubStatus(s) === 'declined' ? 'opacity:0.65;' : ''}" onclick="openBagSubmissionModal('${s.id}')">
         <div class="post-row-body">
           <div class="post-row-title">${BAG_FORM_LABELS[s.form_id] || s.form_id}</div>
           <div class="post-row-meta">${who} · ${dateStr}</div>
         </div>
+        ${bagSubStatusSelect(s, true)}
         <button class="btn-danger" onclick="event.stopPropagation();deleteBagSubmission('${s.id}')">Delete</button>
       </div>`;
   }).join('');
 }
 
 function openBagSubmissionModal(id) {
-  const s = window._bagSubMap[id];
+  const s = window._bagSubMap[id] || _bagSubmissions.find(x => x.id === id);
   if (!s) return;
+  window._bagSubOpenId = id;
   const d = new Date(s.submitted_at);
   const dateStr = d.toLocaleDateString('en-CA', { month: 'long', day: 'numeric', year: 'numeric', hour: '2-digit', minute: '2-digit' });
   const who = s.group_name ? `${s.group_name} (${s.group_type === 'bag' ? 'BAG' : 'Committee'})` : 'Unauthorized submission';
@@ -3049,6 +3100,7 @@ function openBagSubmissionModal(id) {
     }).join('')}`;
 
   document.getElementById('bagSubmissionModalActions').innerHTML = `
+    <div style="display:flex;align-items:center;gap:8px;margin-right:auto"><span style="font-size:0.72rem;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--muted)">Status</span>${bagSubStatusSelect(s, false)}</div>
     <button class="btn-danger" onclick="deleteBagSubmission('${s.id}');closeBagSubmissionModal()">Delete</button>`;
 
   const modal = document.getElementById('bagSubmissionModal');

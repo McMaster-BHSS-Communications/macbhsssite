@@ -151,6 +151,7 @@
     .se-link-row.c-guide   { border-left-color: #6A2C8F; }
     .se-link-row.c-brand   { border-left-color: #13A89E; }
     .se-link-row.c-media   { border-left-color: #13A89E; }
+    .se-link-row.c-collab  { border-left-color: #13A89E; }
     .se-link-icon {
       width: 56px; height: 56px; background: var(--off); border-radius: 12px; flex-shrink: 0;
       display: flex; align-items: center; justify-content: center; color: var(--mid);
@@ -454,15 +455,15 @@
           </div>
           <button class="se-go-btn" onclick="showView('media_request')">Go there</button>
         </div>
-        <div class="se-link-row c-guide">
+        <div class="se-link-row c-collab">
           <div class="se-link-icon">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
           </div>
           <div class="se-link-body">
-            <h3>Event Guidelines and Accessibility</h3>
-            <p>Check EDI's guidelines to make your event accessible and safe for all attendees.</p>
+            <h3>Request an Instagram Collab</h3>
+            <p>Have your post collabed on @macbhss for a set time to reach the whole program. Only available to signed-in BAGs and committees.</p>
           </div>
-          <button class="se-go-btn" onclick="showView('guidelines')">Go there</button>
+          <button class="se-go-btn" onclick="showView('collab_request')">Go there</button>
         </div>
         <div class="se-link-row c-brand">
           <div class="se-link-icon">
@@ -473,6 +474,16 @@
             <p>How to properly use the BHSS name, logo, and brand assets for your event or materials.</p>
           </div>
           <button class="se-go-btn" onclick="showView('brand-guidelines')">Go there</button>
+        </div>
+        <div class="se-link-row c-guide">
+          <div class="se-link-icon">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+          </div>
+          <div class="se-link-body">
+            <h3>Event Guidelines and Accessibility</h3>
+            <p>Check EDI's guidelines to make your event accessible and safe for all attendees.</p>
+          </div>
+          <button class="se-go-btn" onclick="showView('guidelines')">Go there</button>
         </div>
       </div>
     </div>
@@ -520,6 +531,15 @@
         Back to Student Groups
       </a>
       <div id="formHost-media_request"></div>
+    </div>
+
+    <!-- COLLAB REQUEST FORM -->
+    <div class="se-view" id="view-collab_request">
+      <a class="se-back-link" onclick="showView('home')" href="#home">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+        Back to Student Groups
+      </a>
+      <div id="formHost-collab_request"></div>
     </div>
 
     <!-- MY SUBMISSIONS -->
@@ -728,13 +748,13 @@ function enterDashboard() {
   showView('home');
 }
 
-const GATED_FORM_IDS = ['reimbursement', 'storage_request', 'media_request'];
+const GATED_FORM_IDS = ['reimbursement', 'storage_request', 'media_request', 'collab_request'];
 
 function showView(name) {
   document.querySelectorAll('.se-view').forEach(v => v.classList.remove('active'));
   document.getElementById('view-' + name).classList.add('active');
   history.replaceState(null, '', name === 'home' ? location.pathname : '#' + name);
-  if (['eohss', 'room_booking', 'reimbursement', 'storage_request', 'media_request'].includes(name)) renderForm(name);
+  if (['eohss', 'room_booking', 'reimbursement', 'storage_request', 'media_request', 'collab_request'].includes(name)) renderForm(name);
   if (name === 'my-submissions') loadMySubmissions();
 }
 
@@ -782,7 +802,7 @@ function renderForm(formId) {
 
   // Reimbursement and Storage Request are locked to signed-in BAGs/committees.
   if (GATED_FORM_IDS.includes(formId) && (!session || session.mode !== 'bag')) {
-    const label = { storage_request: 'Storage requests', media_request: 'Media requests' }[formId] || 'Reimbursement submissions';
+    const label = { storage_request: 'Storage requests', media_request: 'Media requests', collab_request: 'Collab requests' }[formId] || 'Reimbursement submissions';
     host.innerHTML = `
       <div class="se-unavailable">
         <div class="se-unavailable-icon">
@@ -832,6 +852,10 @@ function renderForm(formId) {
         <p>Your submission has been received. The relevant committee will follow up if needed.</p>
       </div>
     </div>`;
+
+  if (formId === 'collab_request' && session && session.mode === 'bag') {
+    document.getElementById('sf-group_name').value = session.groupName || '';
+  }
 
   if (formId === 'media_request') {
     const sel = document.getElementById('sf-committee');
