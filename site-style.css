@@ -1,0 +1,210 @@
+/* ═══════════════════════════════════════════════════════════════════
+   site-style.css — shared visual language (2026-10-01)
+
+   Loaded on every page *after* that page's inline <style> block, so these
+   rules win on equal specificity without touching 24 copy-pasted stylesheets.
+   It only changes SHAPE, SHADOW and DECOR — never text colour, font size,
+   spacing or layout — so contrast and tap targets are unchanged.
+
+   The language is lifted from calendar.html:
+     • hard edges (2px) instead of soft 8–16px rounding
+     • offset solid block shadows instead of blurred drop shadows
+     • a coloured accent bar on rows/cards instead of a glow
+     • floating pixel-square decor (assets/svg/decor/sqs*.svg) behind sections
+
+   Paths here resolve against THIS file (site root), so the same rules work
+   for /committees/*.html without any ../ juggling.
+
+   To tune the whole site, edit the tokens below. To remove the restyle
+   entirely, delete the <link> tag — no page depends on this file.
+═══════════════════════════════════════════════════════════════════ */
+
+:root {
+  --edge:        2px;                       /* the one corner radius */
+  --block:       10px 10px 0 var(--blue-pale);
+  --block-sm:    6px 6px 0 var(--blue-pale);
+  --block-dark:  12px 12px 0 rgba(29,79,161,0.35);
+}
+
+/* ─── 1. HARD EDGES ────────────────────────────────────────────────
+   Listed explicitly rather than with a universal selector so circular
+   avatars (50%) and intentional pill shapes (100px) survive. */
+.nav-links a,
+.drop, .drop a,
+.sidedrop, .sidedrop a,
+.nav-resources a,
+.d-card,
+.comm-card, .comm-card-btn,
+.res-card, .res-card-logo, .modal-card, .modal-btn,
+.search-input-wrap, .search-input,
+.who-card, .contact-form-card, .contact-info-card, .faq-item, .submit-btn,
+.cm-card, .cm-opts button, .cm-tpl, .cm-res, .cm-cta,
+.form-group input, .form-group select, .form-group textarea,
+.tier-card, .involve-card, .callout, .article-img, .img-placeholder,
+.gate-card, .gate-btn, .se-link-row, .se-form-card, .se-btn-primary,
+.se-go-btn, .se-modal, .se-info-block, .se-article, .se-unavailable,
+.sub-card, .sub-btn, .sub-edit-field, .se-status,
+.se-form-group input, .se-form-group select, .se-form-group textarea,
+.promo-site-banner, .promo-site-cta,
+.bags-empty,
+.toast {
+  border-radius: var(--edge);
+}
+
+/* Status/category badges are deliberately pill-shaped across the site — left alone
+   (.modal-badge, .se-status-pill, .sub-status-pill), as is the Instagram CTA. */
+
+/* ─── 2. OFFSET BLOCK SHADOWS ──────────────────────────────────────
+   Replaces blurred drop shadows. Cards lift diagonally on hover and the
+   block grows, which reads as a deliberate motion rather than a glow.
+
+   The shadow is a pale tint of the card's OWN accent colour, not a fixed blue:
+   a pale-blue block under a magenta Social card read as a mismatch. Any card
+   that sets `--c` (e.g. resources.html's buildCard passes the committee colour)
+   gets a matching tint; everything else falls back to the brand blue, which
+   mixes to roughly the old --blue-pale. */
+.d-card,
+.comm-card,
+.res-card,
+.who-card,
+.tier-card,
+.involve-card,
+.se-link-row,
+.sub-card {
+  box-shadow: 6px 6px 0 color-mix(in srgb, var(--c, #1d4fa1) 20%, #fff);
+  transition: box-shadow 0.18s ease, transform 0.18s ease, border-color 0.18s ease;
+}
+.d-card:hover,
+.comm-card:hover,
+.res-card:hover,
+.who-card:hover,
+.tier-card:hover,
+.involve-card:hover,
+.se-link-row:hover,
+.sub-card:hover {
+  box-shadow: 10px 10px 0 color-mix(in srgb, var(--c, #1d4fa1) 32%, #fff);
+  transform: translate(-3px, -3px);
+}
+
+/* Accent-bar cards pick up their own colour on hover too, where they have one. */
+.res-card:hover { border-left-color: var(--c, var(--blue)); }
+
+/* Featured / inverted cards need a shadow that reads on their own colour. */
+.d-card.featured { box-shadow: 6px 6px 0 rgba(15,27,45,0.22); }
+.d-card.featured:hover { box-shadow: 10px 10px 0 rgba(15,27,45,0.3); }
+
+/* Panels that don't lift, but should still sit on a block. */
+.contact-form-card,
+.contact-info-card,
+.gate-card,
+.se-form-card,
+.se-info-block,
+.cm-card,
+.callout {
+  box-shadow: var(--block-sm);
+}
+
+/* Floating layers (menus, modals, toast) get a harder, deeper block. */
+.drop, .sidedrop { box-shadow: 8px 8px 0 var(--blue-pale); }
+.modal-card, .se-modal { box-shadow: var(--block-dark); }
+.toast { box-shadow: 8px 8px 0 rgba(15,27,45,0.25); }
+
+/* ─── 3. ACCENT BARS ───────────────────────────────────────────────
+   A thicker left edge that takes on the brand colour when the row is active —
+   the same cue the calendar uses for event pills and list rows.
+
+   These cards already carry `border: 1px solid var(--border)`, so the resting
+   colour must stay visible: a transparent bar would read as a missing edge.
+   Only the WIDTH changes at rest; the colour changes on hover.
+
+   `.se-link-row` is deliberately absent — student-groups.html already colour-
+   codes those rows per form (.c-media, .c-reimb, …) and a rule here would
+   overwrite that system on hover. */
+.res-card,
+.who-card,
+.sub-card,
+.faq-item {
+  border-left: 3px solid var(--border);
+  transition: border-color 0.18s ease, box-shadow 0.18s ease, transform 0.18s ease;
+}
+.res-card:hover,
+.who-card:hover,
+.sub-card:hover,
+.faq-item[open] { border-left-color: var(--blue); }
+
+/* ─── 4. SQUARE DETAILS ────────────────────────────────────────────
+   Small round dots/swatches become squares, matching the calendar legend. */
+.res-card-comm::before,
+.pag-dots button,
+.cm-crumbs span { border-radius: var(--edge); }
+
+/* ─── 5. SECTION DECOR ─────────────────────────────────────────────
+   Floating pixel squares behind content, as on committees.html — set as
+   background-image rather than extra elements, so no page markup changes and
+   no ::before/::after collisions with existing rules.
+
+   Only pages with NO decor of their own get it here. `index`, `committees` and
+   `shop` already place `.section-bg-decor` images in their markup; adding more
+   here stacked two squares on top of each other. `about`, `contact` and
+   `resources` are deliberately left plain — those pages are dense with cards and
+   text, and the squares fought with the content.
+
+   Each page gets its own arrangement and its own pair of SVGs, so the site
+   doesn't repeat one recognisable pattern on every section. */
+.se-content {
+  background-image: url(assets/svg/decor/sqs6.svg), url(assets/svg/decor/sqs2.svg);
+  background-repeat: no-repeat;
+  background-position: calc(100% + 80px) 70px, -80px calc(100% - 180px);
+  background-size: 230px auto, 200px auto;
+}
+.bags-section {
+  background-image: url(assets/svg/decor/sqs1.svg), url(assets/svg/decor/sqs8.svg);
+  background-repeat: no-repeat;
+  background-position: -90px 150px, calc(100% + 70px) calc(100% - 90px);
+  background-size: 260px auto, 210px auto;
+}
+
+/* ─── 6. FOCUS ─────────────────────────────────────────────────────
+   Hard edges remove some of the soft affordance, so keyboard focus gets a
+   deliberate, high-contrast square ring on every interactive element. */
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible,
+summary:focus-visible,
+[tabindex]:focus-visible {
+  outline: 3px solid var(--blue);
+  outline-offset: 2px;
+  border-radius: var(--edge);
+}
+
+/* ─── 7. MOBILE ────────────────────────────────────────────────────
+   Big offset shadows waste horizontal space on a phone and the decor
+   competes with content, so both shrink or drop out. */
+@media (max-width: 720px) {
+  .d-card, .comm-card, .res-card, .who-card, .tier-card, .involve-card,
+  .se-link-row, .sub-card {
+    box-shadow: 4px 4px 0 color-mix(in srgb, var(--c, #1d4fa1) 20%, #fff);
+  }
+  .contact-form-card, .contact-info-card, .gate-card, .se-form-card,
+  .se-info-block, .cm-card, .callout {
+    box-shadow: 4px 4px 0 var(--blue-pale);
+  }
+  .d-card:hover, .comm-card:hover, .res-card:hover, .who-card:hover,
+  .tier-card:hover, .involve-card:hover, .se-link-row:hover,
+  .sub-card:hover {
+    box-shadow: 4px 4px 0 color-mix(in srgb, var(--c, #1d4fa1) 20%, #fff);
+    transform: none;                       /* no hover-lift on touch */
+  }
+  .se-content, .bags-section { background-image: none; }
+}
+
+/* Respect users who ask for less motion. */
+@media (prefers-reduced-motion: reduce) {
+  .d-card, .comm-card, .res-card, .who-card, .tier-card, .involve-card,
+  .se-link-row, .sub-card { transition: none; }
+  .d-card:hover, .comm-card:hover, .res-card:hover, .who-card:hover,
+  .tier-card:hover, .involve-card:hover, .se-link-row:hover,
+  .sub-card:hover { transform: none; }
+}

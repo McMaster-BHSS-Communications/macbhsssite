@@ -376,6 +376,7 @@
       .footer-bottom { flex-direction: column; gap: 6px; text-align: center; }
     }
   </style>
+  <link rel="stylesheet" href="site-style.css" />
   <link rel="canonical" href="https://bhssmcmaster.com/resources" />
   <meta name="description" content="Resources from the McMaster Bachelor of Health Sciences Society (BHSS) — administration, opportunities, and supports for Honours Health Sciences students." />
 </head>
@@ -713,7 +714,7 @@ function buildCard(item) {
   const logoFilter = isBag ? 'brightness(0) invert(20%)' : 'brightness(0) invert(1)';
   const textColor = isBag ? comm.color : '#fff';
   return `
-    <div class="res-card" onclick="openModal('${esc(item.id)}')">
+    <div class="res-card" style="--c:${comm.color}" onclick="openModal('${esc(item.id)}')">
       <div class="res-card-body">
         <div class="res-card-title">${esc(item.title)}</div>
         <div class="res-card-desc">${esc(item.description || '')}</div>
