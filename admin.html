@@ -1387,7 +1387,13 @@ async function syncCalendarNow() {
     if (error) throw error;
     toast(`Synced: +${data.added} added, ${data.updated} updated, −${data.removed} removed`);
   } catch (e) {
-    toast('Sync failed — see the status box for details', 'error');
+    // Non-2xx responses carry the function's JSON body (e.g. {errors:[…]}) in e.context.
+    let detail = e.message || String(e);
+    try { const b = await e.context.json(); detail = (b.errors && b.errors.join(' | ')) || b.error || detail; } catch (_) {}
+    toast('Sync failed', 'error');
+    document.getElementById('calSyncStatus').innerHTML = `<span style="color:#b91c1c"><strong>Sync failed:</strong> ${String(detail).replace(/</g, '&lt;')}</span>`;
+    btn.disabled = false; btn.textContent = 'Sync now';
+    return;
   }
   btn.disabled = false; btn.textContent = 'Sync now';
   loadCalendarSync();
