@@ -96,7 +96,6 @@
 /* Panels that don't lift, but should still sit on a block. */
 .contact-form-card,
 .contact-info-card,
-.gate-card,
 .se-form-card,
 .se-info-block,
 .cm-card,
@@ -187,7 +186,7 @@ summary:focus-visible,
   .se-link-row, .sub-card {
     box-shadow: 4px 4px 0 color-mix(in srgb, var(--c, #1d4fa1) 20%, #fff);
   }
-  .contact-form-card, .contact-info-card, .gate-card, .se-form-card,
+  .contact-form-card, .contact-info-card, .se-form-card,
   .se-info-block, .cm-card, .callout {
     box-shadow: 4px 4px 0 var(--blue-pale);
   }
