@@ -77,6 +77,23 @@
     .page-hero h1 { font-family: 'Familjen Grotesk', sans-serif; font-size: clamp(1.8rem, 5vw, 3.2rem); font-weight: 600; color: var(--white); letter-spacing: -0.02em; position: relative; z-index: 1; margin-bottom: 16px; }
     .page-hero p { font-size: clamp(0.85rem, 2vw, 1rem); color: rgba(255,255,255,0.8); max-width: 640px; margin: 0 auto; line-height: 1.7; position: relative; z-index: 1; }
 
+    /* ─── TOPIC SUBNAV ─── */
+    .filter-bar-wrap { background: var(--white); border-bottom: 1px solid var(--border); overflow-x: auto; scrollbar-width: none; }
+    .filter-bar-wrap::-webkit-scrollbar { display: none; }
+    .filter-bar { display: flex; align-items: center; gap: 0; padding: 0 32px; white-space: nowrap; }
+    .topic-btn {
+      display: inline-block; padding: 14px 16px;
+      font-family: 'Familjen Grotesk', serif; font-size: 0.8rem; font-weight: 600;
+      color: var(--mid); text-decoration: none; border: none; background: none;
+      cursor: pointer; border-bottom: 3px solid transparent;
+      transition: color 0.15s, border-color 0.15s; white-space: nowrap; letter-spacing: 0.01em;
+    }
+    .topic-btn:hover { color: var(--text); }
+    .topic-btn.active { color: var(--blue); border-bottom-color: var(--blue); }
+    .topic-panel { display: none; }
+    .topic-panel.active { display: block; }
+    .topic-panel .section-header { padding-bottom: 24px; border-bottom: 1px solid var(--border); margin-bottom: 32px; }
+
     /* ─── CONTENT AREA ─── */
     .contact-content { max-width: 900px; margin: 0 auto; padding: 56px 40px 80px; }
     .section-block { margin-bottom: 64px; }
@@ -93,6 +110,43 @@
     .who-body p { font-size: 0.82rem; color: var(--mid); line-height: 1.6; margin-bottom: 8px; }
     .who-body a { font-size: 0.8rem; font-weight: 600; color: var(--blue); text-decoration: none; }
     .who-body a:hover { text-decoration: underline; }
+
+    /* ─── CONCERN MATRIX ─── */
+    .cm-card { background: var(--white); border: 1px solid var(--border); border-radius: 16px; padding: 32px; }
+    .cm-top { display: flex; align-items: center; justify-content: space-between; gap: 12px; min-height: 32px; margin-bottom: 18px; }
+    .cm-crumbs { font-size: 0.75rem; color: var(--muted); font-weight: 500; letter-spacing: 0.02em; }
+    .cm-crumbs b { color: var(--blue); font-weight: 600; }
+    .cm-nav { display: flex; gap: 8px; }
+    .cm-link { background: none; border: 1px solid var(--border); border-radius: 8px; padding: 6px 12px; font-family: 'Inter', sans-serif; font-size: 0.76rem; font-weight: 600; color: var(--mid); cursor: pointer; transition: background 0.15s, color 0.15s; }
+    .cm-link:hover { background: var(--blue-pale); color: var(--blue); }
+    .cm-q { font-family: 'Familjen Grotesk', sans-serif; font-size: 1.2rem; font-weight: 600; color: var(--text); letter-spacing: -0.01em; margin-bottom: 6px; outline: none; }
+    .cm-sub { font-size: 0.84rem; color: var(--mid); line-height: 1.6; margin-bottom: 20px; }
+    .cm-opts { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 12px; }
+    .cm-opt { text-align: left; background: var(--off); border: 1px solid var(--border); border-radius: 12px; padding: 16px 18px; cursor: pointer; font-family: 'Inter', sans-serif; transition: border-color 0.15s, box-shadow 0.15s, transform 0.15s, background 0.15s; }
+    .cm-opt:hover, .cm-opt:focus-visible { border-color: var(--blue); background: var(--white); box-shadow: 0 6px 18px rgba(29,79,161,0.1); transform: translateY(-2px); outline: none; }
+    .cm-opt strong { display: block; font-family: 'Familjen Grotesk', sans-serif; font-size: 0.95rem; font-weight: 600; color: var(--text); margin-bottom: 4px; }
+    .cm-opt span { display: block; font-size: 0.78rem; color: var(--mid); line-height: 1.55; }
+    .cm-opt.urgent { border-color: rgba(185,28,28,0.35); background: rgba(185,28,28,0.05); }
+    .cm-opt.urgent:hover, .cm-opt.urgent:focus-visible { border-color: #b91c1c; box-shadow: 0 6px 18px rgba(185,28,28,0.12); }
+    .cm-result { border-radius: 12px; padding: 22px 24px; border: 1px solid var(--border); background: var(--off); }
+    .cm-result.safety { background: #fef2f2; border-color: rgba(185,28,28,0.3); }
+    .cm-result h4 { font-family: 'Familjen Grotesk', sans-serif; font-size: 1.05rem; font-weight: 600; color: var(--text); margin-bottom: 8px; }
+    .cm-result p { font-size: 0.86rem; color: var(--mid); line-height: 1.7; margin-bottom: 14px; }
+    .cm-result p:last-child { margin-bottom: 0; }
+    .cm-cta { display: inline-block; padding: 11px 22px; background: var(--blue); color: var(--white); border-radius: 8px; font-size: 0.85rem; font-weight: 600; text-decoration: none; transition: background 0.15s; }
+    .cm-cta:hover { background: var(--blue-mid); }
+    .cm-cta.red { background: #b91c1c; }
+    .cm-cta.red:hover { background: #991b1b; }
+    .cm-tpl { margin-top: 16px; background: var(--white); border: 1px dashed var(--border); border-radius: 10px; padding: 14px 16px; font-size: 0.8rem; color: var(--mid); line-height: 1.7; white-space: pre-line; }
+    .cm-tpl-h { font-size: 0.7rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); margin-bottom: 6px; }
+    .cm-res { margin-top: 20px; border: 1px solid rgba(91,155,213,0.45); border-radius: 12px; padding: 18px 20px; background: var(--white); }
+    .cm-res h5 { font-family: 'Familjen Grotesk', sans-serif; font-size: 0.9rem; font-weight: 600; color: var(--text); margin-bottom: 10px; }
+    .cm-res ul { list-style: none; display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px 20px; }
+    .cm-res li { font-size: 0.8rem; color: var(--mid); line-height: 1.55; }
+    .cm-res li strong { display: block; color: var(--text); font-weight: 600; }
+    .cm-res a { color: var(--blue); }
+    .cm-foot { margin-top: 18px; font-size: 0.78rem; color: var(--muted); }
+    .cm-foot a { color: var(--blue); }
 
     /* ─── CONTACT FORM ─── */
     .contact-layout { display: grid; grid-template-columns: 1fr 300px; gap: 40px; align-items: start; }
@@ -164,6 +218,7 @@
       nav.sitenav { padding: 0 16px; }
       .nav-links, .nav-resources { display: none; }
       .page-hero { padding: 36px 20px 36px; }
+      .filter-bar { padding: 0 16px; }
       .form-row { grid-template-columns: 1fr; }
       .who-grid { grid-template-columns: 1fr; }
       footer { padding: 36px 24px 28px; }
@@ -237,11 +292,37 @@
   <p>Have a question, concern, or just want to get in touch? Find the right person below, or send us a message directly.</p>
 </div>
 
+<!-- Topic Subnav -->
+<div class="filter-bar-wrap">
+  <div class="filter-bar">
+    <button class="topic-btn active" data-panel="who" onclick="switchTab('who')">Who to Contact</button>
+    <button class="topic-btn" data-panel="concern" onclick="switchTab('concern')">Report a Concern</button>
+    <button class="topic-btn" data-panel="message" onclick="switchTab('message')">Send a Message</button>
+    <button class="topic-btn" data-panel="faq" onclick="switchTab('faq')">FAQ</button>
+  </div>
+</div>
+
 <!-- Content -->
 <div class="contact-content">
 
+  <!-- CONCERN MATRIX -->
+  <div class="topic-panel" id="panel-concern">
+    <div class="section-header">
+      <h2>Do You Have a Concern to Report?</h2>
+      <p>Answer a couple of quick questions and we'll point you to the right person. Concerns about a person are routed so they never go to someone involved.</p>
+    </div>
+    <div class="cm-card">
+      <div class="cm-top">
+        <div class="cm-crumbs" id="cm-crumbs" aria-live="polite"></div>
+        <div class="cm-nav" id="cm-nav"></div>
+      </div>
+      <div id="cm-body" aria-live="polite"></div>
+      <p class="cm-foot">Not reporting a concern? Use <a href="#who">Who to Contact</a> or <a href="#message">send us a message</a> instead.</p>
+    </div>
+  </div>
+
   <!-- WHO TO CONTACT -->
-  <div class="section-block">
+  <div class="topic-panel active" id="panel-who">
     <div class="section-header">
       <h2>Who to Contact</h2>
       <p>Not sure who can help? Here's a quick guide to reaching the right committee for your question.</p>
@@ -311,7 +392,7 @@
   </div>
 
   <!-- CONTACT FORM -->
-  <div class="section-block">
+  <div class="topic-panel" id="panel-message">
     <div class="section-header">
       <h2>Send a Message</h2>
       <p>Prefer to write it out? Fill out the form below and someone from the BHSS will get back to you.</p>
@@ -403,7 +484,7 @@
   </div>
 
   <!-- FAQ -->
-  <div class="section-block" style="margin-bottom:0">
+  <div class="topic-panel" id="panel-faq">
     <div class="section-header">
       <h2>Frequently Asked Questions</h2>
       <p>Quick answers to some of the questions we hear most often.</p>
@@ -474,6 +555,106 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="supabase-client.js"></script>
 <script>
+// ── TABS ── (#conflict and #send kept as aliases for older links)
+const TAB_ALIASES = { conflict: 'concern', send: 'message' };
+function switchTab(name) {
+  name = TAB_ALIASES[name] || name;
+  const panel = document.getElementById('panel-' + name);
+  if (!panel) return;
+  document.querySelectorAll('.topic-panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.topic-btn').forEach(b => b.classList.remove('active'));
+  panel.classList.add('active');
+  const btn = document.querySelector(`.topic-btn[data-panel="${name}"]`);
+  if (btn) btn.classList.add('active');
+  history.replaceState(null, '', '#' + name);
+}
+(function() {
+  const open = () => { const h = location.hash.slice(1); if (h) switchTab(h); };
+  open();
+  window.addEventListener('hashchange', open);
+})();
+
+// ── CONCERN MATRIX ──
+// To change routing, edit this object only. A node is either a question
+// ({q, sub, opts:[{t, d, to, urgent}]}) or a result ({result:{...}}).
+const CM_RESOURCES = [
+  { n: 'Campus Safety', v: '905-522-4135 (or dial 88 on any campus phone)' },
+  { n: 'Student Wellness Centre', v: '905-525-9140 ext. 27700' },
+  { n: 'Sexual Violence Prevention & Response Office', v: '905-525-9140 ext. 27581', mail: 'svpro@mcmaster.ca' },
+  { n: 'Good2Talk', v: '1-866-925-5454 or text GOOD2TALKON to 686868' }
+];
+const CM_TEMPLATE = 'Subject: Concern Report – [category]\nDate of incident(s):\nWho was involved (if comfortable sharing):\nWhat happened:\nWhat you would like to see happen:';
+const CM_NODES = {
+  start: { q: 'What is your concern in regards to?', opts: [
+    { t: 'Interpersonal Concerns', d: 'A conflict or issue with another person.', to: 'interpersonal' },
+    { t: 'Financial Concern', d: 'Funding decisions, reimbursements, fees, resource allocation, or unequal access to financial support.', to: 'edi' },
+    { t: 'Favouritism', d: 'Unfair preferential treatment, opportunities, or advantages based on personal relationships or bias.', to: 'edi' },
+    { t: 'Representation / Accessibility', d: 'Whether diverse perspectives are meaningfully included, and whether events, spaces, or resources are accessible to all students.', to: 'edi' },
+    { t: 'Discrimination / Harassment', d: 'Discriminatory or harassing behaviour.', to: 'discrimination' },
+    { t: 'Administrative Concern', d: 'Your (or someone else\'s) ability to participate in HHSP: institutional rules, compliance, operational systems, or other administrative matters.', to: 'admin' }
+  ]},
+  interpersonal: { q: 'Who is your concern about?', sub: 'This decides who receives your report, so it never goes to someone involved.', opts: [
+    { t: 'BHSS Coordinator(s)', d: 'One or more coordinators on a BHSS committee.', to: 'chair' },
+    { t: 'BHSS Chair', d: 'The BHSS Chair.', to: 'edi' },
+    { t: 'An HHSP student', d: 'A student in the Health Sciences program.', to: 'edi' }
+  ]},
+  discrimination: { q: 'Which best describes the situation?', sub: 'If you or someone else is unsafe right now, choose the first option.', opts: [
+    { t: 'It\'s urgent', d: 'Someone is in immediate danger or needs help right now.', to: 'safety', urgent: true },
+    { t: 'It\'s not urgent', d: 'I want to report it to the BHSS Equity, Diversity & Inclusion team, whether or not it involves an HHSP student.', to: 'edi' }
+  ]},
+  chair: { result: { title: 'Email the BHSS Chair', body: 'Send an email to the BHSS Chair using the format below.', email: 'bhsschr@mcmaster.ca', template: true } },
+  edi: { result: { title: 'Email the EDI Committee', body: 'Send an email to the BHSS Equity, Diversity & Inclusion Committee using the format below.', email: 'bhssedi@mcmaster.ca', template: true, resources: true } },
+  safety: { result: { safety: true, title: 'Your safety is crucial', body: 'Contact Campus Safety by dialing <strong>88</strong> on any campus phone or <strong>905-522-4135</strong>. If you are in immediate danger, call <strong>911</strong>.', tel: '905-522-4135', resources: true } },
+  admin: { result: { title: 'Contact the HHSP Office', body: 'Reach the HHSP office through the online helpdesk, or in person at <strong>MDCL 3300</strong>, Monday to Friday, 8:30 AM – 4:30 PM.' } }
+};
+let cmPath = ['start'];
+let cmLabels = [];
+
+function cmRender(focus) {
+  const id = cmPath[cmPath.length - 1];
+  const node = CM_NODES[id];
+  const body = document.getElementById('cm-body');
+  const crumbs = document.getElementById('cm-crumbs');
+  const nav = document.getElementById('cm-nav');
+  crumbs.innerHTML = cmLabels.length ? cmLabels.map((l, i) => i === cmLabels.length - 1 ? '<b>' + l + '</b>' : l).join(' › ') : 'Step 1';
+  nav.innerHTML = '';
+  if (cmPath.length > 1) {
+    nav.innerHTML = '<button type="button" class="cm-link" onclick="cmBack()">← Back</button><button type="button" class="cm-link" onclick="cmRestart()">Start over</button>';
+  }
+  if (node.opts) {
+    body.innerHTML = '<h3 class="cm-q" tabindex="-1">' + node.q + '</h3>' +
+      (node.sub ? '<p class="cm-sub">' + node.sub + '</p>' : '<div style="height:14px"></div>') +
+      '<div class="cm-opts">' + node.opts.map((o, i) =>
+        '<button type="button" class="cm-opt' + (o.urgent ? ' urgent' : '') + '" onclick="cmPick(\'' + id + '\',' + i + ')"><strong>' + o.t + '</strong><span>' + o.d + '</span></button>'
+      ).join('') + '</div>';
+  } else {
+    const r = node.result;
+    let h = '<div class="cm-result' + (r.safety ? ' safety' : '') + '"><h4 class="cm-q" tabindex="-1" style="font-size:1.05rem">' + r.title + '</h4><p>' + r.body + '</p>';
+    if (r.email) {
+      const mailto = 'mailto:' + r.email + '?subject=' + encodeURIComponent('Concern Report') + '&body=' + encodeURIComponent(CM_TEMPLATE);
+      h += '<a class="cm-cta" href="' + mailto + '">Email ' + r.email + '</a>';
+    }
+    if (r.tel) h += '<a class="cm-cta red" href="tel:' + r.tel.replace(/-/g, '') + '">Call Campus Safety</a>';
+    if (r.template) h += '<div class="cm-tpl"><div class="cm-tpl-h">Suggested email format</div>' + CM_TEMPLATE.replace(/&/g, '&amp;').replace(/</g, '&lt;') + '</div>';
+    h += '</div>';
+    if (r.resources) {
+      h += '<div class="cm-res"><h5>Additional support resources</h5><ul>' + CM_RESOURCES.map(x =>
+        '<li><strong>' + x.n + '</strong>' + x.v + (x.mail ? '<br><a href="mailto:' + x.mail + '">' + x.mail + '</a>' : '') + '</li>').join('') + '</ul></div>';
+    }
+    body.innerHTML = h;
+  }
+  if (focus) { const f = body.querySelector('.cm-q'); if (f) f.focus({ preventScroll: true }); }
+}
+function cmPick(id, i) {
+  const o = CM_NODES[id].opts[i];
+  cmLabels.push(o.t);
+  cmPath.push(o.to);
+  cmRender(true);
+}
+function cmBack() { if (cmPath.length > 1) { cmPath.pop(); cmLabels.pop(); cmRender(true); } }
+function cmRestart() { cmPath = ['start']; cmLabels = []; cmRender(true); }
+cmRender(false);
+
 async function submitContactForm() {
   const firstName = document.getElementById('cf-firstname').value.trim();
   const lastName  = document.getElementById('cf-lastname').value.trim();
