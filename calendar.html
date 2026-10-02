@@ -131,6 +131,8 @@
     /* Tinted pills with dark text — readable for every category colour */
     .pill { display: block; width: 100%; text-align: left; background: color-mix(in srgb, var(--c) 13%, #fff); color: var(--text); border: none; border-left: 3px solid var(--c); border-radius: 0; font-size: 0.7rem; font-weight: 600; padding: 3px 6px; margin-bottom: 3px; cursor: pointer; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; line-height: 1.35; transition: background 0.12s; }
     .pill:hover { background: color-mix(in srgb, var(--c) 24%, #fff); }
+    .pill.acad { background: #1c2230; color: #f1f4f9; border-left-color: color-mix(in srgb, var(--c) 45%, #fff); }
+    .pill.acad:hover { background: #2b3446; }
     .pill-more { background: none; border: none; color: var(--blue); font-size: 0.7rem; font-weight: 700; cursor: pointer; padding: 1px 4px; }
     .cal-dots { display: none; gap: 3px; flex-wrap: wrap; justify-content: center; }
     .cal-dots i { width: 7px; height: 7px; background: var(--c); }
@@ -481,7 +483,7 @@ function renderMonth() {
     const k = addDays(start, i);
     const inMonth = +k.slice(5, 7) === state.m + 1;
     const evs = byDay[k] || [];
-    const pills = evs.slice(0, MAX_PILLS).map(e => `<button class="pill" style="--c:${e.color}" data-id="${esc(e.id)}" title="${esc(e.title)}">${esc(e.title)}</button>`).join('');
+    const pills = evs.slice(0, MAX_PILLS).map(e => `<button class="pill${e.source === 'academic' ? ' acad' : ''}" style="--c:${e.color}" data-id="${esc(e.id)}" title="${esc(e.title)}">${esc(e.title)}</button>`).join('');
     const more = evs.length > MAX_PILLS ? `<button class="pill-more" data-day="${k}">+${evs.length - MAX_PILLS} more</button>` : '';
     const dots = evs.length ? `<div class="cal-dots">${evs.slice(0, 4).map(e => `<i style="--c:${e.color}"></i>`).join('')}</div>` : '';
     cells += `<div class="cal-cell${inMonth ? '' : ' other'}${k === todayKey ? ' today' : ''}" data-day="${k}"><span class="cal-num">${+k.slice(8)}</span>${pills}${more}${dots}</div>`;
