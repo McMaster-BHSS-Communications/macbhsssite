@@ -127,6 +127,9 @@
     /* No frame around the embed — Zeffy renders its own dark card, so a second
        container around it read as a box-in-a-box. */
     .zeffy-embed-wrap { position: relative; z-index: 1; }
+    .zeffy-campaign + .zeffy-campaign { margin-top: 56px; padding-top: 48px; border-top: 1px solid var(--border, #e2e8f0); }
+    .zeffy-campaign .zeffy-note { margin-bottom: 24px; }
+    .zeffy-empty { text-align: center; color: var(--mid); font-size: 0.9rem; padding: 40px 0; }
 
     /* ─────────────────────────────────────────────────────────────────────── */
     /* RESPONSIVE                                                              */
@@ -253,21 +256,10 @@
   <img class="section-bg-decor" src="assets/svg/decor/sqs4.svg" alt="" aria-hidden="true" style="width:280px;top:-60px;right:-90px;transform:rotate(14deg)">
   <img class="section-bg-decor" src="assets/svg/decor/sqs6.svg" alt="" aria-hidden="true" style="width:240px;top:46%;left:-110px;transform:rotate(-12deg)">
   <img class="section-bg-decor" src="assets/svg/decor/sqs2.svg" alt="" aria-hidden="true" style="width:200px;bottom:40px;right:-70px;transform:rotate(8deg)">
-  <h2 class="zeffy-heading">Shop the Store</h2>
   <p class="zeffy-note">Browse and pay securely below — powered by Zeffy, a payment processor built for nonprofits. 100% of your payment goes directly to BHSS.</p>
-  <div class="zeffy-embed-wrap">
-    <div data-zeffy-embed data-form-url="/embed/ticketing/hhshop-2"></div>
-    <div data-zeffy-embed-fallback style="display:none;">
-      <div style="position:relative;overflow:hidden;height:900px;width:100%;">
-        <iframe title="BHSS Store — powered by Zeffy" style="position:absolute;border:0;top:0;left:0;bottom:0;right:0;width:100%;height:100%" data-zeffy-embed-src="https://www.zeffy.com/embed/ticketing/hhshop-2" allowpaymentrequest allowTransparency="true"></iframe>
-      </div>
-    </div>
-  </div>
+  <!-- One titled block per row in zeffy_campaigns (managed in admin → Zeffy Campaigns) -->
+  <div id="zeffyCampaigns"></div>
 </div>
-<script
-  src="https://www.zeffy.com/embed/v2/zeffy-embed.js"
-  onerror="document.querySelectorAll('[data-zeffy-embed-fallback]').forEach(function(el){el.style.display='block';el.querySelectorAll('iframe[data-zeffy-embed-src]').forEach(function(f){f.src=f.getAttribute('data-zeffy-embed-src');});});">
-</script>
 
 
 <!-- Footer -->
@@ -338,9 +330,61 @@ function _renderBanners(banners) {
   }).join('');
 }
 
+// ── ZEFFY CAMPAIGNS ───────────────────────────────────────────────────────────
+// Rows come from zeffy_campaigns (anon RLS only returns show_on_shop rows).
+// If the query fails (e.g. table not created yet), fall back to the original store.
+const _FALLBACK_CAMPAIGNS = [{ title: 'HHSP Store', description: '', embed_path: '/embed/ticketing/hhshop-2' }];
+
+async function _fetchCampaigns() {
+  try {
+    const { data, error } = await window.db.from('zeffy_campaigns')
+      .select('title, description, embed_path')
+      .eq('show_on_shop', true)
+      .order('sort_order').order('created_at');
+    if (error) throw error;
+    return data || [];
+  } catch { return _FALLBACK_CAMPAIGNS; }
+}
+
+function _esc(s) {
+  return String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+}
+
+function _renderCampaigns(campaigns) {
+  const wrap = document.getElementById('zeffyCampaigns');
+  if (!campaigns.length) {
+    wrap.innerHTML = '<p class="zeffy-empty">Nothing for sale right now — check back soon!</p>';
+    return;
+  }
+  wrap.innerHTML = campaigns.map(c => `
+    <section class="zeffy-campaign">
+      <h2 class="zeffy-heading">${_esc(c.title)}</h2>
+      ${c.description ? `<p class="zeffy-note">${_esc(c.description)}</p>` : ''}
+      <div class="zeffy-embed-wrap">
+        <div data-zeffy-embed data-form-url="${_esc(c.embed_path)}"></div>
+        <div data-zeffy-embed-fallback style="display:none;">
+          <div style="position:relative;overflow:hidden;height:900px;width:100%;">
+            <iframe title="${_esc(c.title)} — powered by Zeffy" style="position:absolute;border:0;top:0;left:0;bottom:0;right:0;width:100%;height:100%" data-zeffy-embed-src="https://www.zeffy.com${_esc(c.embed_path)}" allowpaymentrequest allowTransparency="true"></iframe>
+          </div>
+        </div>
+      </div>
+    </section>`).join('');
+
+  // Load Zeffy's embed script only after the containers exist so it picks them all up.
+  const s = document.createElement('script');
+  s.src = 'https://www.zeffy.com/embed/v2/zeffy-embed.js';
+  s.onerror = () => document.querySelectorAll('[data-zeffy-embed-fallback]').forEach(el => {
+    el.style.display = 'block';
+    el.querySelectorAll('iframe[data-zeffy-embed-src]').forEach(f => { f.src = f.getAttribute('data-zeffy-embed-src'); });
+  });
+  document.body.appendChild(s);
+}
+
 // ── INIT ──────────────────────────────────────────────────────────────────────
 (async function initShop() {
-  _renderBanners(await _fetchBanners());
+  const [banners, campaigns] = await Promise.all([_fetchBanners(), _fetchCampaigns()]);
+  _renderBanners(banners);
+  _renderCampaigns(campaigns);
 })();
 </script>
 

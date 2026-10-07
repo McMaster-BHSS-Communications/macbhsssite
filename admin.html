@@ -437,6 +437,10 @@
         <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
         Store Orders
       </button>
+      <button class="sidebar-link" onclick="showPanel('zeffy-campaigns')" id="link-zeffy-campaigns">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
+        Zeffy Campaigns
+      </button>
 
       <div class="sidebar-label" style="margin-top:24px">BHSS-Affiliated Groups</div>
       <button class="sidebar-link" onclick="showPanel('bags')" id="link-bags">
@@ -1090,6 +1094,74 @@
       </div>
     </div>
 
+    <!-- ZEFFY CAMPAIGNS PANEL -->
+    <div class="panel" id="panel-zeffy-campaigns">
+      <div class="topbar">
+        <div>
+          <h1>Zeffy Campaigns</h1>
+          <p>Each campaign shown on /shop gets its own titled section, stacked in sort order. Order sync pulls from every campaign with a Campaign ID.</p>
+        </div>
+        <button class="btn-secondary" onclick="renderZeffyCampaignList()">↻ Refresh</button>
+      </div>
+
+      <div class="composer-outer" style="align-items:flex-start;gap:28px">
+        <div class="composer-card" style="flex:1">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;padding-bottom:14px;border-bottom:1px solid var(--border)">
+            <h3 id="zc-form-title" style="font-family:'Familjen Grotesk',serif;font-size:1.1rem;font-weight:600">Add Campaign</h3>
+            <button class="btn-secondary" id="zc-cancel-btn" style="display:none;font-size:0.78rem;padding:6px 14px" onclick="clearZeffyCampaignForm()">Cancel Edit</button>
+          </div>
+
+          <div class="composer-grid">
+            <div class="form-group full">
+              <label>Title * <span style="color:var(--muted);font-weight:400">— heading shown above this shop on /shop</span></label>
+              <input type="text" id="zc-title" placeholder="e.g. HHSP Store, Formal Tickets" />
+            </div>
+            <div class="form-group full">
+              <label>Description <span style="color:var(--muted);font-weight:400">— optional line under the title</span></label>
+              <textarea id="zc-desc" rows="2" placeholder="e.g. Orders close Nov 15. Pickup in MDCL 3308."></textarea>
+            </div>
+            <div class="form-group full">
+              <label>Zeffy Link * <span style="color:var(--muted);font-weight:400">— paste the campaign's Zeffy URL</span></label>
+              <input type="text" id="zc-link" placeholder="https://www.zeffy.com/en-CA/ticketing/hhshop-2" />
+            </div>
+            <div class="form-group full">
+              <label>Campaign ID <span style="color:var(--muted);font-weight:400">— from the Zeffy dashboard/API; needed for orders to sync into admin</span></label>
+              <input type="text" id="zc-campaign-id" placeholder="Leave blank to skip order sync" />
+            </div>
+            <div class="form-group">
+              <label>Type</label>
+              <select id="zc-kind">
+                <option value="store">Store (→ Store Orders)</option>
+                <option value="ticket">Event tickets (→ ticket orders)</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Sort Order</label>
+              <input type="number" id="zc-sort" value="0" />
+            </div>
+            <div class="form-group" style="display:flex;align-items:center;gap:10px;padding-top:24px">
+              <label class="toggle-switch"><input type="checkbox" id="zc-show" checked /><span class="toggle-slider"></span></label>
+              <span style="font-size:0.83rem;color:var(--mid)">Show on /shop</span>
+            </div>
+            <div class="form-group" style="display:flex;align-items:center;gap:10px;padding-top:24px">
+              <label class="toggle-switch"><input type="checkbox" id="zc-sync" checked /><span class="toggle-slider"></span></label>
+              <span style="font-size:0.83rem;color:var(--mid)">Sync orders</span>
+            </div>
+          </div>
+
+          <div class="composer-actions">
+            <button class="btn-primary" id="zc-submit-btn" style="width:auto;padding:10px 24px" onclick="saveZeffyCampaign()">Add Campaign</button>
+            <button class="btn-secondary" onclick="clearZeffyCampaignForm()">Clear</button>
+          </div>
+        </div>
+
+        <div style="width:320px;flex-shrink:0">
+          <div style="font-size:0.68rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted);margin-bottom:10px">Campaigns</div>
+          <div id="zeffyCampaignList" class="posts-list"></div>
+        </div>
+      </div>
+    </div>
+
     <!-- MANAGE BAGS PANEL -->
     <div class="panel" id="panel-bags">
       <div class="topbar">
@@ -1355,6 +1427,7 @@ function showPanel(name) {
   if (name === 'page-resources')  loadPageResourcesPanel();
   if (name === 'contact')         loadContactSubmissions();
   if (name === 'orders')          loadOrders();
+  if (name === 'zeffy-campaigns') renderZeffyCampaignList();
   if (name === 'bags')            renderBagList();
   if (name === 'bag-codes')       renderBagCodesList();
   if (name === 'bag-forms')       loadBagForms();
@@ -2659,6 +2732,109 @@ document.getElementById('nextPageBtn').addEventListener('click', () => { _orders
     window._pendingComm  = comm;
   }
 })();
+
+// ─────────────────────────────────────
+// ZEFFY CAMPAIGNS (supabase-zeffy-campaigns.sql)
+// ─────────────────────────────────────
+let _editingZeffyId = null;
+
+// Accepts a public Zeffy URL (https://www.zeffy.com/en-CA/ticketing/x), an embed
+// URL, or a bare path, and returns the embed path shop.html needs (/embed/ticketing/x).
+function _zeffyEmbedPath(input) {
+  let path = input.trim();
+  try { if (/^https?:\/\//i.test(path)) path = new URL(path).pathname; } catch (_) {}
+  path = '/' + path.replace(/^\/+/, '').replace(/\/+$/, '');
+  path = path.replace(/^\/embed(?=\/)/, '').replace(/^\/[a-z]{2}-[A-Z]{2}(?=\/)/, '');
+  return path === '/' ? '' : '/embed' + path;
+}
+
+async function saveZeffyCampaign() {
+  const title      = document.getElementById('zc-title').value.trim();
+  const embedPath  = _zeffyEmbedPath(document.getElementById('zc-link').value);
+  if (!title)     { toast('Title is required.', 'error'); return; }
+  if (!embedPath) { toast('Zeffy link is required.', 'error'); return; }
+
+  const payload = {
+    title,
+    description:  document.getElementById('zc-desc').value.trim(),
+    embed_path:   embedPath,
+    campaign_id:  document.getElementById('zc-campaign-id').value.trim() || null,
+    kind:         document.getElementById('zc-kind').value,
+    sort_order:   parseInt(document.getElementById('zc-sort').value) || 0,
+    show_on_shop: document.getElementById('zc-show').checked,
+    sync_orders:  document.getElementById('zc-sync').checked,
+  };
+
+  const { error } = _editingZeffyId
+    ? await window.db.from('zeffy_campaigns').update(payload).eq('id', _editingZeffyId)
+    : await window.db.from('zeffy_campaigns').insert(payload);
+  if (error) { toast('Save failed: ' + error.message, 'error'); return; }
+  toast(_editingZeffyId ? 'Campaign updated!' : 'Campaign added!');
+  clearZeffyCampaignForm();
+  renderZeffyCampaignList();
+}
+
+function clearZeffyCampaignForm() {
+  ['zc-title', 'zc-desc', 'zc-link', 'zc-campaign-id'].forEach(id => document.getElementById(id).value = '');
+  document.getElementById('zc-kind').value = 'store';
+  document.getElementById('zc-sort').value = '0';
+  document.getElementById('zc-show').checked = true;
+  document.getElementById('zc-sync').checked = true;
+  _editingZeffyId = null;
+  document.getElementById('zc-form-title').textContent = 'Add Campaign';
+  document.getElementById('zc-submit-btn').textContent = 'Add Campaign';
+  document.getElementById('zc-cancel-btn').style.display = 'none';
+}
+
+function editZeffyCampaign(c) {
+  _editingZeffyId = c.id;
+  document.getElementById('zc-title').value = c.title || '';
+  document.getElementById('zc-desc').value = c.description || '';
+  document.getElementById('zc-link').value = 'https://www.zeffy.com' + (c.embed_path || '');
+  document.getElementById('zc-campaign-id').value = c.campaign_id || '';
+  document.getElementById('zc-kind').value = c.kind || 'store';
+  document.getElementById('zc-sort').value = c.sort_order || 0;
+  document.getElementById('zc-show').checked = !!c.show_on_shop;
+  document.getElementById('zc-sync').checked = !!c.sync_orders;
+  document.getElementById('zc-form-title').textContent = 'Edit Campaign';
+  document.getElementById('zc-submit-btn').textContent = 'Save Changes';
+  document.getElementById('zc-cancel-btn').style.display = '';
+  document.getElementById('zc-form-title').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+}
+
+async function deleteZeffyCampaign(id) {
+  if (!confirm('Remove this campaign from the site? Already-synced orders are kept. This does not touch the campaign on Zeffy.')) return;
+  const { error } = await window.db.from('zeffy_campaigns').delete().eq('id', id);
+  if (error) { toast('Delete failed: ' + error.message, 'error'); return; }
+  toast('Campaign removed.');
+  renderZeffyCampaignList();
+}
+
+async function renderZeffyCampaignList() {
+  const el = document.getElementById('zeffyCampaignList');
+  el.innerHTML = '<p style="font-size:0.82rem;color:var(--muted);padding:16px 0">Loading…</p>';
+  const { data, error } = await window.db.from('zeffy_campaigns').select('*').order('sort_order').order('created_at');
+  if (error) {
+    el.innerHTML = `<p style="font-size:0.82rem;color:var(--red);padding:16px 0">Load failed: ${error.message}<br>Has supabase-zeffy-campaigns.sql been run?</p>`;
+    return;
+  }
+  if (!data || !data.length) {
+    el.innerHTML = '<p style="font-size:0.82rem;color:var(--muted);padding:16px 0">No campaigns yet.</p>';
+    return;
+  }
+  const esc = s => String(s ?? '').replace(/[&<>"]/g, ch => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[ch]));
+  const pill = (txt, bg) => ` <span style="font-size:0.65rem;background:${bg};color:#fff;padding:1px 6px;border-radius:100px;vertical-align:middle">${txt}</span>`;
+  window._zeffyMap = Object.fromEntries(data.map(c => [c.id, c]));
+  el.innerHTML = data.map(c => `
+    <div class="post-row">
+      <div class="post-row-body">
+        <div class="post-row-title">${esc(c.title)}${!c.show_on_shop ? pill('HIDDEN', 'var(--muted)') : ''}${c.sync_orders && !c.campaign_id ? pill('NO CAMPAIGN ID', '#b45309') : ''}</div>
+        <div class="post-row-meta">${c.kind === 'ticket' ? 'Tickets' : 'Store'} · ${esc(c.embed_path)}</div>
+      </div>
+      <button class="btn-secondary" style="margin-right:6px" onclick="editZeffyCampaign(window._zeffyMap['${c.id}'])">Edit</button>
+      <button class="btn-danger" onclick="deleteZeffyCampaign('${c.id}')">Delete</button>
+    </div>`).join('');
+}
 
 // ─────────────────────────────────────
 // BHSS-AFFILIATED GROUPS (BAGs)

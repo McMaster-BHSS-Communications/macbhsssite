@@ -4,9 +4,10 @@
 // pg_cron setup instructions in supabase-zeffy-orders.sql / README below)
 // and pulls new paid payments from the Zeffy API instead of waiting for a push.
 //
-// Campaign IDs are configured via env vars (comma-separated), not hardcoded,
-// so adding a new committee event campaign later doesn't need a redeploy —
-// just `supabase secrets set ZEFFY_TICKET_CAMPAIGN_IDS=...`.
+// Campaign IDs come from the `zeffy_campaigns` table (admin.html → Store →
+// Zeffy Campaigns; see supabase-zeffy-campaigns.sql), merged with the
+// comma-separated env vars below, which still work as a fallback. Either way,
+// adding a campaign doesn't need a redeploy.
 //
 // Required secrets (set with `supabase secrets set NAME=value`):
 //   ZEFFY_API_KEY             — from the Zeffy dashboard
@@ -204,6 +205,21 @@ Deno.serve(async (_req) => {
     }
 
     results[campaignId] = { table, synced: newPayments.length };
+  }
+
+  // Campaigns managed in admin.html (zeffy_campaigns table) are merged with the
+  // env-var lists. A failed table read (e.g. table not created yet) just falls
+  // back to the env vars.
+  const { data: tableCampaigns } = await supabase
+    .from("zeffy_campaigns")
+    .select("campaign_id, kind")
+    .eq("sync_orders", true)
+    .not("campaign_id", "is", null);
+  for (const c of tableCampaigns ?? []) {
+    const id = String(c.campaign_id).trim();
+    if (!id) continue;
+    const list = c.kind === "ticket" ? ticketCampaignIds : storeCampaignIds;
+    if (!storeCampaignIds.includes(id) && !ticketCampaignIds.includes(id)) list.push(id);
   }
 
   for (const id of storeCampaignIds) await syncCampaign(id, "orders");
