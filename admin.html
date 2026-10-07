@@ -1117,8 +1117,16 @@
               <input type="text" id="zc-title" placeholder="e.g. HHSP Store, Formal Tickets" />
             </div>
             <div class="form-group full">
-              <label>Description <span style="color:var(--muted);font-weight:400">— optional line under the title</span></label>
-              <textarea id="zc-desc" rows="2" placeholder="e.g. Orders close Nov 15. Pickup in MDCL 3308."></textarea>
+              <label>Description <span style="color:var(--muted);font-weight:400">— optional, shown under the title. Select text and use the buttons to format.</span></label>
+              <div style="display:flex;gap:6px;margin-bottom:6px">
+                <button type="button" class="btn-secondary" style="padding:4px 10px;font-size:0.78rem;font-weight:700" onclick="zcFormat('b')" title="Bold">B</button>
+                <button type="button" class="btn-secondary" style="padding:4px 10px;font-size:0.78rem;font-style:italic" onclick="zcFormat('i')" title="Italic">I</button>
+                <button type="button" class="btn-secondary" style="padding:4px 10px;font-size:0.78rem;text-decoration:underline" onclick="zcFormat('u')" title="Underline">U</button>
+                <button type="button" class="btn-secondary" style="padding:4px 10px;font-size:0.78rem" onclick="zcFormat('a')" title="Link">Link</button>
+                <button type="button" class="btn-secondary" style="padding:4px 10px;font-size:0.78rem" onclick="zcFormat('ul')" title="Bulleted list — one item per line">• List</button>
+              </div>
+              <textarea id="zc-desc" rows="4" oninput="zcPreview()" placeholder="e.g. Orders close <b>Nov 15</b>. Pickup in MDCL 3308."></textarea>
+              <div id="zc-desc-preview" style="display:none;margin-top:8px;padding:10px 12px;background:var(--off, #f5f7fa);border:1px dashed var(--border);border-radius:6px;font-size:0.85rem;line-height:1.6;color:var(--mid)"></div>
             </div>
             <div class="form-group full">
               <label>Zeffy Link * <span style="color:var(--muted);font-weight:400">— paste the campaign's Zeffy URL</span></label>
@@ -2748,6 +2756,63 @@ function _zeffyEmbedPath(input) {
   return path === '/' ? '' : '/embed' + path;
 }
 
+// Description formatting — same allow-list as shop.html's _formatDesc (keep in sync).
+const _ZC_DESC_TAGS = ['B', 'STRONG', 'I', 'EM', 'U', 'A', 'BR', 'P', 'UL', 'OL', 'LI'];
+function _zcFormatDesc(raw) {
+  const html = String(raw || '').trim()
+    .replace(/\s*\n\s*(?=<\/?(ul|ol|li|p)[\s>])/gi, '')
+    .replace(/(<\/?(ul|ol|li|p)>)\s*\n\s*/gi, '$1')
+    .replace(/\n/g, '<br>');
+  const tpl = document.createElement('template');
+  tpl.innerHTML = html;
+  (function clean(node) {
+    [...node.childNodes].forEach(n => {
+      if (n.nodeType === 3) return;
+      if (n.nodeType !== 1 || !_ZC_DESC_TAGS.includes(n.tagName)) {
+        if (n.nodeType === 1 && !['SCRIPT', 'STYLE', 'IFRAME'].includes(n.tagName)) { clean(n); n.replaceWith(...n.childNodes); }
+        else n.remove();
+        return;
+      }
+      const href = n.tagName === 'A' ? n.getAttribute('href') || '' : '';
+      [...n.attributes].forEach(a => n.removeAttribute(a.name));
+      if (n.tagName === 'A' && /^(https?:|mailto:)/i.test(href.trim())) {
+        n.setAttribute('href', href.trim()); n.setAttribute('target', '_blank'); n.setAttribute('rel', 'noopener');
+      }
+      clean(n);
+    });
+  })(tpl.content);
+  return tpl.innerHTML;
+}
+
+function zcPreview() {
+  const val = document.getElementById('zc-desc').value;
+  const el = document.getElementById('zc-desc-preview');
+  el.style.display = val.trim() ? '' : 'none';
+  el.innerHTML = '<div style="font-size:0.65rem;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--muted);margin-bottom:4px">Preview</div>' + _zcFormatDesc(val);
+}
+
+// Wraps the textarea selection in a tag (or inserts an empty pair at the cursor).
+function zcFormat(tag) {
+  const ta = document.getElementById('zc-desc');
+  const { selectionStart: s, selectionEnd: e, value } = ta;
+  const sel = value.slice(s, e);
+  let out;
+  if (tag === 'a') {
+    const url = prompt('Link URL (https://…):', 'https://');
+    if (!url || url === 'https://') return;
+    out = `<a href="${url.replace(/"/g, '%22')}">${sel || url}</a>`;
+  } else if (tag === 'ul') {
+    const items = (sel || 'Item').split('\n').map(l => l.trim()).filter(Boolean);
+    out = '<ul>\n' + items.map(l => `  <li>${l}</li>`).join('\n') + '\n</ul>';
+  } else {
+    out = `<${tag}>${sel}</${tag}>`;
+  }
+  ta.value = value.slice(0, s) + out + value.slice(e);
+  ta.focus();
+  ta.selectionStart = s; ta.selectionEnd = s + out.length;
+  zcPreview();
+}
+
 async function saveZeffyCampaign() {
   const title      = document.getElementById('zc-title').value.trim();
   const embedPath  = _zeffyEmbedPath(document.getElementById('zc-link').value);
@@ -2780,6 +2845,7 @@ function clearZeffyCampaignForm() {
   document.getElementById('zc-sort').value = '0';
   document.getElementById('zc-show').checked = true;
   document.getElementById('zc-sync').checked = true;
+  zcPreview();
   _editingZeffyId = null;
   document.getElementById('zc-form-title').textContent = 'Add Campaign';
   document.getElementById('zc-submit-btn').textContent = 'Add Campaign';
@@ -2790,6 +2856,7 @@ function editZeffyCampaign(c) {
   _editingZeffyId = c.id;
   document.getElementById('zc-title').value = c.title || '';
   document.getElementById('zc-desc').value = c.description || '';
+  zcPreview();
   document.getElementById('zc-link').value = 'https://www.zeffy.com' + (c.embed_path || '');
   document.getElementById('zc-campaign-id').value = c.campaign_id || '';
   document.getElementById('zc-kind').value = c.kind || 'store';

@@ -129,6 +129,10 @@
     .zeffy-embed-wrap { position: relative; z-index: 1; }
     .zeffy-campaign + .zeffy-campaign { margin-top: 56px; padding-top: 48px; border-top: 1px solid var(--border, #e2e8f0); }
     .zeffy-campaign .zeffy-note { margin-bottom: 24px; }
+    .zeffy-note p { margin: 0 0 8px; }
+    .zeffy-note p:last-child { margin-bottom: 0; }
+    .zeffy-note ul, .zeffy-note ol { display: inline-block; text-align: left; margin: 6px 0; padding-left: 20px; }
+    .zeffy-note a { color: var(--blue); text-decoration: underline; }
     .zeffy-empty { text-align: center; color: var(--mid); font-size: 0.9rem; padding: 40px 0; }
 
     /* ─────────────────────────────────────────────────────────────────────── */
@@ -350,6 +354,36 @@ function _esc(s) {
   return String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 }
 
+// Campaign descriptions allow light formatting. Anything outside this list is
+// unwrapped to plain text; links keep only http(s)/mailto hrefs. Line breaks
+// become <br> (except next to block tags). Keep in sync with admin.html's copy.
+const _DESC_TAGS = ['B', 'STRONG', 'I', 'EM', 'U', 'A', 'BR', 'P', 'UL', 'OL', 'LI'];
+function _formatDesc(raw) {
+  const html = String(raw || '').trim()
+    .replace(/\s*\n\s*(?=<\/?(ul|ol|li|p)[\s>])/gi, '')
+    .replace(/(<\/?(ul|ol|li|p)>)\s*\n\s*/gi, '$1')
+    .replace(/\n/g, '<br>');
+  const tpl = document.createElement('template');
+  tpl.innerHTML = html;
+  (function clean(node) {
+    [...node.childNodes].forEach(n => {
+      if (n.nodeType === 3) return;
+      if (n.nodeType !== 1 || !_DESC_TAGS.includes(n.tagName)) {
+        if (n.nodeType === 1 && !['SCRIPT', 'STYLE', 'IFRAME'].includes(n.tagName)) { clean(n); n.replaceWith(...n.childNodes); }
+        else n.remove();
+        return;
+      }
+      const href = n.tagName === 'A' ? n.getAttribute('href') || '' : '';
+      [...n.attributes].forEach(a => n.removeAttribute(a.name));
+      if (n.tagName === 'A' && /^(https?:|mailto:)/i.test(href.trim())) {
+        n.setAttribute('href', href.trim()); n.setAttribute('target', '_blank'); n.setAttribute('rel', 'noopener');
+      }
+      clean(n);
+    });
+  })(tpl.content);
+  return tpl.innerHTML;
+}
+
 function _renderCampaigns(campaigns) {
   const wrap = document.getElementById('zeffyCampaigns');
   if (!campaigns.length) {
@@ -359,7 +393,7 @@ function _renderCampaigns(campaigns) {
   wrap.innerHTML = campaigns.map(c => `
     <section class="zeffy-campaign">
       <h2 class="zeffy-heading">${_esc(c.title)}</h2>
-      ${c.description ? `<p class="zeffy-note">${_esc(c.description)}</p>` : ''}
+      ${c.description ? `<div class="zeffy-note">${_formatDesc(c.description)}</div>` : ''}
       <div class="zeffy-embed-wrap">
         <div data-zeffy-embed data-form-url="${_esc(c.embed_path)}"></div>
         <div data-zeffy-embed-fallback style="display:none;">
