@@ -102,6 +102,9 @@
       position: fixed; left: 0; top: 0; bottom: 0; width: 240px;
       background: var(--dark); display: flex; flex-direction: column;
       z-index: 100;
+      /* Scroll when the link list is taller than the window (short laptop screens) */
+      overflow-y: auto; overscroll-behavior: contain;
+      scrollbar-width: thin; scrollbar-color: rgba(255,255,255,0.2) transparent;
     }
     .sidebar-brand {
       padding: 24px 20px 20px; border-bottom: 1px solid rgba(255,255,255,0.07);

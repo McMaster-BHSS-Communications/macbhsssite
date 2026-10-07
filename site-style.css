@@ -199,6 +199,47 @@ summary:focus-visible,
   .se-content, .bags-section { background-image: none; }
 }
 
+/* ─── 8. DECOR SPACING ON SMALLER SCREENS ──────────────────────────
+   The blue-band decor (page heroes, shop hero, homepage banner + Instagram
+   section) is placed with fixed px offsets tuned for desktop. As the band
+   narrows those offsets bunch the squares up around the heading, so they
+   thin out on tablets and move to the far corners, half off-edge, on phones.
+   Each page's inline rules are overridden here (this file loads after them). */
+@media (max-width: 960px) {
+  .page-hero .decor-img3, .page-hero .decor-img5,
+  .shop-hero .decor-img3, .shop-hero .decor-img5,
+  .banner-decor3, .ig-decor3, .ig-decor5 { display: none; }
+
+  /* #4 sat at left:130px, right under the centred heading — send it top-right */
+  .page-hero .decor-img4, .shop-hero .decor-img4,
+  .banner-decor4, .ig-decor4 {
+    width: 60px; top: 14px; right: 32px; bottom: auto; left: auto;
+  }
+}
+@media (max-width: 720px) {
+  /* Three corners: #1 top-left, #4 top-right, #2 bottom-right */
+  .page-hero .decor-img1, .shop-hero .decor-img1,
+  .banner-decor1, .ig-decor1 {
+    width: 58px; top: -18px; left: -18px; right: auto; bottom: auto;
+  }
+  .page-hero .decor-img4, .shop-hero .decor-img4,
+  .banner-decor4, .ig-decor4 {
+    width: 44px; top: -12px; right: -12px; left: auto; bottom: auto;
+  }
+  .page-hero .decor-img2, .shop-hero .decor-img2,
+  .banner-decor2, .ig-decor2 {
+    width: 52px; bottom: -14px; right: -14px; top: auto; left: auto;
+  }
+
+  /* Section squares (index/committees/shop) used to be pulled IN to -25px on
+     phones, at full desktop size — on a 375px screen they filled the margins.
+     Shrink them and keep them half off-edge instead. Inline styles set the
+     width/offsets, hence !important (same as the page rules this replaces). */
+  .section-bg-decor { width: 150px !important; }
+  .section-bg-decor[style*="right:"] { right: -80px !important; left: auto !important; }
+  .section-bg-decor[style*="left:"]  { left: -80px !important; right: auto !important; }
+}
+
 /* Respect users who ask for less motion. */
 @media (prefers-reduced-motion: reduce) {
   .d-card, .comm-card, .res-card, .who-card, .tier-card, .involve-card,
