@@ -128,11 +128,29 @@
        container around it read as a box-in-a-box. */
     .zeffy-embed-wrap { position: relative; z-index: 1; }
     .zeffy-campaign + .zeffy-campaign { margin-top: 56px; padding-top: 48px; border-top: 1px solid var(--border, #e2e8f0); }
-    .zeffy-campaign .zeffy-note { margin-bottom: 24px; }
     .zeffy-note p { margin: 0 0 8px; }
     .zeffy-note p:last-child { margin-bottom: 0; }
     .zeffy-note ul, .zeffy-note ol { display: inline-block; text-align: left; margin: 6px 0; padding-left: 20px; }
     .zeffy-note a { color: var(--blue); text-decoration: underline; }
+    /* Long campaign descriptions collapse to ~6 lines with a fade + Read more.
+       The fade is a mask (not a colour overlay) so it works on any background. */
+    .zeffy-desc { max-width: 560px; margin: 0 auto 28px; text-align: center; }
+    .zeffy-desc .zeffy-note { margin: 0 auto; overflow: hidden; transition: max-height 0.35s ease; }
+    .zeffy-desc.is-clamped .zeffy-note {
+      max-height: 9.6em;
+      -webkit-mask-image: linear-gradient(#000 55%, transparent);
+              mask-image: linear-gradient(#000 55%, transparent);
+    }
+    .zeffy-readmore {
+      display: inline-flex; align-items: center; gap: 6px; margin-top: 12px;
+      padding: 6px 14px; background: #fff; color: var(--blue);
+      border: 1.5px solid var(--blue); border-radius: 2px;
+      font-family: 'Inter', sans-serif; font-size: 0.8rem; font-weight: 600; cursor: pointer;
+      transition: background 0.15s, color 0.15s;
+    }
+    .zeffy-readmore:hover { background: var(--blue); color: #fff; }
+    .zeffy-readmore svg { transition: transform 0.2s; }
+    .zeffy-desc:not(.is-clamped) .zeffy-readmore svg { transform: rotate(180deg); }
     .zeffy-empty { text-align: center; color: var(--mid); font-size: 0.9rem; padding: 40px 0; }
 
     /* ─────────────────────────────────────────────────────────────────────── */
@@ -384,6 +402,28 @@ function _formatDesc(raw) {
   return tpl.innerHTML;
 }
 
+function _toggleDesc(btn) {
+  const d = btn.closest('.zeffy-desc');
+  const body = d.querySelector('.zeffy-note');
+  const label = btn.querySelector('span');
+  if (d.classList.contains('is-clamped')) {
+    // Expand: animate to the full height, then drop the cap so later reflow isn't clipped.
+    body.style.maxHeight = body.scrollHeight + 'px';
+    d.classList.remove('is-clamped');
+    label.textContent = 'Show less';
+    body.addEventListener('transitionend', () => { if (!d.classList.contains('is-clamped')) body.style.maxHeight = 'none'; }, { once: true });
+  } else {
+    // Collapse: pin the current height first so the transition has a start point.
+    body.style.maxHeight = body.scrollHeight + 'px';
+    body.offsetHeight;
+    body.style.maxHeight = '';
+    d.classList.add('is-clamped');
+    label.textContent = 'Read more';
+    const heading = d.closest('.zeffy-campaign').querySelector('.zeffy-heading');
+    if (heading.getBoundingClientRect().top < 0) heading.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+}
+
 function _renderCampaigns(campaigns) {
   const wrap = document.getElementById('zeffyCampaigns');
   if (!campaigns.length) {
@@ -393,7 +433,14 @@ function _renderCampaigns(campaigns) {
   wrap.innerHTML = campaigns.map(c => `
     <section class="zeffy-campaign">
       <h2 class="zeffy-heading">${_esc(c.title)}</h2>
-      ${c.description ? `<div class="zeffy-note">${_formatDesc(c.description)}</div>` : ''}
+      ${c.description ? `
+      <div class="zeffy-desc is-clamped">
+        <div class="zeffy-note">${_formatDesc(c.description)}</div>
+        <button type="button" class="zeffy-readmore" hidden onclick="_toggleDesc(this)">
+          <span>Read more</span>
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+        </button>
+      </div>` : ''}
       <div class="zeffy-embed-wrap">
         <div data-zeffy-embed data-form-url="${_esc(c.embed_path)}"></div>
         <div data-zeffy-embed-fallback style="display:none;">
@@ -403,6 +450,16 @@ function _renderCampaigns(campaigns) {
         </div>
       </div>
     </section>`).join('');
+
+  // Only keep the clamp (and show Read more) where the text actually overflows.
+  const measure = () => wrap.querySelectorAll('.zeffy-desc.is-clamped').forEach(d => {
+    const body = d.querySelector('.zeffy-note');
+    const overflows = body.scrollHeight > body.clientHeight + 4;
+    d.querySelector('.zeffy-readmore').hidden = !overflows;
+    if (!overflows) d.classList.remove('is-clamped');
+  });
+  measure();
+  if (document.fonts) document.fonts.ready.then(measure);
 
   // Load Zeffy's embed script only after the containers exist so it picks them all up.
   const s = document.createElement('script');

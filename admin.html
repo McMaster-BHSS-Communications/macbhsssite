@@ -1124,8 +1124,10 @@
                 <button type="button" class="btn-secondary" style="padding:4px 10px;font-size:0.78rem;text-decoration:underline" onclick="zcFormat('u')" title="Underline">U</button>
                 <button type="button" class="btn-secondary" style="padding:4px 10px;font-size:0.78rem" onclick="zcFormat('a')" title="Link">Link</button>
                 <button type="button" class="btn-secondary" style="padding:4px 10px;font-size:0.78rem" onclick="zcFormat('ul')" title="Bulleted list — one item per line">• List</button>
+                <button type="button" class="btn-secondary" style="padding:4px 10px;font-size:0.78rem" onclick="zcFormat('br')" title="Insert a line break">↵ Break</button>
+                <button type="button" class="btn-secondary" style="padding:4px 10px;font-size:0.78rem;margin-left:auto" onclick="zcClearFormat()" title="Remove formatting from the selection (or the formatting around it). With nothing selected, clears the whole description.">✕ Clear</button>
               </div>
-              <textarea id="zc-desc" rows="4" oninput="zcPreview()" placeholder="e.g. Orders close <b>Nov 15</b>. Pickup in MDCL 3308."></textarea>
+              <textarea id="zc-desc" rows="4" oninput="zcPreview()" onkeydown="zcShortcut(event)" placeholder="e.g. Orders close <b>Nov 15</b>. Pickup in MDCL 3308."></textarea>
               <div id="zc-desc-preview" style="display:none;margin-top:8px;padding:10px 12px;background:var(--off, #f5f7fa);border:1px dashed var(--border);border-radius:6px;font-size:0.85rem;line-height:1.6;color:var(--mid)"></div>
             </div>
             <div class="form-group full">
@@ -2801,6 +2803,8 @@ function zcFormat(tag) {
     const url = prompt('Link URL (https://…):', 'https://');
     if (!url || url === 'https://') return;
     out = `<a href="${url.replace(/"/g, '%22')}">${sel || url}</a>`;
+  } else if (tag === 'br') {
+    out = sel + '<br>';
   } else if (tag === 'ul') {
     const items = (sel || 'Item').split('\n').map(l => l.trim()).filter(Boolean);
     out = '<ul>\n' + items.map(l => `  <li>${l}</li>`).join('\n') + '\n</ul>';
@@ -2811,6 +2815,59 @@ function zcFormat(tag) {
   ta.focus();
   ta.selectionStart = s; ta.selectionEnd = s + out.length;
   zcPreview();
+}
+
+// Strips tags from text, keeping line structure (<br>, </p>, </li> → newline).
+function _zcStripTags(text) {
+  return text
+    .replace(/<br\s*\/?>/gi, '\n')
+    .replace(/<\/(li|p)>\s*/gi, '\n')
+    .replace(/<[^>]*>/g, '')
+    .replace(/^[ \t]+/gm, '')
+    .replace(/\n{3,}/g, '\n\n');
+}
+
+// ✕ Clear:
+//  - selection contains tags      → strip tags inside the selection
+//  - selection sits inside a pair → remove that surrounding pair (e.g. <b>|Nov 15|</b>)
+//  - nothing selected             → strip the whole description (after confirm)
+function zcClearFormat() {
+  const ta = document.getElementById('zc-desc');
+  const { selectionStart: s, selectionEnd: e, value } = ta;
+  let next, selStart = s, selEnd = e;
+
+  if (s === e) {
+    if (!/<[^>]*>/.test(value)) { toast('No formatting to remove.', 'error'); return; }
+    if (!confirm('Remove all formatting from the description?')) return;
+    next = _zcStripTags(value).trim();
+    selStart = selEnd = next.length;
+  } else if (/<[^>]*>/.test(value.slice(s, e))) {
+    const stripped = _zcStripTags(value.slice(s, e));
+    next = value.slice(0, s) + stripped + value.slice(e);
+    selEnd = s + stripped.length;
+  } else {
+    const open  = value.slice(0, s).match(/<(b|strong|i|em|u|a)\b[^>]*>([^<]*)$/i);
+    const close = open && value.slice(e).match(new RegExp('^([^<]*)</' + open[1] + '>', 'i'));
+    if (!close) { toast('No formatting around the selection.', 'error'); return; }
+    const openStart = s - open[0].length;
+    const openTagLen = open[0].length - open[2].length;
+    next = value.slice(0, openStart) + open[2] + value.slice(s, e) + close[1] + value.slice(e + close[0].length);
+    selStart = s - openTagLen; selEnd = e - openTagLen;
+  }
+
+  ta.value = next;
+  ta.focus();
+  ta.selectionStart = selStart; ta.selectionEnd = selEnd;
+  zcPreview();
+}
+
+// Ctrl/Cmd + B / I / U inside the description box.
+function zcShortcut(ev) {
+  if (!(ev.ctrlKey || ev.metaKey) || ev.altKey || ev.shiftKey) return;
+  const tag = { b: 'b', i: 'i', u: 'u' }[ev.key.toLowerCase()];
+  if (!tag) return;
+  ev.preventDefault();
+  zcFormat(tag);
 }
 
 async function saveZeffyCampaign() {
