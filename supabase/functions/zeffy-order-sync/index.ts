@@ -19,6 +19,13 @@ import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
 const ZEFFY_API_BASE = "https://api.zeffy.com/api/v1";
 
+// Needed for admin.html's "Sync from Zeffy now" button (browser call); the
+// pg_cron call is server-side and doesn't care.
+const CORS = {
+  "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
+};
+
 interface ZeffyBuyer {
   email: string;
   first_name: string;
@@ -126,13 +133,20 @@ function paymentToOrderRow(payment: ZeffyPayment) {
       price: centsToDollars(i.amount ?? 0),
     })),
     total: centsToDollars(payment.amount ?? 0),
+    // Purchase time, not sync time — otherwise a first sync of an existing
+    // campaign stamps every old order with the same "now".
+    ...(typeof payment.created === "number"
+      ? { created_at: new Date(payment.created * 1000).toISOString() }
+      : {}),
     status: "paid",
     source: "zeffy",
     zeffy_payment_id: payment.id,
   };
 }
 
-Deno.serve(async (_req) => {
+Deno.serve(async (req) => {
+  if (req.method === "OPTIONS") return new Response("ok", { headers: CORS });
+
   const apiKey = Deno.env.get("ZEFFY_API_KEY");
   const storeCampaignIds = (Deno.env.get("ZEFFY_STORE_CAMPAIGN_IDS") || "")
     .split(",").map((s) => s.trim()).filter(Boolean);
@@ -140,7 +154,10 @@ Deno.serve(async (_req) => {
     .split(",").map((s) => s.trim()).filter(Boolean);
 
   if (!apiKey) {
-    return new Response(JSON.stringify({ error: "ZEFFY_API_KEY not set" }), { status: 500 });
+    return new Response(JSON.stringify({ error: "ZEFFY_API_KEY not set" }), {
+      status: 500,
+      headers: { ...CORS, "Content-Type": "application/json" },
+    });
   }
 
   const supabase = createClient(
@@ -252,6 +269,6 @@ Deno.serve(async (_req) => {
   }
 
   return new Response(JSON.stringify({ ok: errors.length === 0, results, errors }), {
-    headers: { "Content-Type": "application/json" },
+    headers: { ...CORS, "Content-Type": "application/json" },
   });
 });
