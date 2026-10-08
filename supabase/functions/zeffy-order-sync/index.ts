@@ -111,17 +111,21 @@ function refundAwareStatus(payment: ZeffyPayment): string | null {
   return null;
 }
 
+// buyer/items are guarded because ticket_orders has NOT NULL name/email, and a
+// payment missing either (e.g. a free or manually-added ticket) would otherwise
+// throw and stop the whole campaign from syncing.
 function paymentToOrderRow(payment: ZeffyPayment) {
+  const buyer = payment.buyer ?? ({} as Partial<ZeffyBuyer>);
   return {
     order_ref: payment.id,
-    name: `${payment.buyer.first_name} ${payment.buyer.last_name}`.trim(),
-    email: payment.buyer.email,
-    items: payment.items.map((i) => ({
+    name: `${buyer.first_name ?? ""} ${buyer.last_name ?? ""}`.trim() || "(no name)",
+    email: buyer.email ?? "",
+    items: (payment.items ?? []).map((i) => ({
       name: i.rate_title,
       qty: 1,
-      price: centsToDollars(i.amount),
+      price: centsToDollars(i.amount ?? 0),
     })),
-    total: centsToDollars(payment.amount),
+    total: centsToDollars(payment.amount ?? 0),
     status: "paid",
     source: "zeffy",
     zeffy_payment_id: payment.id,
@@ -145,6 +149,7 @@ Deno.serve(async (_req) => {
   );
 
   const results: Record<string, unknown> = {};
+  const campaignTitles = new Map<string, string>(); // campaign id → admin title
 
   async function syncCampaign(campaignId: string, table: "orders" | "ticket_orders") {
     const { data: state } = await supabase
@@ -159,7 +164,11 @@ Deno.serve(async (_req) => {
       const rows = newPayments.map((p) => {
         const base = paymentToOrderRow(p);
         return table === "ticket_orders"
-          ? { ...base, event_name: p.description, zeffy_campaign_id: campaignId }
+          ? {
+            ...base,
+            event_name: p.description || campaignTitles.get(campaignId) || campaignId,
+            zeffy_campaign_id: campaignId,
+          }
           : base;
       });
 
@@ -212,20 +221,37 @@ Deno.serve(async (_req) => {
   // back to the env vars.
   const { data: tableCampaigns } = await supabase
     .from("zeffy_campaigns")
-    .select("campaign_id, kind")
+    .select("campaign_id, kind, title")
     .eq("sync_orders", true)
     .not("campaign_id", "is", null);
   for (const c of tableCampaigns ?? []) {
     const id = String(c.campaign_id).trim();
     if (!id) continue;
+    campaignTitles.set(id, c.title);
     const list = c.kind === "ticket" ? ticketCampaignIds : storeCampaignIds;
     if (!storeCampaignIds.includes(id) && !ticketCampaignIds.includes(id)) list.push(id);
   }
 
-  for (const id of storeCampaignIds) await syncCampaign(id, "orders");
-  for (const id of ticketCampaignIds) await syncCampaign(id, "ticket_orders");
+  // Each campaign is isolated: one bad campaign id (or a Zeffy error) is
+  // recorded in `errors` instead of throwing, so the rest still sync. Before
+  // this, a failing store campaign meant ticket campaigns never ran at all.
+  const errors: string[] = [];
+  const jobs: [string, "orders" | "ticket_orders"][] = [
+    ...storeCampaignIds.map((id) => [id, "orders"] as [string, "orders"]),
+    ...ticketCampaignIds.map((id) => [id, "ticket_orders"] as [string, "ticket_orders"]),
+  ];
+  for (const [id, table] of jobs) {
+    try {
+      await syncCampaign(id, table);
+    } catch (e) {
+      const msg = e instanceof Error ? e.message : String(e);
+      console.error(`[zeffy-order-sync] ${id}:`, msg);
+      results[id] = { table, error: msg };
+      errors.push(`${campaignTitles.get(id) ?? id}: ${msg}`);
+    }
+  }
 
-  return new Response(JSON.stringify({ ok: true, results }), {
+  return new Response(JSON.stringify({ ok: errors.length === 0, results, errors }), {
     headers: { "Content-Type": "application/json" },
   });
 });
