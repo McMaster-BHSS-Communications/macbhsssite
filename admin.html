@@ -2879,17 +2879,33 @@ async function syncZeffyNow() {
   const out = document.getElementById('ticketSyncStatus');
   btn.disabled = true; btn.textContent = 'Syncing…';
   try {
-    const { data, error } = await window.db.functions.invoke('zeffy-order-sync', { body: {} });
+    const { data, error } = await window.db.functions.invoke('zeffy-order-sync', { body: { list_campaigns: true } });
     if (error) throw error;
     const res  = Object.entries(data.results || {});
     const errs = data.errors || [];
-    if (!res.length) {
-      out.innerHTML = '<span style="color:#b45309"><strong>No campaigns were synced.</strong> Check that the campaign in Zeffy Campaigns has a Campaign ID, "Sync orders" ticked, and Type = Event tickets. If it does, the deployed Edge Function is out of date — redeploy <code>zeffy-order-sync</code>.</span>';
+    let html = !res.length
+      ? '<span style="color:#b45309"><strong>No campaigns were synced.</strong> Check that the campaign in Zeffy Campaigns has a Campaign ID (from the list below), "Sync orders" ticked, and Type = Event tickets.</span>'
+      : res.filter(([, r]) => !r.error).map(([id, r]) => `${_esc(id)} → ${r.synced} new`).join(' · ');
+    html += errs.map(e => `<br><span style="color:#b91c1c"><strong>Error:</strong> ${_esc(e)}</span>`).join('');
+    // Every campaign on the Zeffy account, so the real UUID can be copied into
+    // Zeffy Campaigns → Campaign ID. Missing entirely = old function deployed.
+    if (Array.isArray(data.zeffyCampaigns)) {
+      const { data: ours } = await window.db.from('zeffy_campaigns').select('campaign_id, kind, sync_orders');
+      const byId = new Map((ours || []).filter(c => c.campaign_id).map(c => [c.campaign_id.trim(), c]));
+      html += `<details style="margin-top:10px"${errs.length || !res.length ? ' open' : ''}><summary style="cursor:pointer;font-weight:600">Campaigns on your Zeffy account (${data.zeffyCampaigns.length})</summary>
+        <table style="margin-top:8px"><thead><tr><th>Title</th><th>Type</th><th>Campaign ID</th><th>On this site</th></tr></thead><tbody>` +
+        data.zeffyCampaigns.map(c => {
+          const mine = byId.get(c.id);
+          const state = !mine ? '<span style="color:var(--muted)">not added</span>'
+            : !mine.sync_orders ? '<span style="color:#b45309">added, sync off</span>'
+            : `<span style="color:#15803d">syncing → ${mine.kind === 'ticket' ? 'Ticket' : 'Store'} Orders</span>`;
+          return `<tr><td>${_esc(c.title || '')}</td><td>${_esc(c.type || '')}</td>
+            <td style="font-family:monospace;font-size:0.78rem;user-select:all">${_esc(c.id)}</td><td>${state}</td></tr>`;
+        }).join('') + '</tbody></table></details>';
     } else {
-      const synced = res.filter(([, r]) => !r.error).map(([id, r]) => `${_esc(id)} → ${r.synced} new`).join(' · ');
-      out.innerHTML = (synced ? `Synced: ${synced}` : '') +
-        errs.map(e => `<br><span style="color:#b91c1c"><strong>Error:</strong> ${_esc(e)}</span>`).join('');
+      html += '<br><span style="color:#b45309">The deployed Edge Function is out of date — redeploy <code>zeffy-order-sync</code> with the latest code.</span>';
     }
+    out.innerHTML = html;
     toast(errs.length ? 'Sync finished with errors' : 'Sync complete', errs.length ? 'error' : 'success');
   } catch (e) {
     let detail = e.message || String(e);

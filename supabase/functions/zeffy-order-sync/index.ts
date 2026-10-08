@@ -67,7 +67,10 @@ async function fetchZeffyPayments(
   url.searchParams.set("campaign", campaignId);
   if (status) url.searchParams.set("status", status);
   url.searchParams.set("limit", "100");
-  if (cursor) url.searchParams.set("cursor", cursor);
+  // Zeffy's page param is `starting_after` (value = previous page's next_cursor).
+  // This used to send `cursor`, which Zeffy ignores — so it re-fetched page 1
+  // forever and any campaign with 100+ payments never finished syncing.
+  if (cursor) url.searchParams.set("starting_after", cursor);
 
   const res = await fetch(url, {
     headers: { Authorization: `Bearer ${apiKey}` },
@@ -94,10 +97,32 @@ async function fetchNewPayments(
       if (payment.id === lastSeenPaymentId) return collected;
       collected.push(payment);
     }
-    if (!page.has_more || !page.next_cursor) break;
+    if (!page.has_more || !page.next_cursor || page.next_cursor === cursor) break;
     cursor = page.next_cursor;
   }
   return collected;
+}
+
+// Every campaign on the Zeffy account (id + title + type). Only fetched when
+// admin.html's "Sync from Zeffy now" asks for it, so the admin can copy the
+// real campaign UUID — the URL slug (e.g. "hhspooky") is not the id.
+async function fetchZeffyCampaigns(apiKey: string) {
+  const out: { id: string; title: string; type: string; status: string }[] = [];
+  let cursor: string | null = null;
+  while (true) {
+    const url = new URL(`${ZEFFY_API_BASE}/campaigns`);
+    url.searchParams.set("limit", "100");
+    if (cursor) url.searchParams.set("starting_after", cursor);
+    const res = await fetch(url, { headers: { Authorization: `Bearer ${apiKey}` } });
+    if (!res.ok) throw new Error(`Zeffy API ${res.status} listing campaigns: ${await res.text()}`);
+    const page = await res.json();
+    for (const c of page.data ?? []) {
+      if (!c.deleted_at) out.push({ id: c.id, title: c.title, type: c.type, status: c.status });
+    }
+    if (!page.has_more || !page.next_cursor || page.next_cursor === cursor) break;
+    cursor = page.next_cursor;
+  }
+  return out;
 }
 
 // NOTE: Zeffy's `amount` fields were only ever observed as 0 (free tickets)
@@ -268,7 +293,17 @@ Deno.serve(async (req) => {
     }
   }
 
-  return new Response(JSON.stringify({ ok: errors.length === 0, results, errors }), {
+  let zeffyCampaigns: unknown = undefined;
+  const body = req.method === "POST" ? await req.json().catch(() => ({})) : {};
+  if (body?.list_campaigns) {
+    try {
+      zeffyCampaigns = await fetchZeffyCampaigns(apiKey);
+    } catch (e) {
+      errors.push(e instanceof Error ? e.message : String(e));
+    }
+  }
+
+  return new Response(JSON.stringify({ ok: errors.length === 0, results, errors, zeffyCampaigns }), {
     headers: { ...CORS, "Content-Type": "application/json" },
   });
 });
