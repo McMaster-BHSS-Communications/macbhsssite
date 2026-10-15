@@ -468,6 +468,12 @@
         <span id="bag-submissions-badge" style="display:none;margin-left:auto;background:#ef4444;color:#fff;font-size:0.6rem;font-weight:700;padding:1px 6px;border-radius:100px"></span>
       </button>
 
+      <div class="sidebar-label" style="margin-top:24px">Finance</div>
+      <button class="sidebar-link" onclick="showPanel('receipts')" id="link-receipts">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 2v20l3-2 3 2 2-2 2 2 3-2 3 2V2l-3 2-3-2-2 2-2-2-3 2z"/><line x1="8" y1="9" x2="16" y2="9"/><line x1="8" y1="13" x2="16" y2="13"/></svg>
+        Receipt Bank
+      </button>
+
       <div class="sidebar-label" style="margin-top:24px">Outreach</div>
       <button class="sidebar-link" onclick="showPanel('contact')" id="link-contact">
         <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
@@ -1035,9 +1041,10 @@
         <div>
           <h1>Store Orders</h1>
           <p>Orders placed through the store. Update status, search, and export.</p>
-          <p style="font-size:0.78rem;color:var(--muted);margin-top:4px">To delete or refund an order, do it in the Zeffy dashboard — orders here are synced from Zeffy and can't be removed from this page.</p>
+          <p style="font-size:0.78rem;color:var(--muted);margin-top:4px">To refund an order, do it in the Zeffy dashboard. Deleting one here only removes it from this list (it won't come back on the next Zeffy sync) — use it for test or empty orders. Empty orders ($0 or no items, from the old site checkout) aren't counted in the totals.</p>
         </div>
         <div style="display:flex;gap:10px;align-items:center">
+          <button class="btn-danger" id="deleteEmptyOrdersBtn" onclick="deleteEmptyOrders()" style="display:none"></button>
           <button class="btn-secondary" id="exportBtn">⭳ Export CSV</button>
           <button class="btn-secondary" onclick="loadOrders()">↻ Refresh</button>
         </div>
@@ -1066,7 +1073,7 @@
           <thead>
             <tr>
               <th>Order ID</th><th>Name</th><th>Email</th><th>Mac ID</th>
-              <th>Items</th><th>Total</th><th>Date</th><th>Status</th><th>Notes</th>
+              <th>Items</th><th>Total</th><th>Date</th><th>Status</th><th>Notes</th><th></th>
             </tr>
           </thead>
           <tbody id="ordersBody"></tbody>
@@ -1384,6 +1391,34 @@
       </div>
     </div>
 
+    <!-- RECEIPT BANK PANEL -->
+    <div class="panel" id="panel-receipts">
+      <div class="topbar">
+        <div>
+          <h1>Receipt Bank</h1>
+          <p>Every file uploaded through Student Groups forms (receipts, budget spreadsheets). Files are kept until the fiscal year they were submitted in (May 1 – April 30) is over. After that, download a copy for the records and delete them to free up space.</p>
+        </div>
+        <button class="btn-secondary" onclick="loadReceiptBank()">↻ Refresh</button>
+      </div>
+
+      <div class="stats-bar" id="rbStats"></div>
+
+      <div class="orders-toolbar">
+        <h2 id="rbCount">Files</h2>
+        <input class="toolbar-search" id="rbSearch" placeholder="Search group or file name…" oninput="renderReceiptBank()" />
+        <select class="status-filter" id="rbFyFilter" onchange="renderReceiptBank()"></select>
+        <select class="status-filter" id="rbFormFilter" onchange="renderReceiptBank()"></select>
+      </div>
+      <div class="orders-toolbar">
+        <span id="rbSelInfo" style="font-size:0.82rem;color:var(--mid);flex:1">No files selected</span>
+        <button class="btn-secondary" onclick="rbSelectPastRetention()">Select all past retention</button>
+        <button class="btn-secondary" id="rbZipBtn" onclick="rbDownloadSelected()">⬇ Download selected (.zip)</button>
+        <button class="btn-danger" onclick="rbDeletePaths([..._rbSelected])">Delete selected</button>
+      </div>
+
+      <div id="rbList"></div>
+    </div>
+
     <!-- CALENDAR SYNC PANEL -->
     <div class="panel" id="panel-calendar-sync">
       <div class="topbar">
@@ -1494,6 +1529,7 @@ function showPanel(name) {
   if (name === 'bag-codes')       renderBagCodesList();
   if (name === 'bag-forms')       loadBagForms();
   if (name === 'bag-submissions') loadBagSubmissions();
+  if (name === 'receipts')        loadReceiptBank();
   if (name === 'calendar-sync')   loadCalendarSync();
 }
 
@@ -2582,7 +2618,7 @@ let _filteredOrders = [];
 
 async function loadOrders() {
   const tbody = document.getElementById('ordersBody');
-  if (tbody) tbody.innerHTML = '<tr><td colspan="9" style="text-align:center;color:var(--muted);padding:30px">Loading…</td></tr>';
+  if (tbody) tbody.innerHTML = '<tr><td colspan="10" style="text-align:center;color:var(--muted);padding:30px">Loading…</td></tr>';
   const { data, error } = await window.db
     .from('orders')
     .select('*')
@@ -2594,11 +2630,38 @@ async function loadOrders() {
     _allOrders = (data || []).map(r => ({
       id: r.id, orderId: r.order_ref, name: r.name, email: r.email, macId: r.mac_id,
       notes: r.notes, items: r.items || [], total: Number(r.total) || 0,
-      submittedAt: r.created_at, status: r.status
+      submittedAt: r.created_at, status: r.status, source: r.source
     }));
   }
   applyOrderFilters();
   renderItemBreakdown();
+}
+
+// Leftovers from the old pre-Zeffy site checkout: $0 or no items. Excluded from the stats and
+// bulk-deletable. Zeffy rows are never treated as empty, in case a free item is ever sold there.
+function isEmptyOrder(o) {
+  return o.source !== 'zeffy' && (!(o.items || []).length || !(o.total > 0));
+}
+
+async function deleteOrder(id) {
+  const o = _allOrders.find(x => String(x.id) === String(id));
+  if (!o) return;
+  const label = o.orderId || o.name || 'this order';
+  if (!confirm(`Delete ${label}${o.total ? ` ($${o.total.toFixed(2)})` : ''}? This only removes it from this list — it doesn't refund anything in Zeffy. This cannot be undone.`)) return;
+  const { error } = await window.db.from('orders').delete().eq('id', o.id);
+  if (error) { toast('Delete failed: ' + error.message, 'error'); return; }
+  toast('Order deleted.');
+  loadOrders();
+}
+
+async function deleteEmptyOrders() {
+  const empty = _allOrders.filter(isEmptyOrder);
+  if (!empty.length) return;
+  if (!confirm(`Delete ${empty.length} empty order(s) ($0 or no items)? This cannot be undone.`)) return;
+  const { error } = await window.db.from('orders').delete().in('id', empty.map(o => o.id));
+  if (error) { toast('Delete failed: ' + error.message, 'error'); return; }
+  toast(`Deleted ${empty.length} empty order(s).`);
+  loadOrders();
 }
 
 async function updateOrderStatus(id, status) {
@@ -2655,7 +2718,14 @@ function renderOrdersPage() {
   if (nextBtn) nextBtn.disabled = _ordersPage >= totalPages;
 }
 
-function renderOrderStats(orders) {
+function renderOrderStats(allOrders) {
+  const emptyCount = allOrders.filter(isEmptyOrder).length;
+  const orders  = allOrders.filter(o => !isEmptyOrder(o));
+  const btn = document.getElementById('deleteEmptyOrdersBtn');
+  if (btn) {
+    btn.style.display = emptyCount ? '' : 'none';
+    btn.textContent = `Delete ${emptyCount} empty order${emptyCount === 1 ? '' : 's'}`;
+  }
   const total   = orders.length;
   const pending = orders.filter(o => o.status === 'pending').length;
   const paid    = orders.filter(o => o.status === 'paid').length;
@@ -2692,7 +2762,8 @@ function renderOrderTable(allFiltered, pageItems) {
           ).join('')}
         </select>
       </td>
-      <td style="font-size:0.75rem;color:var(--muted);max-width:160px">${_esc(o.notes || '')}</td>
+      <td style="font-size:0.75rem;color:var(--muted);max-width:160px">${_esc(o.notes || '')}${isEmptyOrder(o) ? '<div style="font-style:italic;margin-top:4px">Empty — not counted</div>' : ''}</td>
+      <td><button class="btn-danger" onclick="deleteOrder('${_esc(o.id)}')">Delete</button></td>
     </tr>`;
   }).join('');
 }
@@ -3406,6 +3477,12 @@ function parseBagFileAnswer(value) {
   return { bucket: bucketAndPath.slice(0, slash), path: bucketAndPath.slice(slash + 1), filename };
 }
 
+// The Receipt Bank rewrites a file answer to "__file_deleted__:<filename>" when it deletes the
+// file, so the submission still says what was attached (student-groups.html mirrors this).
+function parseBagDeletedFileAnswer(value) {
+  return typeof value === 'string' && value.startsWith('__file_deleted__:') ? value.slice('__file_deleted__:'.length) : null;
+}
+
 async function downloadBagSubmissionFile(bucket, path, filename) {
   const { data, error } = await window.db.storage.from(bucket).createSignedUrl(path, 3600);
   if (error) { toast('Failed to generate link: ' + error.message, 'error'); return; }
@@ -3635,9 +3712,12 @@ function openBagSubmissionModal(id) {
     </div>
     ${(s.answers || []).map(a => {
       const file = parseBagFileAnswer(a.value);
+      const deletedFile = parseBagDeletedFileAnswer(a.value);
       const body = file
         ? `<button class="btn-secondary" style="width:auto;padding:6px 14px;font-size:0.82rem" onclick="downloadBagSubmissionFile('${file.bucket}','${file.path.replace(/'/g, "\\'")}','${(file.filename || '').replace(/'/g, "\\'")}')">⬇ ${file.filename}</button>`
-        : (a.value || '—');
+        : deletedFile !== null
+          ? `<span style="color:var(--muted)">${_esc(deletedFile)} <em>(deleted from the Receipt Bank)</em></span>`
+          : (a.value || '—');
       return `
       <div style="margin-bottom:16px">
         <div style="font-size:0.68rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted);margin-bottom:5px">${a.label}</div>
@@ -3659,12 +3739,296 @@ function closeBagSubmissionModal() {
 document.getElementById('bagSubmissionModal')?.addEventListener('click', e => { if (e.target === document.getElementById('bagSubmissionModal')) closeBagSubmissionModal(); });
 
 async function deleteBagSubmission(id) {
-  if (!confirm('Delete this submission? This cannot be undone.')) return;
+  const s = _bagSubmissions.find(x => x.id === id);
+  const files = (s?.answers || []).map(a => parseBagFileAnswer(a.value)).filter(Boolean);
+  const msg = files.length
+    ? `Delete this submission and its ${files.length} attached file(s) (e.g. receipts)? This cannot be undone.`
+    : 'Delete this submission? This cannot be undone.';
+  if (!confirm(msg)) return;
+
+  // Remove attached files first, otherwise they're left in storage with nothing pointing at them.
+  // If that fails, keep the row so the files can still be found and retried.
+  for (const bucket of new Set(files.map(f => f.bucket))) {
+    const { error } = await window.db.storage.from(bucket).remove(files.filter(f => f.bucket === bucket).map(f => f.path));
+    if (error) { toast('Could not delete the attached files, so the submission was kept: ' + error.message, 'error'); return; }
+  }
+
   const { error } = await window.db.from('bhss_form_submissions').delete().eq('id', id);
   if (error) { toast('Delete failed: ' + error.message, 'error'); return; }
   _bagSubmissions = _bagSubmissions.filter(x => x.id !== id);
   toast('Submission deleted.');
   renderBagSubmissionsList();
+}
+
+// ── Receipt Bank ──
+// Browses the private bhss-form-uploads bucket (receipts and any other "file" field upload),
+// matching each file back to its bhss_form_submissions row. A file is kept through the fiscal
+// year it was submitted in; after that it shows as "past retention" and can be zipped for the
+// records and deleted. Deleting is password-gated with the same string as the auth-code panel.
+const RB_BUCKET = 'bhss-form-uploads';
+const FISCAL_YEAR_START_MONTH = 5;  // fiscal year runs May 1 – April 30
+const RECEIPT_RETENTION_FYS = 1;    // past retention once this many fiscal years have started since submission
+let _rbFiles = [];
+let _rbSelected = new Set();
+let _rbVisible = [];
+
+function fiscalYearOf(date) {
+  const d = new Date(date);
+  return d.getMonth() + 1 >= FISCAL_YEAR_START_MONTH ? d.getFullYear() : d.getFullYear() - 1;
+}
+function fyLabel(fy) { return `FY ${fy}–${String(fy + 1).slice(2)}`; }
+function rbPastRetention(f) { return fiscalYearOf(new Date()) - f.fy >= RECEIPT_RETENTION_FYS; }
+function fmtBytes(n) {
+  if (n < 1024) return n + ' B';
+  if (n < 1024 * 1024) return (n / 1024).toFixed(0) + ' KB';
+  if (n < 1024 * 1024 * 1024) return (n / 1024 / 1024).toFixed(1) + ' MB';
+  return (n / 1024 / 1024 / 1024).toFixed(2) + ' GB';
+}
+
+// storage.list() isn't recursive — folders come back with id === null, so walk into them.
+async function rbListAll(prefix) {
+  const out = [];
+  for (let offset = 0; ; offset += 1000) {
+    const { data, error } = await window.db.storage.from(RB_BUCKET).list(prefix, { limit: 1000, offset, sortBy: { column: 'name', order: 'asc' } });
+    if (error) throw error;
+    for (const item of data || []) {
+      const path = prefix ? `${prefix}/${item.name}` : item.name;
+      if (item.id === null) out.push(...await rbListAll(path));
+      else if (item.name !== '.emptyFolderPlaceholder') out.push({ path, size: item.metadata?.size || 0, created_at: item.created_at });
+    }
+    if (!data || data.length < 1000) break;
+  }
+  return out;
+}
+
+async function loadReceiptBank() {
+  const el = document.getElementById('rbList');
+  el.innerHTML = '<p style="color:var(--muted);text-align:center;padding:40px">Loading…</p>';
+
+  let objects, subs;
+  try {
+    const [objs, res] = await Promise.all([
+      rbListAll(''),
+      window.db.from('bhss_form_submissions').select('id, form_id, group_name, group_type, submitted_at, status, answers')
+    ]);
+    if (res.error) throw res.error;
+    objects = objs;
+    subs = res.data || [];
+  } catch (e) {
+    el.innerHTML = `<p style="color:var(--red);text-align:center;padding:40px">Failed to load: ${_esc(e.message)}</p>`;
+    return;
+  }
+
+  const byPath = {};
+  subs.forEach(s => (s.answers || []).forEach(a => {
+    const f = parseBagFileAnswer(a.value);
+    if (f && f.bucket === RB_BUCKET) byPath[f.path] = { sub: s, label: a.label, filename: f.filename };
+  }));
+
+  _rbFiles = objects.map(o => {
+    const link = byPath[o.path];
+    const date = link ? link.sub.submitted_at : o.created_at;
+    return {
+      ...o,
+      sub: link ? link.sub : null,
+      label: link ? link.label : '',
+      filename: link ? link.filename : o.path.split('/').pop(),
+      formId: o.path.split('/')[0],
+      date,
+      fy: fiscalYearOf(date)
+    };
+  }).sort((a, b) => new Date(b.date) - new Date(a.date));
+  _rbSelected = new Set([..._rbSelected].filter(p => _rbFiles.some(f => f.path === p)));
+
+  const fySel = document.getElementById('rbFyFilter');
+  const fyPrev = fySel.value || 'all';
+  const fys = [...new Set(_rbFiles.map(f => f.fy))].sort((a, b) => b - a);
+  fySel.innerHTML = `<option value="all">All fiscal years</option><option value="past">Past retention only</option>` +
+    fys.map(fy => `<option value="${fy}">${fyLabel(fy)}</option>`).join('');
+  fySel.value = [...fySel.options].some(o => o.value === fyPrev) ? fyPrev : 'all';
+
+  const formSel = document.getElementById('rbFormFilter');
+  const formPrev = formSel.value || 'all';
+  const forms = [...new Set(_rbFiles.map(f => f.formId))];
+  formSel.innerHTML = `<option value="all">All forms</option>` +
+    forms.map(id => `<option value="${_esc(id)}">${_esc(BAG_FORM_LABELS[id] || id)}</option>`).join('');
+  formSel.value = [...formSel.options].some(o => o.value === formPrev) ? formPrev : 'all';
+
+  renderReceiptBank();
+}
+
+function renderReceiptBank() {
+  const past = _rbFiles.filter(rbPastRetention);
+  const orphaned = _rbFiles.filter(f => !f.sub);
+  const sum = arr => arr.reduce((s, f) => s + f.size, 0);
+  document.getElementById('rbStats').innerHTML = `
+    <div class="stat-card"><div class="stat-label">Files</div><div class="stat-value">${_rbFiles.length}</div></div>
+    <div class="stat-card"><div class="stat-label">Past retention</div><div class="stat-value">${past.length}</div><div style="font-size:0.75rem;color:var(--muted);margin-top:6px">${fmtBytes(sum(past))} can be freed</div></div>
+    <div class="stat-card"><div class="stat-label">No linked submission</div><div class="stat-value">${orphaned.length}</div><div style="font-size:0.75rem;color:var(--muted);margin-top:6px">${fmtBytes(sum(orphaned))}</div></div>
+    <div class="stat-card highlight"><div class="stat-label">Space used</div><div class="stat-value">${fmtBytes(sum(_rbFiles))}</div></div>`;
+
+  const q = document.getElementById('rbSearch').value.trim().toLowerCase();
+  const fyF = document.getElementById('rbFyFilter').value || 'all';
+  const formF = document.getElementById('rbFormFilter').value || 'all';
+  _rbVisible = _rbFiles.filter(f =>
+    (fyF === 'all' || (fyF === 'past' ? rbPastRetention(f) : f.fy === Number(fyF))) &&
+    (formF === 'all' || f.formId === formF) &&
+    (!q || f.filename.toLowerCase().includes(q) || (f.sub?.group_name || '').toLowerCase().includes(q))
+  );
+  document.getElementById('rbCount').textContent = `${_rbVisible.length} file${_rbVisible.length === 1 ? '' : 's'}`;
+  rbUpdateSelInfo();
+
+  const el = document.getElementById('rbList');
+  if (!_rbVisible.length) {
+    el.innerHTML = `<p style="color:var(--muted);text-align:center;padding:40px">${_rbFiles.length ? 'No matching files.' : 'No uploaded files yet.'}</p>`;
+    return;
+  }
+  const allSel = _rbVisible.every(f => _rbSelected.has(f.path));
+  el.innerHTML = `
+    <div class="table-wrap">
+      <table>
+        <thead><tr>
+          <th style="width:32px"><input type="checkbox" ${allSel ? 'checked' : ''} onchange="rbToggleAll(this.checked)" title="Select all shown" /></th>
+          <th>File</th>
+          <th>Submitted by</th>
+          <th>Date</th>
+          <th>Fiscal year</th>
+          <th style="text-align:right">Size</th>
+          <th></th>
+        </tr></thead>
+        <tbody>
+          ${_rbVisible.map(f => {
+            const i = _rbFiles.indexOf(f);
+            const who = f.sub
+              ? (f.sub.group_name ? `${_esc(f.sub.group_name)} <span style="color:var(--muted)">(${f.sub.group_type === 'bag' ? 'BAG' : 'Committee'})</span>` : 'Unauthorized')
+              : '<em style="color:var(--muted)">No linked submission</em>';
+            const pastPill = rbPastRetention(f)
+              ? ' <span class="stock-pill out" style="margin-left:4px">Past retention</span>'
+              : ' <span class="stock-pill in" style="margin-left:4px">Keep</span>';
+            return `<tr>
+              <td><input type="checkbox" ${_rbSelected.has(f.path) ? 'checked' : ''} onchange="rbToggle(${i}, this.checked)" /></td>
+              <td class="td-name">${_esc(f.filename)}<div class="td-email">${_esc(BAG_FORM_LABELS[f.formId] || f.formId)}${f.label ? ' · ' + _esc(f.label) : ''}</div></td>
+              <td>${who}</td>
+              <td style="white-space:nowrap">${new Date(f.date).toLocaleDateString('en-CA', { month: 'short', day: 'numeric', year: 'numeric' })}</td>
+              <td style="white-space:nowrap">${fyLabel(f.fy)}${pastPill}</td>
+              <td style="text-align:right;white-space:nowrap">${fmtBytes(f.size)}</td>
+              <td style="white-space:nowrap;text-align:right">
+                <button class="btn-secondary" style="padding:6px 12px;font-size:0.78rem" onclick="downloadBagSubmissionFile(RB_BUCKET, _rbFiles[${i}].path)">⬇</button>
+                <button class="btn-danger" onclick="rbDeletePaths([_rbFiles[${i}].path])">Delete</button>
+              </td>
+            </tr>`;
+          }).join('')}
+        </tbody>
+      </table>
+    </div>`;
+}
+
+function rbUpdateSelInfo() {
+  const sel = _rbFiles.filter(f => _rbSelected.has(f.path));
+  document.getElementById('rbSelInfo').textContent = sel.length
+    ? `${sel.length} selected · ${fmtBytes(sel.reduce((s, f) => s + f.size, 0))}`
+    : 'No files selected';
+}
+function rbToggle(i, on) {
+  const p = _rbFiles[i].path;
+  on ? _rbSelected.add(p) : _rbSelected.delete(p);
+  rbUpdateSelInfo();
+}
+function rbToggleAll(on) {
+  _rbVisible.forEach(f => on ? _rbSelected.add(f.path) : _rbSelected.delete(f.path));
+  renderReceiptBank();
+}
+function rbSelectPastRetention() {
+  _rbSelected = new Set(_rbFiles.filter(rbPastRetention).map(f => f.path));
+  if (!_rbSelected.size) toast('Nothing is past the retention period yet.');
+  renderReceiptBank();
+}
+
+// Zips the selected files (JSZip, loaded on first use) into FY folders so finance can keep an
+// archive copy before deleting.
+async function rbDownloadSelected() {
+  const files = _rbFiles.filter(f => _rbSelected.has(f.path));
+  if (!files.length) { toast('Select some files first.', 'error'); return; }
+  const btn = document.getElementById('rbZipBtn');
+  btn.disabled = true;
+  try {
+    if (!window.JSZip) {
+      await new Promise((resolve, reject) => {
+        const s = document.createElement('script');
+        s.src = 'https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js';
+        s.onload = resolve;
+        s.onerror = () => reject(new Error('could not load the zip library'));
+        document.head.appendChild(s);
+      });
+    }
+    const zip = new JSZip();
+    const used = new Set();
+    for (const [n, f] of files.entries()) {
+      btn.textContent = `Zipping ${n + 1}/${files.length}…`;
+      const { data, error } = await window.db.storage.from(RB_BUCKET).download(f.path);
+      if (error) throw new Error(`${f.filename}: ${error.message}`);
+      const clean = s => String(s).replace(/[\\/:*?"<>|]+/g, '_').trim();
+      const day = new Date(f.date).toLocaleDateString('en-CA');
+      let name = `${fyLabel(f.fy).replace('–', '-')}/${day}_${clean(f.sub?.group_name || 'unlinked')}_${clean(f.filename)}`;
+      for (let k = 2; used.has(name); k++) name = name.replace(/(\.[^./]+)?$/, `_${k}$1`);
+      used.add(name);
+      zip.file(name, data);
+    }
+    btn.textContent = 'Building zip…';
+    const blob = await zip.generateAsync({ type: 'blob' });
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = `bhss-receipts-${new Date().toLocaleDateString('en-CA')}.zip`;
+    a.click();
+    setTimeout(() => URL.revokeObjectURL(a.href), 10000);
+  } catch (e) {
+    toast('Download failed: ' + e.message, 'error');
+  } finally {
+    btn.disabled = false;
+    btn.textContent = '⬇ Download selected (.zip)';
+  }
+}
+
+async function rbDeletePaths(paths) {
+  const files = _rbFiles.filter(f => paths.includes(f.path));
+  if (!files.length) { toast('Select some files first.', 'error'); return; }
+  const pw = prompt('Enter the admin password to delete receipts:');
+  if (pw === null) return;
+  if (pw !== 'LilRedSchoolHaus2000') { toast('Incorrect password.', 'error'); return; }
+
+  const recent = files.filter(f => !rbPastRetention(f)).length;
+  const size = fmtBytes(files.reduce((s, f) => s + f.size, 0));
+  if (!confirm(
+    `Permanently delete ${files.length} file(s) (${size})?` +
+    (recent ? `\n\n⚠ ${recent} of these are still within the retention period.` : '') +
+    `\n\nDownload a copy first if finance needs to keep them. This cannot be undone.`
+  )) return;
+
+  // remove() reports success even when RLS silently skips a file, so trust only the paths it returns.
+  const removed = new Set();
+  for (let k = 0; k < files.length; k += 1000) {
+    const { data, error } = await window.db.storage.from(RB_BUCKET).remove(files.slice(k, k + 1000).map(f => f.path));
+    if (error) { toast('Delete failed: ' + error.message, 'error'); break; }
+    (data || []).forEach(o => removed.add(o.name));
+  }
+
+  // Keep the submissions readable: swap each deleted file's pointer for a "deleted" marker.
+  const subs = new Map(files.filter(f => f.sub && removed.has(f.path)).map(f => [f.sub.id, f.sub]));
+  let subErrors = 0;
+  for (const sub of subs.values()) {
+    const answers = (sub.answers || []).map(a => {
+      const f = parseBagFileAnswer(a.value);
+      return f && f.bucket === RB_BUCKET && removed.has(f.path) ? { label: a.label, value: `__file_deleted__:${f.filename}` } : a;
+    });
+    const { error } = await window.db.from('bhss_form_submissions').update({ answers }).eq('id', sub.id);
+    if (error) subErrors++;
+  }
+
+  removed.forEach(p => _rbSelected.delete(p));
+  if (removed.size < files.length) toast(`Deleted ${removed.size} of ${files.length} files — the rest couldn't be deleted.`, 'error');
+  else if (subErrors) toast(`Deleted ${removed.size} file(s), but ${subErrors} submission(s) couldn't be updated.`, 'error');
+  else toast(`Deleted ${removed.size} file(s), freed ${size}.`);
+  loadReceiptBank();
 }
 </script>
 </body>

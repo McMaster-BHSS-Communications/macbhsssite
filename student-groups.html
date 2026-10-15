@@ -778,6 +778,12 @@ function parseFileAnswer(value) {
   return { bucket: bucketAndPath.slice(0, slash), path: bucketAndPath.slice(slash + 1), filename };
 }
 
+// Admin's Receipt Bank rewrites a file answer to "__file_deleted__:<filename>" once the file
+// itself is deleted after the record-keeping period. Returns the filename, or null.
+function parseDeletedFileAnswer(value) {
+  return typeof value === 'string' && value.startsWith('__file_deleted__:') ? value.slice('__file_deleted__:'.length) : null;
+}
+
 function fieldInputHtml(f) {
   const req = f.required ? 'required' : '';
   switch (f.type) {
@@ -1056,6 +1062,14 @@ function renderSubCard(s) {
             <div style="font-size:0.82rem;color:var(--muted)">${file.filename} <em>(uploaded file — can't be changed here; contact bhssfin@mcmaster.ca to replace it)</em></div>
           </div>`;
           }
+          const deletedFile = parseDeletedFileAnswer(a.value);
+          if (deletedFile !== null) {
+            return `
+          <div class="sub-edit-field">
+            <label>${a.label}</label>
+            <div style="font-size:0.82rem;color:var(--muted)">${deletedFile} <em>(file removed after the record-keeping period)</em></div>
+          </div>`;
+          }
           return `
           <div class="sub-edit-field">
             <label>${a.label}</label>
@@ -1085,7 +1099,7 @@ async function saveSubEdit(id) {
   errEl.style.display = 'none';
 
   const updatedAnswers = (sub.answers || []).map((a, i) => {
-    if (parseFileAnswer(a.value)) return { label: a.label, value: a.value };
+    if (parseFileAnswer(a.value) || parseDeletedFileAnswer(a.value) !== null) return { label: a.label, value: a.value };
     return { label: a.label, value: document.getElementById(`sub-field-${id}-${i}`).value.trim() };
   });
 
