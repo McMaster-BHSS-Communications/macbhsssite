@@ -135,6 +135,7 @@
     .tier-label { font-size: 0.68rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); margin-bottom: 14px; padding-bottom: 8px; border-bottom: 1px solid var(--border); }
     .tier-cards { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; }
     .tier-cards.cols-2 { grid-template-columns: repeat(2, 1fr); max-width: 50%; }
+    .tier-cards.cols-3 { grid-template-columns: repeat(3, 1fr); max-width: 75%; }
     .tier-card { background: var(--white); border: 1px solid var(--border); border-radius: 2px; overflow: hidden; display: flex; flex-direction: column; color: var(--text); text-decoration: none; transition: transform 0.22s, box-shadow 0.22s; }
     .tier-card:hover { transform: translateY(-4px); box-shadow: 0 14px 36px rgba(0,0,0,0.09); }
     .tier-card img { width: 100%; aspect-ratio: 1 / 1; object-fit: contain; display: block; }
@@ -189,7 +190,7 @@
       .page-hero { padding: 36px 20px 36px; }
       .filter-bar { padding: 0 16px; }
       .involve-grid { grid-template-columns: 1fr; }
-      .tier-cards, .tier-cards.cols-2 { grid-template-columns: repeat(2, 1fr); max-width: 100%; }
+      .tier-cards, .tier-cards.cols-2, .tier-cards.cols-3 { grid-template-columns: repeat(2, 1fr); max-width: 100%; }
       footer { padding: 36px 24px 28px; }
       .footer-top { grid-template-columns: 1fr; gap: 24px; }
       .footer-bottom { flex-direction: column; gap: 6px; text-align: center; }
@@ -226,6 +227,7 @@
         <a href="/committees/social">Social</a>
         <a href="/committees/welcome-week">Welcome Week</a>
         <a href="/committees/sra">SRA</a>
+        <a href="/committees/secretariat">Secretariat</a>
         <div class="has-sidedrop">
           <a href="#">Year Councils</a>
           <div class="sidedrop">
@@ -322,7 +324,7 @@
         <h3>How the BHSS is Organized</h3>
         <p>At the top is the <strong>Chair</strong>, who oversees and coordinates the entire society.</p>
         <p>Beneath the Chair are: </p>
-        <p>Eight <strong>Core Committees</strong> responsible for the day-to-day operations of the BHSS — from academics and finances to social events and communications. <br> Two <strong>Special Committees</strong> handle specialized mandates: Welcome Week (otherwise known aas the Heartbeats) and the Student Representative Assembly, who handle orientation and respresentation on the MSU respectively. <br> Finally, four <strong>Year Councils</strong> serve as the representative body for each cohort of students.</p>
+        <p>Eight <strong>Core Committees</strong> responsible for the day-to-day operations of the BHSS — from academics and finances to social events and communications. <br> Three <strong>Special Committees</strong> handle specialized mandates: Welcome Week (otherwise known as the Heartbeats), the Student Representative Assembly, and the Secretariat, who handle orientation, representation on the MSU, and advising the Chair and Executive respectively. <br> Finally, four <strong>Year Councils</strong> serve as the representative body for each cohort of students.</p>
         <p>Every committee is led by one or more elected or hired coordinators, supported by volunteer members from across the program. Learn more about each committee by visiting the <a href="/committees">Committees page</a>.</p>
       </div>
     </div>
@@ -347,9 +349,10 @@
       <div class="tier-arrow" style="margin-top:20px">↓</div>
 
       <div class="tier-label" style="margin-top:0">Special Committees</div>
-      <div class="tier-cards cols-2">
+      <div class="tier-cards cols-3">
         <a href="/committees/welcome-week" class="tier-card"><img src="assets/images/portrait/wwc_portrait@4x.png" alt="" loading="lazy"><span>Welcome Week</span></a>
         <a href="/committees/sra" class="tier-card"><img src="assets/images/portrait/sra_portrait@4x.png" alt="" loading="lazy"><span>Student Representative Assembly</span></a>
+        <a href="/committees/secretariat" class="tier-card"><img src="assets/images/portrait/sec_portrait@4x.png" alt="" loading="lazy"><span>Secretariat</span></a>
       </div>
       <div class="tier-arrow" style="margin-top:20px">↓</div>
 

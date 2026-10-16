@@ -96,6 +96,7 @@ nav.sitenav {
 /* ─── PEOPLE SECTION ─── */
 .people-section { background: var(--off); padding: 52px 60px 72px; }
 .people-layout { display: grid; grid-template-columns: 260px 1fr; gap: 60px; align-items: start; }
+.people-layout.single { grid-template-columns: 1fr; }
 .people-col-label { display: inline-block; background: var(--accent); color: var(--white); font-family: 'Familjen Grotesk', serif; font-size: 1.05rem; font-weight: 600; padding: 6px 18px; margin-bottom: 20px; }
 #membersGrid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 12px; }
 .people-empty { font-size: 0.82rem; color: var(--muted); font-style: italic; padding: 12px 0; }

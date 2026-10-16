@@ -256,6 +256,7 @@
     }
     .card-grid.cols-4 { grid-template-columns: repeat(4, 1fr); }
     .card-grid.cols-2 { grid-template-columns: repeat(2, 1fr); max-width: 620px; }
+    .card-grid.cols-3 { grid-template-columns: repeat(3, 1fr); max-width: 940px; }
 
     /* ─── COMMITTEE CARD ─── */
     .comm-card {
@@ -341,7 +342,8 @@
     /* ─── RESPONSIVE ─── */
     @media (max-width: 1024px) {
       .card-grid.cols-4 { grid-template-columns: repeat(2, 1fr); }
-      .card-grid.cols-2 { grid-template-columns: repeat(2, 1fr); max-width: 100%; }
+      .card-grid.cols-2,
+      .card-grid.cols-3 { grid-template-columns: repeat(2, 1fr); max-width: 100%; }
     }
     @media (max-width: 960px) {
       .footer-top { grid-template-columns: 1fr 1fr; gap: 28px; }
@@ -352,7 +354,8 @@
       nav.sitenav { padding: 0 16px; }
       .nav-links, .nav-resources { display: none; }
       .card-grid.cols-4,
-      .card-grid.cols-2 { grid-template-columns: 1fr; max-width: 100%; }
+      .card-grid.cols-2,
+      .card-grid.cols-3 { grid-template-columns: 1fr; max-width: 100%; }
       .page-hero { padding: 36px 20px 36px; }
       .filter-bar { padding: 0 16px; }
       footer { padding: 36px 24px 28px; }
@@ -394,6 +397,7 @@
         <a href="/committees/social">Social</a>
         <a href="/committees/welcome-week">Welcome Week</a>
         <a href="/committees/sra">SRA</a>
+        <a href="/committees/secretariat">Secretariat</a>
         <div class="has-sidedrop">
           <a href="#">Year Councils</a>
           <div class="sidedrop">
@@ -448,6 +452,7 @@
     <a class="filter-btn" href="/committees/social" style="--c:#DD1084">Social</a>
     <a class="filter-btn" href="/committees/welcome-week" style="--c:#1a90c9">Welcome Week</a>
     <a class="filter-btn" href="/committees/sra" style="--c:#7a003c">SRA</a>
+    <a class="filter-btn" href="/committees/secretariat" style="--c:#D0AB2D">Secretariat</a>
     <a class="filter-btn" href="/committees/first-year-council" style="--c:#4DAADC">FYC</a>
     <a class="filter-btn" href="/committees/second-year-council" style="--c:#449BD4">SYC</a>
     <a class="filter-btn" href="/committees/third-year-council" style="--c:#396AB3">TYC</a>
@@ -625,7 +630,7 @@
 
   <!-- Special Committees -->
   <p class="group-label">Special Committees</p>
-  <div class="card-grid cols-2">
+  <div class="card-grid cols-3">
 
     <!-- Welcome Week -->
     <div class="comm-card">
@@ -661,6 +666,24 @@
           </a>
         </div>
         <a class="comm-card-btn" href="/committees/sra">See More</a>
+      </div>
+    </div>
+
+    <!-- Secretariat — no coord-sentence: every member is a coordinator -->
+    <div class="comm-card">
+      <div class="comm-card-banner">
+        <img src="assets/images/committee_titles/sec_title@4x.png" alt="Secretariat banner" />
+        <div class="comm-card-banner-overlay"></div>
+      </div>
+      <div class="comm-card-body">
+        <div class="comm-card-title">Secretariat</div>
+        <p class="comm-card-desc">The Secretariat is responsible for advising the Chair and Executive on BHSS administration, and for keeping former executives connected to the Society so their experience is on hand when it’s needed.</p>
+        <div class="comm-card-ig">
+          <a href="https://www.instagram.com/macbhss/" target="_blank" aria-label="BHSS Instagram">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="2" y="2" width="20" height="20" rx="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
+          </a>
+        </div>
+        <a class="comm-card-btn" href="/committees/secretariat">See More</a>
       </div>
     </div>
 

@@ -68,10 +68,11 @@ async function renderMembers() {
     if (error) throw error;
 
     const members = data || [];
-    const coords = _sortMembers(members.filter(m => m.is_coordinator));
-    const rest   = _sortMembers(members.filter(m => !m.is_coordinator));
-
     const coordEl = document.getElementById('coordinatorCard');
+    // Pages without a Coordinator column (e.g. Secretariat) list everyone under Members
+    const coords = coordEl ? _sortMembers(members.filter(m => m.is_coordinator)) : [];
+    const rest   = _sortMembers(coordEl ? members.filter(m => !m.is_coordinator) : members);
+
     if (coordEl) {
       coordEl.innerHTML = coords.length
         ? coords.map(m => _cardHTML(m, true)).join('')

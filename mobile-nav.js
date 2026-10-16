@@ -44,6 +44,7 @@
         <a href="/committees/social">Social</a>
         <a href="/committees/welcome-week">Welcome Week</a>
         <a href="/committees/sra">SRA</a>
+        <a href="/committees/secretariat">Secretariat</a>
         <div class="mob-panel-section">Year Councils</div>
         <a href="/committees/first-year-council">First Year Council</a>
         <a href="/committees/second-year-council">Second Year Council</a>
