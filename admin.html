@@ -1364,6 +1364,7 @@
           <button class="btn-secondary bag-sub-filter-form" data-val="storage_request" onclick="setBagSubmissionFormFilter('storage_request')" style="font-size:0.78rem;padding:7px 14px">Storage Request</button>
           <button class="btn-secondary bag-sub-filter-form" data-val="media_request" onclick="setBagSubmissionFormFilter('media_request')" style="font-size:0.78rem;padding:7px 14px">Media Request</button>
           <button class="btn-secondary bag-sub-filter-form" data-val="collab_request" onclick="setBagSubmissionFormFilter('collab_request')" style="font-size:0.78rem;padding:7px 14px">Collab Request</button>
+          <button class="btn-secondary bag-sub-filter-form" data-val="shop_request" onclick="setBagSubmissionFormFilter('shop_request')" style="font-size:0.78rem;padding:7px 14px">Shop Listing</button>
         </div>
         <div style="display:flex;gap:8px;align-items:center">
           <span style="font-size:0.72rem;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--muted)">Status:</span>
@@ -3463,7 +3464,7 @@ async function toggleBagCodeActive(id, active) {
 
 // ── Form Builder ──
 let _bagForms = {};
-const BAG_FORM_IDS = ['eohss', 'room_booking', 'reimbursement', 'storage_request', 'media_request', 'collab_request'];
+const BAG_FORM_IDS = ['eohss', 'room_booking', 'reimbursement', 'storage_request', 'media_request', 'collab_request', 'shop_request'];
 const BAG_FIELD_TYPES = ['text', 'textarea', 'select', 'date', 'number', 'checkbox', 'file'];
 
 // Values for file-type answers are snapshotted as "__file__:<bucket>/<path>:<filename>"
@@ -3666,7 +3667,7 @@ function setBagSubmissionTypeFilter(val) {
   renderBagSubmissionsList();
 }
 
-const BAG_FORM_LABELS = { eohss: 'EOHSS', room_booking: 'Room Booking', reimbursement: 'Reimbursement', storage_request: 'Storage Request', media_request: 'Media Request', collab_request: 'Collab Request' };
+const BAG_FORM_LABELS = { eohss: 'EOHSS', room_booking: 'Room Booking', reimbursement: 'Reimbursement', storage_request: 'Storage Request', media_request: 'Media Request', collab_request: 'Collab Request', shop_request: 'Shop Listing' };
 
 function renderBagSubmissionsList() {
   const el = document.getElementById('bagSubmissionsList');

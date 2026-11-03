@@ -152,6 +152,7 @@
     .se-link-row.c-brand   { border-left-color: #13A89E; }
     .se-link-row.c-media   { border-left-color: #13A89E; }
     .se-link-row.c-collab  { border-left-color: #13A89E; }
+    .se-link-row.c-shop    { border-left-color: #46B749; }
     .se-link-icon {
       width: 56px; height: 56px; background: var(--off); border-radius: 12px; flex-shrink: 0;
       display: flex; align-items: center; justify-content: center; color: var(--mid);
@@ -468,6 +469,16 @@
           </div>
           <button class="se-go-btn" onclick="showView('collab_request')">Go there</button>
         </div>
+        <div class="se-link-row c-shop">
+          <div class="se-link-icon">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+          </div>
+          <div class="se-link-body">
+            <h3>List Something on the HHShop</h3>
+            <p>Sell merch or event tickets through BHSS's online store. Only available to signed-in BAGs and committees. Submit at least 3 weeks before you want to start selling.</p>
+          </div>
+          <button class="se-go-btn" onclick="showView('shop_request')">Go there</button>
+        </div>
         <div class="se-link-row c-brand">
           <div class="se-link-icon">
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 2l2.09 6.26L20 9l-5 4.14L16.18 20 12 16.5 7.82 20 9 13.14 4 9l5.91-.74L12 2z"/></svg>
@@ -543,6 +554,15 @@
         Back to Student Groups
       </a>
       <div id="formHost-collab_request"></div>
+    </div>
+
+    <!-- SHOP LISTING REQUEST FORM -->
+    <div class="se-view" id="view-shop_request">
+      <a class="se-back-link" onclick="showView('home')" href="#home">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+        Back to Student Groups
+      </a>
+      <div id="formHost-shop_request"></div>
     </div>
 
     <!-- MY SUBMISSIONS -->
@@ -751,13 +771,13 @@ function enterDashboard() {
   showView('home');
 }
 
-const GATED_FORM_IDS = ['reimbursement', 'storage_request', 'media_request', 'collab_request'];
+const GATED_FORM_IDS = ['reimbursement', 'storage_request', 'media_request', 'collab_request', 'shop_request'];
 
 function showView(name) {
   document.querySelectorAll('.se-view').forEach(v => v.classList.remove('active'));
   document.getElementById('view-' + name).classList.add('active');
   history.replaceState(null, '', name === 'home' ? location.pathname : '#' + name);
-  if (['eohss', 'room_booking', 'reimbursement', 'storage_request', 'media_request', 'collab_request'].includes(name)) renderForm(name);
+  if (['eohss', 'room_booking', 'reimbursement', 'storage_request', 'media_request', 'collab_request', 'shop_request'].includes(name)) renderForm(name);
   if (name === 'my-submissions') loadMySubmissions();
 }
 
@@ -811,7 +831,7 @@ function renderForm(formId) {
 
   // Reimbursement and Storage Request are locked to signed-in BAGs/committees.
   if (GATED_FORM_IDS.includes(formId) && (!session || session.mode !== 'bag')) {
-    const label = { storage_request: 'Storage requests', media_request: 'Media requests', collab_request: 'Collab requests' }[formId] || 'Reimbursement submissions';
+    const label = { storage_request: 'Storage requests', media_request: 'Media requests', collab_request: 'Collab requests', shop_request: 'Shop listing requests' }[formId] || 'Reimbursement submissions';
     host.innerHTML = `
       <div class="se-unavailable">
         <div class="se-unavailable-icon">
@@ -862,7 +882,7 @@ function renderForm(formId) {
       </div>
     </div>`;
 
-  if (formId === 'collab_request' && session && session.mode === 'bag') {
+  if ((formId === 'collab_request' || formId === 'shop_request') && session && session.mode === 'bag') {
     document.getElementById('sf-group_name').value = session.groupName || '';
   }
 
@@ -942,6 +962,29 @@ async function submitSeForm(formId) {
     if (pd && pd.value) {
       const days = Math.ceil((new Date(pd.value + 'T00:00:00') - new Date().setHours(0, 0, 0, 0)) / 86400000);
       if (days < 7 && !confirm('Communications asks for at least 7 days (ideally 14) before the post date. Requests inside this window can be delayed and may not be fulfilled before your event. Submit anyway?')) return;
+    }
+  }
+
+  // Shop listing requests: BHSS needs 3 weeks to set up a listing; warn (don't block) inside that window.
+  if (formId === 'shop_request') {
+    const ack = document.getElementById('sf-tip_ack');
+    if (ack && !ack.checked) {
+      errEl.textContent = 'Please confirm you understand the Zeffy tip prompt.';
+      errEl.style.display = 'block';
+      ack.focus();
+      return;
+    }
+    const sd = document.getElementById('sf-sale_start');
+    const ed = document.getElementById('sf-sale_end');
+    if (sd && ed && sd.value && ed.value && ed.value < sd.value) {
+      errEl.textContent = 'The sale end date must be on or after the start date.';
+      errEl.style.display = 'block';
+      ed.focus();
+      return;
+    }
+    if (sd && sd.value) {
+      const days = Math.ceil((new Date(sd.value + 'T00:00:00') - new Date().setHours(0, 0, 0, 0)) / 86400000);
+      if (days < 21 && !confirm('We ask for at least 3 weeks before your sale starts. Requests inside this window may not be ready by your start date. Submit anyway?')) return;
     }
   }
 
