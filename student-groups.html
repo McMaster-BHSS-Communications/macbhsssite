@@ -70,8 +70,20 @@
       display: flex; align-items: center; justify-content: center;
       padding: 40px 24px;
     }
-    .gate-card { max-width: 480px; text-align: center; }
-    .gate-card h1 { font-family: 'Familjen Grotesk', sans-serif; font-size: clamp(1.4rem, 4vw, 1.9rem); font-weight: 600; color: var(--text); letter-spacing: -0.02em; margin-bottom: 32px; line-height: 1.4; }
+    .gate-card { max-width: 480px; width: 100%; text-align: center; }
+    .gate-card h1 { font-family: 'Familjen Grotesk', sans-serif; font-size: clamp(1.4rem, 4vw, 1.9rem); font-weight: 600; color: var(--text); letter-spacing: -0.02em; margin-bottom: 16px; line-height: 1.4; }
+    .gate-sub { font-size: 0.9rem; color: var(--mid); line-height: 1.7; margin-bottom: 24px; }
+    .gate-form { text-align: left; }
+    .gate-form .form-group { margin-bottom: 16px; }
+    .gate-form .form-group label { display: block; font-size: 0.78rem; font-weight: 600; color: var(--mid); margin-bottom: 6px; }
+    .gate-form .form-group input {
+      width: 100%; padding: 11px 14px; border: 1px solid var(--border); border-radius: 8px;
+      font-family: 'Inter', sans-serif; font-size: 0.9rem; outline: none;
+    }
+    .gate-form .form-group input:focus { border-color: var(--blue); box-shadow: 0 0 0 3px rgba(29,79,161,0.1); }
+    .gate-form .se-btn-primary { width: 100%; }
+    .gate-help { font-size: 0.8rem; color: var(--mid); margin-top: 20px; }
+    .gate-help a { color: var(--blue); text-decoration: underline; }
     .gate-btn-row { display: flex; gap: 16px; justify-content: center; }
     .gate-btn {
       padding: 14px 40px; font-size: 0.95rem; font-weight: 600;
@@ -334,44 +346,20 @@
   <button class="hamburger" aria-label="Open menu"><span></span><span></span><span></span></button>
 </nav>
 
-<!-- GATE: shown before session state resolved -->
+<!-- GATE: this page is locked — every function requires a BAG/committee authorization code -->
 <div class="gate-wrap" id="gateWrap">
   <div class="gate-card">
-    <h1>Are you planning this event on behalf of a BHSS-Affiliated Group or a BHSS Committee?</h1>
-    <div class="gate-btn-row">
-      <button class="gate-btn primary" onclick="gateAnswer(true)">Yes</button>
-      <button class="gate-btn" onclick="gateAnswer(false)">No</button>
-    </div>
-  </div>
-</div>
-
-<!-- POPUP: No — general rules + disclaimer -->
-<div class="se-backdrop" id="individualBackdrop">
-  <div class="se-modal">
-    <h2>Before you continue</h2>
-    <p>All students planning an event or activity connected to the HHSP community are asked to follow the BHSS's general event guidelines:</p>
-    <p>Fill the EOHSS form and book spaces at least 2 weeks in advance, file reimbursement requests within 4 weeks of purchase, follow McMaster's event policies, ensure accessible options are considered, notify us of any risks in advance.</p>
-    <div class="se-disclaimer">A non-BAG event is less likely to be approved by the BHSS.</div>
-    <div class="se-modal-actions">
-      <button class="se-btn-primary" onclick="confirmIndividual()">Continue</button>
-    </div>
-  </div>
-</div>
-
-<!-- POPUP: Yes — authorization code -->
-<div class="se-backdrop" id="authBackdrop">
-  <div class="se-modal">
-    <h2>Enter Authorization Code</h2>
-    <p>Enter the code issued to your BAG or committee this year. This tells us which group your submissions belong to.</p>
-    <div class="form-group">
-      <label>Authorization Code</label>
-      <input type="text" id="authCodeInput" placeholder="e.g. Nux92Olsm" maxlength="9" />
-    </div>
-    <div class="se-error-msg" id="authError">That code isn't valid or is no longer active.</div>
-    <div class="se-modal-actions">
-      <button class="se-btn-primary" id="authSubmitBtn" onclick="submitAuthCode()">Sign In</button>
-    </div>
-    <button class="se-link-btn" onclick="switchToIndividual()">I don't have a code — continue as an individual</button>
+    <h1>Student Groups is for BAGs and committees</h1>
+    <p class="gate-sub">Enter the authorization code issued to your BAG or committee this year to continue. This tells us which group your submissions belong to.</p>
+    <form class="gate-form" onsubmit="submitAuthCode(); return false;">
+      <div class="form-group">
+        <label for="authCodeInput">Authorization Code</label>
+        <input type="text" id="authCodeInput" placeholder="e.g. Nux92Olsm" maxlength="9" autocomplete="off" />
+      </div>
+      <div class="se-error-msg" id="authError">That code isn't valid or is no longer active.</div>
+      <button type="submit" class="se-btn-primary" id="authSubmitBtn">Sign In</button>
+    </form>
+    <p class="gate-help">Don't have a code? <a href="/contact">Contact us</a>.</p>
   </div>
 </div>
 
@@ -693,23 +681,10 @@ function clearSeSession() {
   sessionStorage.removeItem(SE_SESSION_KEY);
 }
 
-function gateAnswer(isGroup) {
-  if (isGroup) {
-    document.getElementById('authBackdrop').classList.add('open');
-  } else {
-    document.getElementById('individualBackdrop').classList.add('open');
-  }
-}
-
-function switchToIndividual() {
-  document.getElementById('authBackdrop').classList.remove('open');
-  document.getElementById('individualBackdrop').classList.add('open');
-}
-
-function confirmIndividual() {
-  setSeSession({ mode: 'individual' });
-  document.getElementById('individualBackdrop').classList.remove('open');
-  enterDashboard();
+// The page is locked: the only way in is a validated authorization code (mode 'bag').
+function isSignedIn() {
+  const s = getSeSession();
+  return !!(s && s.mode === 'bag' && s.code);
 }
 
 async function submitAuthCode() {
@@ -742,31 +717,36 @@ async function submitAuthCode() {
   }
 
   setSeSession({ mode: 'bag', groupName: match.group_name, groupType: match.group_type, code });
-  document.getElementById('authBackdrop').classList.remove('open');
   enterDashboard();
 }
 
 function reopenGate() {
   clearSeSession();
+  seForms = {};
+  seFormsLoaded = false;
   document.getElementById('dashboard').style.display = 'none';
   document.getElementById('gateWrap').style.display = 'flex';
   document.getElementById('authCodeInput').value = '';
   document.getElementById('authError').style.display = 'none';
 }
 
-function enterDashboard() {
+async function enterDashboard() {
   const session = getSeSession();
+  if (!isSignedIn()) { reopenGate(); return; }
+
+  // Forms are only fetched once a code has been validated.
+  if (!seFormsLoaded) {
+    const { data } = await window.db.from('bhss_forms').select('*');
+    seForms = Object.fromEntries((data || []).map(f => [f.id, f]));
+    seFormsLoaded = true;
+  }
+
   document.getElementById('gateWrap').style.display = 'none';
   document.getElementById('dashboard').style.display = 'block';
 
   const pill = document.getElementById('statusPill');
-  if (session && session.mode === 'bag') {
-    pill.className = 'se-status-pill signed-in';
-    pill.innerHTML = `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg> Signed in as ${session.groupName}`;
-  } else {
-    pill.className = 'se-status-pill individual';
-    pill.textContent = 'Not signed in (individual)';
-  }
+  pill.className = 'se-status-pill signed-in';
+  pill.innerHTML = `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg> Signed in as ${session.groupName}`;
 
   showView('home');
 }
@@ -1169,16 +1149,23 @@ async function saveSubEdit(id) {
 
 // ── Init ──
 async function initStudentEvents() {
-  const { data } = await window.db.from('bhss_forms').select('*');
-  seForms = Object.fromEntries((data || []).map(f => [f.id, f]));
-  seFormsLoaded = true;
-
   const session = getSeSession();
-  if (session) {
-    enterDashboard();
-  } else {
+  // Old 'individual' sessions (from before the page was locked) no longer grant access.
+  if (!isSignedIn()) {
+    clearSeSession();
     document.getElementById('gateWrap').style.display = 'flex';
+    return;
   }
+
+  // Re-check the stored code so a code deactivated mid-session locks the page again.
+  const { data, error } = await window.db.rpc('validate_bag_auth_code', { p_code: session.code });
+  const match = Array.isArray(data) ? data[0] : data;
+  if (error || !match || !match.group_name) {
+    clearSeSession();
+    document.getElementById('gateWrap').style.display = 'flex';
+    return;
+  }
+  enterDashboard();
 }
 
 initStudentEvents();
