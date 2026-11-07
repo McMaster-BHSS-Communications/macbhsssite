@@ -49,6 +49,3 @@
 .mob-panel-section { padding: 10px 24px 3px 36px; font-size: 0.65rem; font-weight: 700; letter-spacing: 0.08em; color: var(--muted); text-transform: uppercase; }
 
 /* ─── CTA LINK ─── */
-.mob-cta { margin-top: 8px; }
-.mob-cta a { display: block; padding: 13px 24px; font-size: 0.9rem; font-weight: 600; color: var(--blue); text-decoration: none; border-bottom: 1px solid var(--border); transition: background 0.12s; }
-.mob-cta a:hover { background: var(--blue-pale); }

@@ -60,7 +60,6 @@
     <a href="/student-groups">Student Groups</a>
     <a href="/about">About Us</a>
     <a href="/contact">Contact</a>
-    <div class="mob-cta"><a href="https://drive.google.com/drive/folders/1YlpnrLa7I39miOYMrV8sf2DoPRnFAx20">Academic Resources</a></div>
   `;
 
   document.body.appendChild(overlay);

@@ -62,9 +62,6 @@
     .has-sidedrop:hover .sidedrop { display: block; }
     .sidedrop a { display: block; border-radius: 6px; font-size: 0.8rem; padding: 8px 12px; color: var(--mid); }
     .sidedrop a:hover { background: var(--blue-pale); color: var(--blue); }
-    .nav-resources { margin-left: auto; display: flex; align-items: center; }
-    .nav-resources a { display: flex; align-items: center; gap: 6px; padding: 8px 16px; background: var(--blue-pale); color: var(--blue); font-size: 0.8rem; font-weight: 600; text-decoration: none; border-radius: 8px; border: 1px solid rgba(45,105,201,0.2); transition: background 0.15s, color 0.15s; white-space: nowrap; }
-    .nav-resources a:hover { background: var(--blue); color: var(--white); }
 
     /* ─── PAGE HERO ─── */
     .page-hero { background: var(--blue); position: relative; overflow: hidden; padding: 64px 60px 56px; text-align: center; }
@@ -197,7 +194,7 @@
     }
     @media (max-width: 720px) {
       nav.sitenav { padding: 0 16px; }
-      .nav-links, .nav-resources { display: none; }
+      .nav-links { display: none; }
       .page-hero { padding: 36px 20px 36px; }
       .filter-bar { padding: 0 16px; }
       .cal-grid-wrap, .cal-list { box-shadow: 6px 6px 0 var(--blue-pale); }
@@ -261,12 +258,6 @@
     <li><a href="/about">About Us</a></li>
     <li><a href="/contact">Contact</a></li>
   </ul>
-  <div class="nav-resources">
-    <a href="https://drive.google.com/drive/folders/1YlpnrLa7I39miOYMrV8sf2DoPRnFAx20">
-      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
-      Academic Resources
-    </a>
-  </div>
   <button class="hamburger" aria-label="Open menu"><span></span><span></span><span></span></button>
 </nav>
 
