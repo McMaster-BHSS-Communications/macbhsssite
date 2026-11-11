@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="icon" type="image/x-icon" href="favicon/favicon.ico">
+  <link rel="icon" type="image/svg+xml" href="favicon/favicon.svg">
+  <link rel="icon" type="image/png" sizes="96x96" href="favicon/favicon-96x96.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="favicon/apple-touch-icon.png">
+  <link rel="manifest" href="favicon/site.webmanifest">
+  <title>Terms of Use | Mac BHSS</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Familjen+Grotesk:wght@400;500;600;700&family=Inter:wght@300;400;500;600&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="mobile-nav.css" />
+  <style>
+    :root {
+      --maroon:    #7a003c;
+      --maroon-dk: #5a002c;
+      --blue:      #1d4fa1;
+      --blue-mid:  #2e69c9;
+      --blue-lt:   #5b9bd5;
+      --blue-pale: #ddeaf7;
+      --dark:      #0f1b2d;
+      --text:      #1a2640;
+      --mid:       #4a5a7a;
+      --muted:     #8899bb;
+      --white:     #ffffff;
+      --off:       #f5f7fa;
+      --border:    #dde5f0;
+      --nav-h:     64px;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; overflow-x: hidden; }
+    body { font-family: 'Inter', sans-serif; background: var(--off); color: var(--text); overflow-x: hidden; }
+
+    /* ─── NAV ─── */
+    nav.sitenav {
+      position: sticky; top: 0; z-index: 500; height: var(--nav-h);
+      background: var(--white); border-bottom: 1px solid var(--border);
+      display: flex; align-items: center; padding: 0 32px; gap: 0;
+    }
+    .nav-logo { display: flex; align-items: center; gap: 10px; text-decoration: none; margin-right: 28px; flex-shrink: 0; }
+    .nav-logo-mark { width: 38px; height: 38px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-family: 'Familjen Grotesk', serif; font-size: 1rem; font-weight: 600; color: var(--blue); }
+    .nav-logo-text { font-family: 'Familjen Grotesk', serif; font-size: clamp(0.05rem, 3.5vw, 1.05rem); font-weight: 600; color: var(--text); line-height: 1.2; }
+    .nav-logo-text span { display: block; font-size: clamp(0.2rem, 3.5vw, 0.7rem); font-weight: 400; color: var(--muted); font-family: 'Inter', sans-serif; letter-spacing: 0.04em; }
+    .nav-links { display: flex; align-items: center; gap: 2px; list-style: none; }
+    .nav-links a { display: block; padding: 7px 13px; font-size: 0.83rem; font-weight: 500; color: var(--mid); text-decoration: none; border-radius: 6px; transition: background 0.15s, color 0.15s; white-space: nowrap; }
+    .nav-links a:hover, .nav-links a.active { background: var(--blue); color: var(--white); }
+    .has-drop { position: relative; }
+    .has-drop > a::after { content: ' ▾'; font-size: 0.6rem; opacity: 0.7; }
+    .drop { display: none; position: absolute; top: calc(100% + 6px); left: 0; background: var(--white); border: 1px solid var(--border); border-radius: 10px; box-shadow: 0 10px 32px rgba(0,0,0,0.1); min-width: 176px; padding: 6px; z-index: 300; }
+    .drop::before { content: ""; position: absolute; top: -20px; left: 0; width: 100%; height: 20px; background: transparent; }
+    .has-drop:hover .drop { display: block; }
+    .drop a { border-radius: 6px; font-size: 0.8rem; padding: 7px 12px; color: var(--mid); }
+    .drop a:hover { background: var(--blue-pale); color: var(--blue); }
+    .has-sidedrop { position: relative; }
+    .has-sidedrop > a::after { content: ' ▸'; font-size: 0.6rem; opacity: 0.7; }
+    .sidedrop { display: none; position: absolute; top: -200%; left: calc(100% + 8px); background: var(--white); border: 1px solid var(--border); border-radius: 10px; box-shadow: 0 10px 32px rgba(0,0,0,0.1); min-width: 220px; padding: 10px; z-index: 500; white-space: normal; }
+    .has-sidedrop::after { content: ""; position: absolute; top: 0; left: 100%; width: 12px; height: 100%; background: transparent; pointer-events: auto; }
+    .has-sidedrop:hover .sidedrop { display: block; }
+    .sidedrop a { display: block; border-radius: 6px; font-size: 0.8rem; padding: 8px 12px; color: var(--mid); }
+    .sidedrop a:hover { background: var(--blue-pale); color: var(--blue); }
+
+    /* ─── PAGE HERO ─── */
+    .page-hero { background: var(--blue); position: relative; overflow: hidden; padding: 64px 60px 56px; text-align: center; }
+    .page-hero .decor-img { position: absolute; pointer-events: none; user-select: none; opacity: 1; animation: floatDecor 7s ease-in-out infinite alternate; }
+    @keyframes floatDecor { from { transform: rotate(var(--r, 0deg)) translateY(0); } to { transform: rotate(var(--r, 0deg)) translateY(-12px); } }
+    .page-hero .decor-img1 { width: 90px;  top: 10px;   left: 36px;   --r: -8deg; }
+    .page-hero .decor-img2 { width: 66px;  bottom: 12px; right: 72px;  --r: 18deg; }
+    .page-hero .decor-img3 { width: 50px;  top: 20px;   right: 160px; --r: -4deg; }
+    .page-hero .decor-img4 { width: 78px;  bottom: 14px; left: 130px;  --r: 10deg; }
+    .page-hero .decor-img5 { width: 42px;  top: 44%;    right: 48px;  --r: 24deg; }
+    .page-hero h1 { font-family: 'Familjen Grotesk', sans-serif; font-size: clamp(1.8rem, 5vw, 3.2rem); font-weight: 600; color: var(--white); letter-spacing: -0.02em; position: relative; z-index: 1; margin-bottom: 16px; }
+    .page-hero p { font-size: clamp(0.85rem, 2vw, 1rem); color: rgba(255,255,255,0.8); max-width: 640px; margin: 0 auto; line-height: 1.7; position: relative; z-index: 1; }
+
+
+    /* ─── LEGAL CONTENT ─── */
+    .legal-content { max-width: 820px; margin: 0 auto; padding: 56px 40px 88px; }
+    .legal-meta { font-size: 0.8rem; color: var(--muted); margin-bottom: 28px; }
+    .legal-note { background: var(--white); border: 1px solid var(--border); border-left: 3px solid var(--blue); padding: 16px 20px; font-size: 0.88rem; color: var(--mid); line-height: 1.7; margin-bottom: 36px; }
+    .legal-toc { background: var(--white); border: 1px solid var(--border); padding: 18px 24px; margin-bottom: 44px; }
+    .legal-toc h2 { font-family: 'Familjen Grotesk', sans-serif; font-size: 0.72rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); margin-bottom: 10px; }
+    .legal-toc ol { padding-left: 20px; columns: 2; column-gap: 32px; }
+    .legal-toc li { font-size: 0.84rem; line-height: 1.9; }
+    .legal-toc a { color: var(--blue); text-decoration: none; }
+    .legal-toc a:hover { text-decoration: underline; }
+    .legal-content section { margin-bottom: 40px; scroll-margin-top: calc(var(--nav-h) + 16px); }
+    .legal-content h2 { font-family: 'Familjen Grotesk', sans-serif; font-size: clamp(1.15rem, 3vw, 1.4rem); font-weight: 600; color: var(--text); letter-spacing: -0.01em; margin-bottom: 12px; }
+    .legal-content h3 { font-family: 'Familjen Grotesk', sans-serif; font-size: 0.98rem; font-weight: 600; color: var(--text); margin: 18px 0 6px; }
+    .legal-content p, .legal-content li { font-size: 0.92rem; color: var(--mid); line-height: 1.78; }
+    .legal-content p { margin-bottom: 12px; }
+    .legal-content ul { padding-left: 22px; margin-bottom: 12px; }
+    .legal-content li { margin-bottom: 6px; }
+    .legal-content li strong, .legal-content p strong { color: var(--text); font-weight: 600; }
+    .legal-content a { color: var(--blue); text-decoration: underline; text-underline-offset: 2px; }
+    .legal-content a:hover { color: var(--blue-mid); }
+
+    /* ─── FOOTER ─── */
+    footer { background: var(--dark); color: rgba(255,255,255,0.55); padding: 48px 60px 40px; }
+    .footer-top { display: grid; grid-template-columns: 1.5fr 1fr 1fr 1.5fr 0.6fr; gap: 40px; margin-bottom: 40px; }
+    .footer-brand p.pre { font-size: 0.6rem; font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase; color: rgba(255,255,255,0.35); margin-bottom: 4px; }
+    .footer-brand h3 { font-family: 'Familjen Grotesk', serif; font-size: 1.25rem; font-weight: 600; color: var(--white); line-height: 1.25; margin-bottom: 14px; }
+    .footer-brand .desc { font-size: 0.76rem; line-height: 1.65; color: rgba(255,255,255,0.4); }
+    .footer-brand .desc a { color: rgba(255,255,255,0.55); text-decoration: underline; }
+    .footer-col h4 { font-size: 0.7rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: rgba(255,255,255,0.5); margin-bottom: 12px; }
+    .footer-col p, .footer-col address { font-size: 0.78rem; font-style: normal; color: rgba(255,255,255,0.4); line-height: 1.65; padding-right: 100px;}
+    .footer-col a { display: inline-flex; color: rgba(255,255,255,0.45); text-decoration: none; font-size: 0.78rem; margin-bottom: 5px; transition: color 0.15s; }
+    .footer-col a:hover { color: var(--white); }
+    .footer-bottom { border-top: 1px solid rgba(255,255,255,0.07); padding-top: 20px; font-size: 0.72rem; color: rgba(255,255,255,0.25); display: flex; align-items: center; justify-content: space-between; }
+
+    /* ─── RESPONSIVE ─── */
+    @media (max-width: 960px) {
+      .legal-content { padding: 40px 24px 64px; }
+      .footer-top { grid-template-columns: 1fr 1fr; gap: 28px; }
+      .page-hero { padding: 48px 32px 44px; }
+    }
+    @media (max-width: 640px) {
+      nav.sitenav { padding: 0 16px; }
+      .nav-links { display: none; }
+      .page-hero { padding: 36px 20px 36px; }
+      .legal-toc ol { columns: 1; }
+      footer { padding: 36px 24px 28px; }
+      .footer-top { grid-template-columns: 1fr; gap: 24px; }
+      .footer-bottom { flex-direction: column; gap: 6px; text-align: center; }
+    }
+  </style>
+  <link rel="stylesheet" href="site-style.css" />
+  <link rel="canonical" href="https://bhssmcmaster.com/terms" />
+  <meta name="description" content="Terms of Use for the McMaster Bachelor of Health Sciences Society website, Student Groups portal and store." />
+</head>
+<body>
+
+<!-- Nav -->
+<nav class="sitenav">
+  <a href="/" class="nav-logo">
+    <img class="nav-logo-mark" src="assets/images/logoNEW@4x.png" alt="BHSS Logo">
+    <div class="nav-logo-text">Bachelor of Health Sciences Society<span>McMaster University</span></div>
+  </a>
+  <ul class="nav-links">
+    <li><a href="/">Home</a></li>
+    <li class="has-drop">
+      <a href="/committees">Committees</a>
+      <div class="drop">
+        <a href="/committees">All Committees</a>
+        <a href="/committees/chair">Chair</a>
+        <a href="/committees/academics">Academics</a>
+        <a href="/committees/communications">Communications</a>
+        <a href="/committees/edi">Equity, Diversity &amp; Inclusion</a>
+        <a href="/committees/external">External</a>
+        <a href="/committees/financial">Financial</a>
+        <a href="/committees/internal">Internal</a>
+        <a href="/committees/logistics">Logistics &amp; Elections</a>
+        <a href="/committees/social">Social</a>
+        <a href="/committees/welcome-week">Welcome Week</a>
+        <a href="/committees/sra">SRA</a>
+        <a href="/committees/secretariat">Secretariat</a>
+        <div class="has-sidedrop">
+          <a href="#">Year Councils</a>
+          <div class="sidedrop">
+            <a href="/committees/first-year-council">First Year Council</a>
+            <a href="/committees/second-year-council">Second Year Council</a>
+            <a href="/committees/third-year-council">Third Year Council</a>
+            <a href="/committees/fourth-year-council">Fourth Year Council</a>
+          </div>
+        </div>
+      </div>
+    </li>
+    <li><a href="/resources">Resources</a></li>
+    <li><a href="/calendar">Calendar</a></li>
+    <li><a href="/shop">Store</a></li>
+    <li><a href="/bags">BAGs</a></li>
+    <li><a href="/student-groups">Student Groups</a></li>
+    <li><a href="/about">About Us</a></li>
+    <li><a href="/contact">Contact</a></li>
+  </ul>
+  <button class="hamburger" aria-label="Open menu"><span></span><span></span><span></span></button>
+</nav>
+
+<!-- Page Hero -->
+<div class="page-hero">
+  <img class="decor-img decor-img1" src="assets/svg/decor/sqs3.svg" alt="" aria-hidden="true">
+  <img class="decor-img decor-img2" src="assets/svg/decor/sqs7.svg" alt="" aria-hidden="true">
+  <img class="decor-img decor-img3" src="assets/svg/decor/sqs1.svg" alt="" aria-hidden="true">
+  <img class="decor-img decor-img4" src="assets/svg/decor/sqs5.svg" alt="" aria-hidden="true">
+  <img class="decor-img decor-img5" src="assets/svg/decor/sqs8.svg" alt="" aria-hidden="true">
+  <h1>Terms of Use</h1>
+  <p>The rules for using the McMaster Bachelor of Health Sciences Society website and Student Groups portal.</p>
+</div>
+
+<main class="legal-content">
+  <p class="legal-meta">Last updated: November 11, 2026</p>
+
+  <nav class="legal-toc" aria-label="On this page">
+    <h2>On this page</h2>
+    <ol>
+      <li><a href="#acceptance">Agreeing to these terms</a></li>
+      <li><a href="#about">About this website</a></li>
+      <li><a href="#use">Using the website</a></li>
+      <li><a href="#portal">Student Groups portal</a></li>
+      <li><a href="#purchases">Store and ticket purchases</a></li>
+      <li><a href="#contact-form">Messages and emergencies</a></li>
+      <li><a href="#ip">Content and ownership</a></li>
+      <li><a href="#links">Other websites</a></li>
+      <li><a href="#disclaimer">Information on the site</a></li>
+      <li><a href="#liability">Limits on our responsibility</a></li>
+      <li><a href="#changes">Changes</a></li>
+      <li><a href="#law">Governing law</a></li>
+      <li><a href="#contact">Contact us</a></li>
+    </ol>
+  </nav>
+
+
+  <section id="acceptance">
+    <h2>1. Agreeing to these terms</h2>
+    <p>By using the McMaster Bachelor of Health Sciences Society (&ldquo;BHSS&rdquo;) website at bhssmcmaster.com, you agree to these Terms of Use and to our <a href="/privacy">Privacy Policy</a>. If you do not agree, please do not use the website.</p>
+  </section>
+
+  <section id="about">
+    <h2>2. About this website</h2>
+    <p>BHSS is a student society at McMaster University. This website is run by BHSS student volunteers to share information and to give affiliated groups and committees a place to submit requests. It is not an official McMaster University website, and nothing on it is a statement or policy of McMaster University unless it says so.</p>
+  </section>
+
+  <section id="use">
+    <h2>3. Using the website</h2>
+    <p>You may browse the website and use its features for lawful, personal or student-group purposes. You agree not to:</p>
+    <ul>
+      <li>break, probe, overload or try to gain unauthorized access to the website, its admin tools or its databases;</li>
+      <li>use automated tools to scrape or copy the site in a way that harms its performance;</li>
+      <li>submit false, misleading, abusive, hateful or unlawful content, or content that violates someone else&rsquo;s rights;</li>
+      <li>impersonate another person, group or committee;</li>
+      <li>upload files that contain malware or that you have no right to share.</li>
+    </ul>
+    <p>You must also follow the McMaster University policies that apply to students, such as the Code of Student Rights &amp; Responsibilities.</p>
+  </section>
+
+  <section id="portal">
+    <h2>4. Student Groups portal and authorization codes</h2>
+    <ul>
+      <li>The portal is for representatives of BHSS committees and BHSS-affiliated groups. Your authorization code belongs to your group. Keep it confidential and do not share it outside your group.</li>
+      <li>You are responsible for what is submitted using your group&rsquo;s code, and for making sure your answers and uploads are accurate and that you are allowed to submit them.</li>
+      <li>A submission is a request, not an approval. Room bookings, storage, media and collaboration requests, reimbursements and store listings are reviewed by BHSS and may be changed, delayed or declined, including under BHSS or McMaster policies.</li>
+      <li>Uploads are limited to PDF files of 20 MB or less.</li>
+      <li>We may deactivate or reassign a code at any time, for example when a new batch is issued or if we believe it is being misused.</li>
+    </ul>
+  </section>
+
+  <section id="purchases">
+    <h2>5. Store and ticket purchases</h2>
+    <p>Purchases are made through Zeffy, and Zeffy&rsquo;s terms apply to the payment itself. Prices, items, dates and availability are shown on each store or ticket listing and may change. Refund and pick-up details are set out on the listing or in the confirmation you receive. For help with an order, email <a href="mailto:bhss@mcmaster.ca">bhss@mcmaster.ca</a> and include your order reference.</p>
+  </section>
+
+  <section id="contact-form">
+    <h2>6. Messages and emergencies</h2>
+    <p>Messages sent through the website are read by BHSS volunteers and are not monitored around the clock. Do not use the website to report an emergency. In an emergency, call 911 or McMaster University Security Services.</p>
+  </section>
+
+  <section id="ip">
+    <h2>7. Content and ownership</h2>
+    <p>The BHSS name, logo, committee artwork, text and other content on this site belong to BHSS or are used with permission. Logos and descriptions of BHSS-affiliated groups belong to those groups. You may view and share pages for personal, non-commercial use. For any other use, such as copying our artwork or branding, please ask us first at <a href="mailto:bhss@mcmaster.ca">bhss@mcmaster.ca</a>.</p>
+    <p>If you send us content (for example a message or a form submission), you confirm that you may share it, and you allow BHSS to use it to handle your request and to keep records, as described in the Privacy Policy.</p>
+  </section>
+
+  <section id="links">
+    <h2>8. Other websites</h2>
+    <p>The website links to and embeds third-party services such as Zeffy, Instagram and Notion. We do not control them and are not responsible for their content, availability or privacy practices. Your use of them is covered by their own terms.</p>
+  </section>
+
+  <section id="disclaimer">
+    <h2>9. Information on the site</h2>
+    <p>We work to keep the website accurate, but the resources, calendar, dates, committee information and other content are provided &ldquo;as is&rdquo; and may be out of date or incomplete. They are not academic, medical, legal or financial advice. For anything that affects your studies, such as deadlines, program requirements and policies, check with the official McMaster University source.</p>
+  </section>
+
+  <section id="liability">
+    <h2>10. Limits on our responsibility</h2>
+    <p>To the fullest extent the law allows, BHSS and its volunteers are not liable for any indirect, incidental or consequential loss that comes from using, or not being able to use, the website, including outages, errors in content, or the actions of third-party services. Nothing in these terms limits any right or liability that cannot be limited by law.</p>
+  </section>
+
+  <section id="changes">
+    <h2>11. Changes to the website and these terms</h2>
+    <p>We may change, suspend or remove any part of the website, and we may update these terms from time to time. The &ldquo;Last updated&rdquo; date at the top shows when they last changed. Continuing to use the website after a change means you accept the updated terms.</p>
+  </section>
+
+  <section id="law">
+    <h2>12. Governing law</h2>
+    <p>These terms are governed by the laws of the Province of Ontario and the federal laws of Canada that apply there. Any dispute will be handled by the courts of Ontario.</p>
+  </section>
+
+  <section id="contact">
+    <h2>13. Contact us</h2>
+    <p>Questions about these terms? Email <a href="mailto:bhss@mcmaster.ca">bhss@mcmaster.ca</a> or write to the McMaster Bachelor of Health Sciences Society, MDCL 3308, McMaster University, 1280 Main Street West, Hamilton, ON L8S 4K1.</p>
+  </section>
+
+</main>
+
+<footer>
+  <div class="footer-top">
+    <div class="footer-brand">
+      <p class="pre">McMaster</p>
+      <h3>BACHELOR OF HEALTH<br>SCIENCES SOCIETY</h3>
+      <p class="desc">The McMaster Bachelor of Health Sciences Society recognizes that McMaster University sits on the traditional territories of the Haudenosaunee Confederacy and the Anishinaabe Nations, which is recognized by the "Dish With One Spoon" wampum agreement. <a href="#">Click here to learn more.</a></p>
+    </div>
+    <div class="footer-col">
+      <h4>Legal</h4>
+      <a href="/terms">Terms of Use</a><br>
+      <a href="/privacy">Privacy Policy</a>
+    </div>
+    <div class="footer-col">
+      <h4>Office</h4>
+      <address>MDCL 3308, McMaster University<br>1280 Main Street West<br>Hamilton, ON  L8S 4K1</address>
+    </div>
+    <div class="footer-col">
+      <h4>Contact</h4>
+      <p>The Bachelors of Health Science Society's Website is designed and developed by the BHSS Communications Committee. If you have any questions, please reach out to <a href="mailto:bhsscom@mcmaster.ca" style="color:rgba(255,255,255,0.55);text-decoration:underline">bhsscom@mcmaster.ca</a> or <a href="https://instagram.com/macbhss" style="color:rgba(255,255,255,0.55);text-decoration:underline">@macbhss</a>.</p>
+    </div>
+    <div class="footer-col">
+      <h4>Other</h4>
+      <a href="/admin">Admin</a>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span>© 2026 McMaster Bachelor of Health Sciences Society</span>
+    <span>Built by BHSS Communications Committee</span>
+  </div>
+</footer>
+
+<script src="mobile-nav.js"></script>
+</body>
+</html>
